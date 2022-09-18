@@ -1,2 +1,2 @@
-# src
-source packages and files
+Ragnarok source repository
+==========================
