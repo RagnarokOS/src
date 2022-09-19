@@ -1,0 +1,8 @@
+Package: man-db
+Version: 99:99
+Maintainer: Ian LeCorbeau <I-LeCorbeau (at) protonmail (dot) com>
+Architecture: all
+Description: dummy man-db package
+ man-db with a version so high that no packages
+ will ever install it as a dependency. Ragnarok
+ uses mandoc instead.

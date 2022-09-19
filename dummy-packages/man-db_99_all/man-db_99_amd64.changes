@@ -1,0 +1,25 @@
+Format: 1.8
+Date: Mon, 19 Sep 2022 01:06:02 +0000
+Source: man-db
+Binary: man-db
+Architecture: all
+Version: 99:99
+Distribution: unstable
+Urgency: low
+Maintainer: Ian LeCorbeau <I-LeCorbeau (at) protonmail (dot) com>
+Changed-By: Ian LeCorbeau <I-LeCorbeau (at) protonmail (dot) com>
+Description:
+ man-db     - dummy man-db package
+Changes:
+ man-db (99:99) unstable; urgency=low
+ .
+   * First version
+Checksums-Sha1:
+ 9169180ee3e29ccd3a276df2dcbe65375b60e93c 2196 man-db_99_all.deb
+ ab23ee6612f49c028c24df08cb29fac1a0c432d8 4679 man-db_99_amd64.buildinfo
+Checksums-Sha256:
+ cb4f4fcf17f1fff77d6dcf2422713fc149a2aeb3b5cddec202f258517bb0ef8e 2196 man-db_99_all.deb
+ 35169bdf81f492c096aff2add9d677afaff41012dc51a4fcb6c59bac0e44a257 4679 man-db_99_amd64.buildinfo
+Files:
+ ce06c788d2a06dc61fa539b22a857e2b 2196 misc optional man-db_99_all.deb
+ ab58b564300e49a5f8799cffc687d93b 4679 misc optional man-db_99_amd64.buildinfo
