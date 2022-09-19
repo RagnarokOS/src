@@ -21,7 +21,7 @@ equivs-build no-packagename.equivs
 ```
 
 Inspecting the contents of the deb packages provided here can be done using the
-dpkg-deb -R _package-name_ target-directory_ command, e.g.
+dpkg-deb -R _package-name target-directory_ command, e.g.
 
 ```
 dpkg-deb -R Downloads/man-db_99_all.deb $HOME/.local/src/
