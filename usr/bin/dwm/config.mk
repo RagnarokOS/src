@@ -1,4 +1,4 @@
-include ../share/progs.mk
+include ../../share/mk/progs.mk
 
 # dwm version
 VERSION = 6.2

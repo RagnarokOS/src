@@ -1,4 +1,4 @@
-include ../share/progs.mk
+include ../../share/mk/progs.mk
 
 # st version
 VERSION = 0.8.2

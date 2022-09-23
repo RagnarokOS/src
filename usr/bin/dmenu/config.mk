@@ -1,4 +1,4 @@
-include ../share/progs.mk
+include ../../share/mk/progs.mk
 
 # dmenu version
 VERSION = 4.9
