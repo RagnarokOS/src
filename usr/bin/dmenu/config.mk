@@ -1,3 +1,5 @@
+include ../share/progs.mk
+
 # dmenu version
 VERSION = 4.9
 
@@ -22,16 +24,8 @@ FREETYPEINC = /usr/include/freetype2
 INCS = -I$(X11INC) -I$(FREETYPEINC)
 LIBS = -L$(X11LIB) -lX11 $(XINERAMALIBS) $(FREETYPELIBS)
 
-# hardening flags
-HARDENING_CPPFLAGS=-D_FORTIFY_SOURCE
-HARDENING_CLFLAGS=-fstack-clash-protection -fstack-protector-strong
-HARDENING_LDFLAGS=-Wl,-z,relro,-z,now
-
 # flags
 CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE=700 -D_POSIX_C_SOURCE=200809L -DVERSION=\"$(VERSION)\" $(XINERAMAFLAGS) ${HARDENING_CPPFLAGS}
 CFLAGS   = -std=c99 -pedantic -Wall -Os $(INCS) $(CPPFLAGS) ${HARDENING_CFLAGS}
 LDFLAGS  = $(LIBS) ${HARDENING_LDFLAGS}
 
-# compiler and linker
-CC=clang
-LD=ld.lld

@@ -1,3 +1,5 @@
+include ../share/progs.mk
+
 # dwm version
 VERSION = 6.2
 
@@ -24,11 +26,6 @@ FREETYPEINC = /usr/include/freetype2
 INCS = -I${X11INC} -I${FREETYPEINC}
 LIBS = -L${X11LIB} -lX11 ${XINERAMALIBS} ${FREETYPELIBS}
 
-# hardening flags
-HARDENING_CPPFLAGS=-D_FORTIFY_SOURCE
-HARDENING_CLFLAGS=-fstack-clash-protection -fstack-protector-strong
-HARDENING_LDFLAGS=-Wl,-z,relro,-z,now
-
 # flags
 CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_POSIX_C_SOURCE=2 -DVERSION=\"${VERSION}\" ${XINERAMAFLAGS} ${HARDENING_CPPFLAGS}
 #CFLAGS   = -g -std=c99 -pedantic -Wall -O0 ${INCS} ${CPPFLAGS}
@@ -39,6 +36,3 @@ LDFLAGS  = ${LIBS} ${HARDENING_LDFLAGS}
 #CFLAGS = -fast ${INCS} -DVERSION=\"${VERSION}\"
 #LDFLAGS = ${LIBS}
 
-# compiler and linker
-CC=clang
-LD=ld.lld

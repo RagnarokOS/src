@@ -1,3 +1,5 @@
+include ../share/progs.mk
+
 # st version
 VERSION = 0.8.2
 
@@ -20,11 +22,6 @@ LIBS = -L$(X11LIB) -lm -lrt -lX11 -lutil -lXft -lXrender\
        `$(PKG_CONFIG) --libs fontconfig` \
        `$(PKG_CONFIG) --libs freetype2`
 
-# hardening flags
-HARDENING_CPPFLAGS=-D_FORTIFY_SOURCE
-HARDENING_CLFLAGS=-fstack-clash-protection -fstack-protector-strong
-HARDENING_LDFLAGS=-Wl,-z,relro,-z,now
-
 # flags
 STCPPFLAGS = -DVERSION=\"$(VERSION)\" -D_XOPEN_SOURCE=600 ${HARDENING_CPPFLAGS}
 STCFLAGS = $(INCS) $(STCPPFLAGS) $(CPPFLAGS) $(CFLAGS) ${HARDENING_CFLAGS}
@@ -36,6 +33,3 @@ STLDFLAGS = $(LIBS) $(LDFLAGS) ${HARDENING_LDFLAGS}
 #       `pkg-config --libs fontconfig` \
 #       `pkg-config --libs freetype2`
 
-# compiler and linker
-CC=clang
-LD=ld.lld
