@@ -14,3 +14,6 @@ ADDR2LINE=llvm-addr2line
 HARDENING_CPPFLAGS+=-D_FORTIFY_SOURCE=2
 HARDENING_CFLAGS=-fPIE -fstack-clash-protection -fstack-protector-strong
 HARDENING_LDFLAGS=-Wl,-z,relro,-z,now -fPIE -pie
+
+PREFIX=/usr
+MANPREFIX=$(PREFIX)/share/man
