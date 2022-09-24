@@ -1,0 +1,52 @@
+--- Makefile.orig	2020-09-24 06:05:41.000000000 -0400
++++ Makefile	2022-09-23 15:54:48.000000000 -0400
+@@ -1,3 +1,5 @@
++include ../../share/mk/progs.mk
++
+ ##################################################################
+ # The following variables may be overriden in the command line:  #
+ #                                                                #
+@@ -11,9 +13,9 @@
+ #                                                                #
+ ##################################################################
+ 
+-CFLAGS   += $(EXTRA_CFLAGS)
+-LDFLAGS  += $(EXTRA_LDFLAGS)
+-CPPFLAGS += -include compat.h
++CFLAGS   += $(EXTRA_CFLAGS) $(HARDENING_CFLAGS)
++LDFLAGS  += $(EXTRA_LDFLAGS) $(HARDENING_LDFLAGS)
++CPPFLAGS += $(HARDENING_CPPFLAGS) -include compat.h
+ 
+ S := crypto_api.c \
+      mod_ed25519.c \
+@@ -201,14 +203,11 @@
+ zsig.o signify.o bcrypt_pbkdf.o: override CFLAGS += -Wno-pointer-sign
+ 
+ clean-signify:
+-	$(RM) $O signify signify.1.gz sha256hl.c sha512hl.c sha512_256hl.c
++	$(RM) $O signify sha256hl.c sha512hl.c sha512_256hl.c
+ 
+ clean: clean-signify
+ .PHONY: clean-signify
+ 
+-signify.1.gz: signify.1
+-	gzip -9c $< > $@
+-
+ sha256hl.c: helper.c
+ 	sed -e 's/hashinc/sha2.h/g' \
+ 	    -e 's/HASH/SHA256/g' \
+@@ -224,11 +223,11 @@
+ 	    -e 's/HASH/SHA512_256/g' \
+ 	    -e 's/SHA512_256_CTX/SHA2_CTX/g' $< > $@
+ 
+-install: signify signify.1.gz
++install: signify signify.1
+ 	install -m 755 -d $(DESTDIR)$(PREFIX)/bin
+ 	install -m 755 -t $(DESTDIR)$(PREFIX)/bin signify
+-	install -m 755 -d $(DESTDIR)$(PREFIX)/share/man/man1
+-	install -m 644 -t $(DESTDIR)$(PREFIX)/share/man/man1 signify.1.gz
++	install -m 755 -d $(DESTDIR)$(MANPREFIX)/man1
++	install -m 644 -t $(DESTDIR)$(MANPREFIX)/man1 signify.1
+ 
+ .PHONY: install
+ 
