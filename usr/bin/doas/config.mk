@@ -7,7 +7,6 @@ SHAREDIR ?=	/usr/share
 MANDIR   ?=	${MANPREFIX}
 SYSCONFDIR?=	/etc
 PAMDIR   ?=	/etc/pam.d
-PAM_DOAS =	pam.d__doas__linux
 BINMODE  ?=	4755
 BINOWN  ?=	root
 BINGRP  ?=	root
