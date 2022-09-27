@@ -1,0 +1,11 @@
+--- doas.1.orig	2021-01-28 14:40:52.000000000 -0500
++++ doas.1	2022-09-24 15:51:14.000000000 -0400
+@@ -15,7 +15,7 @@
+ .\"OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ .Dd $Mdocdate: January 16 2021 $
+ .Dt DOAS 1
+-.Os
++.Os Ragnarok 0.1
+ .Sh NAME
+ .Nm doas
+ .Nd execute commands as another user

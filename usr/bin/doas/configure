@@ -1,0 +1,568 @@
+#!/bin/sh
+
+die() {
+	printf "$1\n" >&2
+	exit 1
+}
+
+usage() {
+	cat <<EOF
+usage: configure [options]
+
+  --prefix=PREFIX        installation prefix [/usr]
+  --exec-prefix=EPREFIX  installation prefix for executable files [PREFIX]
+  --bindir=DIR           user executables [PREFIX/bin]
+  --datadir=DIR          architecture-independent data files [PREFIX/share]
+  --mandir=DIR           manual pages [DATADIR/man]
+  --sysconfdir=DIR       directory for configuration files [/etc]
+  --pamdir=DIR           PAM directory [SYSCONFDIR/pam.d]
+
+  --build=build-alias    a cpu-vendor-opsys for the system where the application will be built
+  --host=host-alias      a cpu-vendor-opsys for the system where the application will run
+  --target=target-alias  the machine that CC will produce code for
+
+  --enable-debug         enable debugging
+  --enable-static        prepare for static build
+
+  --without-pam          disable pam support
+  --without-shadow       disable shadow support
+
+  --with-timestamp       enable timestamp support
+
+  --uid-max=NUM          set UID_MAX (default 65535)
+  --gid-max=NUM          set GID_MAX (default 65535)
+
+  --help, -h             display this help and exit
+EOF
+	exit 0
+}
+
+# defaults
+WITHOUT_TIMESTAMP=yes
+UID_MAX=65535
+GID_MAX=65535
+
+for x; do
+	opt=${x%%=*}
+	var=${x#*=}
+	case "$opt" in
+	--prefix) PREFIX=$var ;;
+	--exec-prefix) EPREFIX=$var ;;
+	--bindir) BINDIR=$var ;;
+	--datadir) SHAREDIR=$var ;;
+	--mandir) MANDIR=$var ;;
+	--sysconfdir) SYSCONFDIR=$var ;;
+	--pamdir) PAMDIR=$var ;;
+	--build) BUILD=$var ;;
+	--host) HOST=$var ;;
+	--target) TARGET=$var ;;
+	--enable-debug) DEBUG=yes ;;
+	--enable-static) BUILD_STATIC=yes ;;
+	--with-pam) WITHOUT_PAM=; WITHOUT_SHADOW=yes ;;
+	--with-shadow) WITHOUT_SHADOW=; WITHOUT_PAM=yes ;;
+	--without-pam) WITHOUT_PAM=yes ;;
+	--without-shadow) WITHOUT_SHADOW=yes ;;
+	--with-timestamp) WITHOUT_TIMESTAMP= ;;
+	--without-timestamp) WITHOUT_TIMESTAMP=yes ;;
+	--uid-max) UID_MAX=$var ;;
+	--gid-max) UID_MAX=$var ;;
+	--help|-h) usage ;;
+	*) die "Error: unknown option $opt" ;;
+	esac
+done
+
+CONFIG_MK=config.mk
+CONFIG_H=config.h
+rm -f "$CONFIG_MK" "$CONFIG_H"
+
+cat <<! >$CONFIG_H
+#ifndef CONFIG_H
+#define CONFIG_H
+
+!
+
+if [ -z "$BUILD" ]; then
+	BUILD="$(uname -m)-unknown-$(uname -s | tr '[:upper:]' '[:lower:]')"
+fi
+if [ -z "$HOST" ]; then
+	[ -z "$TARGET" ] && TARGET=$BUILD
+	HOST=$TARGET
+fi
+if [ -z "$TARGET" ]; then
+	[ -z "$HOST" ] && HOST=$BUILD
+	TARGET=$HOST
+fi
+
+if [ -z "$OS" ]; then
+	# Derive OS from cpu-manufacturer-os-kernel
+	CPU=${TARGET%%-*}
+	REST=${TARGET#*-}
+	MANU=${REST%%-*}
+	REST=${REST#*-}
+	OS=${REST%%-*}
+	REST=${REST#*-}
+	KERNEL=${REST%%-*}
+fi
+
+OS_CFLAGS="-D__${OS}__"
+
+case "$OS" in
+	linux)
+		printf 'Setting UID_MAX\t\t\t\t%d.\n' "$UID_MAX" >&2
+		printf '#define UID_MAX %s\n' "$UID_MAX" >>$CONFIG_H
+		printf 'Setting GID_MAX\t\t\t\t%d.\n' "$GID_MAX" >&2
+		printf '#define GID_MAX %s\n' "$GID_MAX" >>$CONFIG_H
+		OS_CFLAGS="$OS_CFLAGS -D_DEFAULT_SOURCE -D_GNU_SOURCE"
+		;;
+	netbsd)
+		OS_CFLAGS="$OS_CFLAGS -D_OPENBSD_SOURCE"
+		printf 'LDLIBS +=	-lutil\n' >>$CONFIG_MK
+		: ${BINGRP:=wheel}
+		;;
+	freebsd)
+		printf 'LDLIBS +=	-lutil\n' >>$CONFIG_MK
+		: ${BINGRP:=wheel}
+		;;
+	darwin)
+		: ${BINGRP:=wheel}
+		;;
+esac
+
+: ${PREFIX:=/usr/local}
+: ${EPREFIX:=${PREFIX}}
+: ${BINDIR:=${PREFIX}/bin}
+: ${SHAREDIR:=${PREFIX}/share}
+: ${MANDIR:=${SHAREDIR}/man}
+: ${SYSCONFDIR:=/etc}
+: ${PAMDIR:=${SYSCONFDIR}/pam.d}
+: ${BINMODE:=4755}
+: ${BINOWN:=root}
+: ${BINGRP:=root}
+
+cat <<EOF >>$CONFIG_MK
+PREFIX   ?=	${PREFIX}
+EPREFIX  ?=	${EPREFIX}
+BINDIR   ?=	${BINDIR}
+SHAREDIR ?=	${SHAREDIR}
+MANDIR   ?=	${MANDIR}
+SYSCONFDIR?=	${SYSCONFDIR}
+PAMDIR   ?=	${PAMDIR}
+BINMODE  ?=	${BINMODE}
+BINOWN  ?=	${BINOWN}
+BINGRP  ?=	${BINGRP}
+EOF
+
+[ -n "$OS_CFLAGS" ] && \
+	printf 'OS_CFLAGS   +=	%s\n' "$OS_CFLAGS" >>$CONFIG_MK
+
+[ -n "$DEBUG" ] && \
+	printf 'CFLAGS   +=	-O0 -g\n' >>$CONFIG_MK
+
+[ -n "$BUILD_STATIC" ] && \
+	printf 'CFLAGS   +=	-static\n' >>$CONFIG_MK
+
+# Add CPPFLAGS/CFLAGS/LDFLAGS/LDLIBS to CC for testing features
+XCC="${CC:=cc} $CFLAGS $OS_CFLAGS $CPPFLAGS $LDFLAGS $LDLIBS"
+# Make sure to disable --as-needed for CC tests.
+
+case "$OS" in
+	darwin) ;;
+	*) XCC="$XCC -Wl,--no-as-needed" ;;
+esac
+
+check_func() {
+	func="$1"; src="$2"; shift 2
+	printf 'Checking for %-14s\t\t' "$func ..." >&2
+	printf '%s\n' "$src" >"_$func.c"
+	$XCC "_$func.c" -o "_$func" 2>/dev/null
+	ret=$?
+	rm -f "_$func.c" "_$func"
+	upperfunc="$(printf '%s\n' "$func" | tr '[[:lower:]]' '[[:upper:]]')"
+	if [ $ret -eq 0 ]; then
+		printf 'yes.\n' >&2
+		printf '#define HAVE_%s\n' "$upperfunc" >>$CONFIG_H
+		return 0
+	else
+		printf '/* #define HAVE_%s */\n' "$upperfunc" >>$CONFIG_H
+		printf 'no.\n' >&2
+		return 1
+	fi
+}
+
+authmethod() {
+	#
+	# Check for pam_appl.h.
+	#
+	src='
+#include <security/pam_appl.h>
+int main(void) {
+	return 0;
+}'
+	[ -z "$WITHOUT_PAM" ] && check_func "pam_appl_h" "$src" && {
+		printf 'SRCS     +=	pam.c\n' >>$CONFIG_MK
+		printf 'LDLIBS +=	-lpam\n' >>$CONFIG_MK
+		printf '#define USE_PAM\n' >>$CONFIG_H
+		printf 'pam\n'
+
+		pam_file="pam.d__doas__${OS}"
+		[ -e "$pam_file" ] && printf 'PAM_DOAS  =	%s\n' "$pam_file" >>$CONFIG_MK
+		return 0
+	}
+
+	#
+	# Check for shadow.h.
+	#
+	src='
+#include <shadow.h>
+int main(void) {
+	return 0;
+}'
+	[ -z "$WITHOUT_SHADOW" ] && check_func "shadow_h" "$src" && {
+		printf 'SRCS     +=	shadow.c\n' >>$CONFIG_MK
+		printf 'LDLIBS +=	-lcrypt\n' >>$CONFIG_MK
+		printf '#define USE_SHADOW\n' >>$CONFIG_H
+		printf 'shadow\n'
+		return 0
+	}
+
+	return 1
+}
+
+persistmethod() {
+	[ -z "$WITHOUT_TIMESTAMP" ] && {
+		printf '#define USE_TIMESTAMP\n' >>$CONFIG_H
+		printf 'SRCS	+= timestamp.c\n' >>$CONFIG_MK
+		printf 'timestamp\n'
+		return 0
+	}
+	return 1
+}
+
+#
+# Check for explicit_bzero().
+#
+src='
+#include <string.h>
+int main(void) {
+	explicit_bzero(NULL, 0);
+	return 0;
+}'
+check_func "explicit_bzero" "$src" || {
+	printf 'SRCS +=	libopenbsd/explicit_bzero.c\n' >>$CONFIG_MK
+}
+
+#
+# Check for strlcat().
+#
+src='
+#include <string.h>
+int main(void) {
+	const char s1[] = "foo";
+	char s2[10];
+	strlcat(s2, s1, sizeof(s2));
+	return 0;
+}'
+check_func "strlcat" "$src" || {
+	printf 'SRCS +=	libopenbsd/strlcat.c\n' >>$CONFIG_MK
+}
+
+#
+# Check for strlcpy().
+#
+src='
+#include <string.h>
+int main(void) {
+	const char s1[] = "foo";
+	char s2[10];
+	strlcpy(s2, s1, sizeof(s2));
+	return 0;
+}'
+check_func "strlcpy" "$src" || {
+	printf 'SRCS +=	libopenbsd/strlcpy.c\n' >>$CONFIG_MK
+}
+
+#
+# Check for errc().
+#
+src='
+#include <err.h>
+int main(void) {
+	errc(0, 0, "");
+	return 0;
+}'
+check_func "errc" "$src" || {
+	printf 'SRCS +=	libopenbsd/errc.c\n' >>$CONFIG_MK
+}
+
+#
+# Check for verrc().
+#
+src='
+#include <stddef.h>
+#include <err.h>
+int main(void) {
+	verrc(0, 0, "x", NULL);
+	return 0;
+}'
+check_func "verrc" "$src" || {
+	printf 'SRCS +=	libopenbsd/verrc.c\n' >>$CONFIG_MK
+}
+
+#
+# Check for setprogname().
+#
+src='
+#include <stdlib.h>
+int main(void) {
+	setprogname("");
+	return 0;
+}'
+check_func "setprogname" "$src" || {
+	printf 'SRCS +=	libopenbsd/progname.c\n' >>$CONFIG_MK
+}
+
+#
+# Check for readpassphrase().
+#
+src='
+#include <readpassphrase.h>
+int main(void) {
+	char buf[12];
+	readpassphrase("", buf, sizeof(buf), 0);
+	return 0;
+}'
+check_func "readpassphrase" "$src" || {
+	printf 'SRCS +=	libopenbsd/readpassphrase.c\n' >>$CONFIG_MK
+}
+
+#
+# Check for strtonum().
+#
+src='
+#include <stdlib.h>
+int main(void) {
+	const char *errstr;
+	strtonum("", 1, 64, &errstr);
+	return 0;
+}'
+check_func "strtonum" "$src" || {
+	printf 'SRCS +=	libopenbsd/strtonum.c\n' >>$CONFIG_MK
+}
+
+#
+# Check for reallocarray().
+#
+src='
+#include <stdlib.h>
+int main(void) {
+	reallocarray(NULL, 0, 0);
+	return 0;
+}'
+check_func "reallocarray" "$src" || {
+	printf 'SRCS +=	libopenbsd/reallocarray.c\n' >>$CONFIG_MK
+}
+
+#
+# Check for execvpe().
+#
+src='
+#include <unistd.h>
+int main(void) {
+	const char *p = { "", NULL };
+	execvpe("", p, p);
+	return 0;
+}'
+check_func "execvpe" "$src" || {
+	printf 'SRCS +=	libopenbsd/execvpe.c\n' >>$CONFIG_MK
+}
+
+#
+# Check for setresuid().
+#
+src='
+#include <unistd.h>
+int main(void) {
+	setresuid(0, 0, 0);
+	return 0;
+}'
+check_func "setresuid" "$src"
+have_setresuid=$?
+
+#
+# Check for setresgid().
+#
+src='
+#include <unistd.h>
+int main(void) {
+	setresgid(0, 0, 0);
+	return 0;
+}'
+check_func "setresgid" "$src"
+have_setresgid=$?
+
+if [ $have_setresuid -eq 1 -o $have_setresgid -eq 1 ]; then
+	printf 'SRCS +=	libopenbsd/bsd-setres_id.c\n' >>$CONFIG_MK
+fi
+
+#
+# Check for setreuid().
+#
+src='
+#include <unistd.h>
+int main(void) {
+	setreuid(0, 0);
+	return 0;
+}'
+check_func "setreuid" "$src"
+
+
+#
+# Check for setregid().
+#
+src='
+#include <unistd.h>
+int main(void) {
+	setregid(0, 0);
+	return 0;
+}'
+check_func "setregid" "$src"
+
+#
+# Check for closefrom().
+#
+src='
+#include <unistd.h>
+int main(void) {
+	closefrom(0);
+	return 0;
+}'
+check_func "closefrom" "$src" || {
+	printf 'SRCS +=	libopenbsd/closefrom.c\n' >>$CONFIG_MK
+}
+
+#
+# Check for sysconf().
+#
+src='
+#include <unistd.h>
+int main(void) {
+	(void)sysconf(0);
+	return 0;
+}'
+check_func "sysconf" "$src"
+
+#
+# Check for dirfd().
+#
+src='
+#include <dirent.h>
+int main(void) {
+	(void)dirfd(0);
+	return 0;
+}'
+check_func "dirfd" "$src"
+
+#
+# Check for fcntl.h.
+#
+src='
+#include <fcntl.h>
+int main(void) {
+	return 0;
+}'
+check_func "fcntl_h" "$src"
+
+#
+# Check for F_CLOSEM.
+#
+src='
+#include <fcntl.h>
+#ifndef F_CLOSEM
+#error no F_CLOSEM
+#endif
+int main(void) {
+	return 0;
+}'
+check_func "F_CLOSEM" "$src"
+
+#
+# Check for dirent.h.
+#
+src='
+#include <dirent.h>
+int main(void) {
+	return 0;
+}'
+check_func "dirent_h" "$src"
+
+#
+# Check for sys/ndir.h.
+#
+src='
+#include <sys/ndir.h>
+int main(void) {
+	return 0;
+}'
+check_func "sys_ndir_h" "$src"
+
+#
+# Check for sys/dir.h.
+#
+src='
+#include <sys/dir.h>
+int main(void) {
+	return 0;
+}'
+check_func "sys_dir_h" "$src"
+
+#
+# Check for ndir.h.
+#
+src='
+#include <ndir.h>
+int main(void) {
+	return 0;
+}'
+check_func "ndir_h" "$src"
+
+#
+# Check for login_cap.h.
+#
+src='
+#include <sys/types.h>
+#include <login_cap.h>
+int main(void) {
+	return 0;
+}'
+check_func "login_cap_h" "$src"
+
+#
+#
+#
+src='
+#include <stdlib.h>
+int main(void){return 0;}
+__attribute__((__unused__)) static void foo(void){return;}
+'
+check_func "__attribute__" "$src" || {
+	printf 'OS_CFLAGS	+=	-DNO_ATTRIBUTE_ON_RETURN_TYPE=1\n' >>$CONFIG_MK
+}
+
+auth=$(authmethod)
+if [ $? -eq 0 ]; then
+	printf 'Using auth method\t\t\t%s.\n' "$auth" >&2
+else
+	printf 'Error auth method\t\t\n' >&2
+	exit 1
+fi
+
+persist=$(persistmethod)
+if [ $? -eq 0 ]; then
+	printf 'Using persist method\t\t\t%s.\n' "$persist" >&2
+else
+	printf 'Using persist method\t\t\tnone.\n' >&2
+fi
+
+printf '#define DOAS_CONF "%s/doas.conf"\n' "${SYSCONFDIR}" >>$CONFIG_H
+
+printf '\n#endif /* CONFIG_H */\n' >>$CONFIG_H

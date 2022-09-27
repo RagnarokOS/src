@@ -1,0 +1,11 @@
+--- doas.conf.5.orig	2021-01-28 14:40:52.000000000 -0500
++++ doas.conf.5	2022-09-24 15:51:32.000000000 -0400
+@@ -15,7 +15,7 @@
+ .\"OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+ .Dd $Mdocdate: October 9 2020 $
+ .Dt DOAS.CONF 5
+-.Os
++.Os Ragnarok 0.1
+ .Sh NAME
+ .Nm doas.conf
+ .Nd doas configuration file
