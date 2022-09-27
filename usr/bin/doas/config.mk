@@ -1,10 +1,10 @@
 include ../../share/mk/progs.mk
 
-PREFIX   ?=	$(PREFIX)
-EPREFIX  ?=	$(PREFIX)
-BINDIR   ?=	/bin
+PREFIX   ?=	${PREFIX}
+EPREFIX  ?=	${PREFIX}
+BINDIR   ?=	/usr/bin
 SHAREDIR ?=	/usr/share
-MANDIR   ?=	$(MANPREFIX)
+MANDIR   ?=	${MANPREFIX}
 SYSCONFDIR?=	/etc
 PAMDIR   ?=	/etc/pam.d
 PAM_DOAS =	pam.d__doas__linux
@@ -23,5 +23,6 @@ SRCS +=	libopenbsd/progname.c
 SRCS +=	libopenbsd/readpassphrase.c
 SRCS +=	libopenbsd/strtonum.c
 SRCS +=	libopenbsd/closefrom.c
-SRCS     +=	shadow.c
-LDLIBS +=	-lcrypt
+SRCS     +=	pam.c
+LDLIBS +=	-lpam
+PAM_DOAS  =	pam.d__doas__linux
