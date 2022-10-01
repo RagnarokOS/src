@@ -1,0 +1,14 @@
+Replace CC string with clang.
+By Ian LeCorbeau.
+
+--- configure.orig	2019-03-10 05:56:43.000000000 -0400
++++ configure	2022-09-30 19:27:21.753356844 -0400
+@@ -41,7 +41,7 @@
+ OSNAME=
+ UTF8_LOCALE=
+ 
+-CC=`printf "all:\\n\\t@echo \\\$(CC)\\n" | env -i make -sf -`
++CC=clang
+ CFLAGS=
+ LDADD=
+ LDFLAGS=

@@ -1,0 +1,193 @@
+Patch lifted from https://cvsweb.bsd.lv/mandoc/
+Original Author: Ingo Schwarze <schwarze@openbsd.org>
+Backported by: Ian LeCorbeau <I-LeCorbeau (at) protonmail (dot) dom>
+
+diff -u -r mandoc-1.14.5.orig/apropos.1 mandoc-1.14.5/apropos.1
+--- mandoc-1.14.5.orig/apropos.1	2019-03-10 05:56:43.000000000 -0400
++++ mandoc-1.14.5/apropos.1	2022-09-30 15:29:11.118909888 -0400
+@@ -73,7 +73,7 @@
+ If the standard output is a terminal device and
+ .Fl c
+ is not specified, use
+-.Xr more 1
++.Xr less 1
+ to paginate them.
+ In
+ .Fl a
+@@ -340,7 +340,7 @@
+ Any non-empty value of the environment variable
+ .Ev MANPAGER
+ is used instead of the standard pagination program,
+-.Xr more 1 ;
++.Xr less 1 ;
+ see
+ .Xr man 1
+ for details.
+@@ -363,8 +363,7 @@
+ .Ev MANPAGER
+ is not defined.
+ If neither PAGER nor MANPAGER is defined,
+-.Xr more 1
+-.Fl s
++.Xr less 1
+ is used.
+ Only used if
+ .Fl a
+diff -u -r mandoc-1.14.5.orig/configure mandoc-1.14.5/configure
+--- mandoc-1.14.5.orig/configure	2019-03-10 05:56:43.000000000 -0400
++++ mandoc-1.14.5/configure	2022-09-30 15:24:28.089317454 -0400
+@@ -114,6 +114,7 @@
+ BINM_MAN="man"
+ BINM_SOELIM="soelim"
+ BINM_WHATIS="whatis"
++BINM_PAGER="less"
+ MANM_MAN="man"
+ MANM_MANCONF="man.conf"
+ MANM_MDOC="mdoc"
+@@ -335,17 +336,33 @@
+ 	runtest fts FTS || true
+ fi
+ 
+-if ismanual "less -T" LESS_T ${HAVE_LESS_T}; then
++# --- pager ---
++manual=
++if [ -n "${BINM_PAGER}" ]; then
++	manual=" (manual)"
++elif less test-noop.c 1>/dev/null 2>&3; then
++	BINM_PAGER=less
++	echo "tested less: yes" 1>&2
++	echo "tested less: yes" 1>&3
++else
++	BINM_PAGER=more
++	echo "tested less: no" 1>&2
++	echo "tested less: no" 1>&3
++fi
++echo "selected BINM_PAGER=${BINM_PAGER}${manual}" 1>&2
++echo "selected BINM_PAGER=${BINM_PAGER}${manual}" 1>&3
++
++if ismanual "${BINM_PAGER} -T" LESS_T ${HAVE_LESS_T}; then
+ 	:
+-elif less -ET /dev/null test-noop.c 1>/dev/null 2>&3; then
++elif ${BINM_PAGER} -T /dev/null test-noop.c 1>/dev/null 2>&3; then
+ 	HAVE_LESS_T=1
+-	echo "tested less -T: yes" 1>&2
+-	echo "tested less -T: yes" 1>&3
++	echo "tested ${BINM_PAGER} -T: yes" 1>&2
++	echo "tested ${BINM_PAGER} -T: yes" 1>&3
+ 	echo 1>&3
+ else
+ 	HAVE_LESS_T=0
+-	echo "tested less -T: no" 1>&2
+-	echo "tested less -T: no" 1>&3
++	echo "tested  ${BINM_PAGER} -T: no" 1>&2
++	echo "tested  ${BINM_PAGER} -T: no" 1>&3
+ 	echo 1>&3
+ fi
+ 
+@@ -506,6 +523,7 @@
+ #define BINM_MAN "${BINM_MAN}"
+ #define BINM_SOELIM "${BINM_SOELIM}"
+ #define BINM_WHATIS "${BINM_WHATIS}"
++#define BINM_PAGER "${BINM_PAGER}"
+ 
+ __HEREDOC__
+ 
+diff -u -r mandoc-1.14.5.orig/configure.local.example mandoc-1.14.5/configure.local.example
+--- mandoc-1.14.5.orig/configure.local.example	2019-03-10 05:56:43.000000000 -0400
++++ mandoc-1.14.5/configure.local.example	2022-09-30 15:30:44.823442860 -0400
+@@ -143,6 +143,14 @@
+ BINM_MAKEWHATIS=mandocdb	# default is "makewhatis"
+ BINM_SOELIM=msoelim		# default is "soelim"
+ 
++# If less(1) is available, it is used as the default manual pager.
++# Otherwise, more(1) is used: its existence is required by POSIX.
++# It is possible to force using a different default pager, either
++# by giving the name of a program found in the PATH, or by giving
++# an absolute path.
++
++BINM_PAGER=pg			# default is "less" or "more"
++
+ # Some distributions do not want hardlinks
+ # between installed binary programs.
+ # Set the following variable to use symbolic links instead.
+diff -u -r mandoc-1.14.5.orig/main.c mandoc-1.14.5/main.c
+--- mandoc-1.14.5.orig/main.c	2019-03-10 05:56:43.000000000 -0400
++++ mandoc-1.14.5/main.c	2022-09-30 15:32:08.783922197 -0400
+@@ -1171,7 +1171,7 @@
+ 	if (pager == NULL || *pager == '\0')
+ 		pager = getenv("PAGER");
+ 	if (pager == NULL || *pager == '\0')
+-		pager = "more -s";
++		pager = BINM_PAGER;
+ 	cp = mandoc_strdup(pager);
+ 
+ 	/*
+diff -u -r mandoc-1.14.5.orig/man.1 mandoc-1.14.5/man.1
+--- mandoc-1.14.5.orig/man.1	2019-03-10 05:56:43.000000000 -0400
++++ mandoc-1.14.5/man.1	2022-09-30 15:33:27.148370868 -0400
+@@ -75,7 +75,7 @@
+ for a description of the contents of this file.
+ .It Fl c
+ Copy the manual page to the standard output instead of using
+-.Xr more 1
++.Xr less 1
+ to paginate it.
+ This is done by default if the standard output is not a terminal device.
+ .Pp
+@@ -258,7 +258,7 @@
+ Any non-empty value of the environment variable
+ .Ev MANPAGER
+ is used instead of the standard pagination program,
+-.Xr more 1 .
++.Xr less 1 .
+ If
+ .Xr less 1
+ is used, the interactive
+@@ -314,8 +314,7 @@
+ .Ev MANPAGER
+ is not defined.
+ If neither PAGER nor MANPAGER is defined,
+-.Xr more 1
+-.Fl s
++.Xr less 1
+ is used.
+ .El
+ .Sh FILES
+diff -u -r mandoc-1.14.5.orig/mandoc.1 mandoc-1.14.5/mandoc.1
+--- mandoc-1.14.5.orig/mandoc.1	2019-03-10 05:56:43.000000000 -0400
++++ mandoc-1.14.5/mandoc.1	2022-09-30 15:34:50.060846753 -0400
+@@ -52,13 +52,13 @@
+ If the standard output is a terminal device and
+ .Fl c
+ is not specified, use
+-.Xr more 1
++.Xr less 1
+ to paginate the output, just like
+ .Xr man 1
+ would.
+ .It Fl c
+ Copy the formatted manual pages to the standard output without using
+-.Xr more 1
++.Xr less 1
+ to paginate them.
+ This is the default.
+ It can be specified to override
+@@ -627,7 +627,7 @@
+ Any non-empty value of the environment variable
+ .Ev MANPAGER
+ is used instead of the standard pagination program,
+-.Xr more 1 ;
++.Xr less 1 ;
+ see
+ .Xr man 1
+ for details.
+@@ -641,8 +641,7 @@
+ .Ev MANPAGER
+ is not defined.
+ If neither PAGER nor MANPAGER is defined,
+-.Xr more 1
+-.Fl s
++.Xr less 1
+ is used.
+ Only used if
+ .Fl a

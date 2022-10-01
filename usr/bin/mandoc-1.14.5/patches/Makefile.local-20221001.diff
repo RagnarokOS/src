@@ -1,0 +1,31 @@
+This needs to be applied after running ./configure due to the way it works.
+
+Ian LeCorbeau, 2022-09-30.
+
+--- Makefile.local.orig	2022-10-01 00:17:03.533876276 +0000
++++ Makefile.local	2022-10-01 00:18:34.497893610 +0000
+@@ -1,17 +1,19 @@
++include ../../share/mk/progs.mk
++
+ BUILD_TARGETS	=  mandocd catman
+ INSTALL_TARGETS	=  catman-install
+ CC		= clang
+-CFLAGS		= -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter
++CFLAGS		= -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter ${HARDENING_CFLAGS} ${HARDENING_CPPFLAGS}
+ LDADD		=     -lz
+-LDFLAGS		= 
++LDFLAGS		= ${HARDENING_LDFLAGS}
+ STATIC		= -static
+ PREFIX		= /usr
+-BINDIR		= /usr/bin
+-SBINDIR		= /usr/sbin
++BINDIR		= ${PREFIX}/bin
++SBINDIR		= ${PREFIX}/sbin
+ BIN_FROM_SBIN	= ../bin
+ INCLUDEDIR	= /usr/include/mandoc
+ LIBDIR		= /usr/lib/mandoc
+-MANDIR		= /usr/share/man
++MANDIR		= ${PREFIX}/share/man
+ WWWPREFIX	= /var/www
+ HTDOCDIR	= /var/www/htdocs
+ CGIBINDIR	= /var/www/cgi-bin

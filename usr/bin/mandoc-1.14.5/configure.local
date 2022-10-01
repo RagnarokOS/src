@@ -1,0 +1,9 @@
+HAVE_WCHAR=1
+OSNAME="Ragnarok"
+PREFIX="/usr"
+MANDIR="${PREFIX}/share/man"
+BINM_PAGER=less
+EXAMPLEDIR="${PREFIX}/share/doc/mandoc"
+BUILD_DB=0
+BUILD_CATMAN=1
+LN="ln -sf"

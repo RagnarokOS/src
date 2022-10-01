@@ -1,0 +1,206 @@
+Description: Fix FTBFS with GCC 10.
+Author: Ivo De Decker <ivodd@debian.org>
+Bug-Debian: https://bugs.debian.org/957527
+Forwarded: no
+Reviewed-By: Francisco Vilmar Cardoso Ruviaro <francisco.ruviaro@riseup.net>
+Last-Update: 2021-02-14
+
+Edited by LeCorbeau, 2022-10-30
+
+--- mdocml-1.14.4.orig/compat_err.c
++++ mdocml-1.14.4/compat_err.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_ERR
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
+ 
+--- mdocml-1.14.4.orig/compat_fts.c
++++ mdocml-1.14.4/compat_fts.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_FTS
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
+ 
+--- mdocml-1.14.4.orig/compat_getline.c
++++ mdocml-1.14.4/compat_getline.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_GETLINE
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
+ 
+--- mdocml-1.14.4.orig/compat_getsubopt.c
++++ mdocml-1.14.4/compat_getsubopt.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_GETSUBOPT
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
+ 
+--- mdocml-1.14.4.orig/compat_isblank.c
++++ mdocml-1.14.4/compat_isblank.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_ISBLANK
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
+ 
+--- mdocml-1.14.4.orig/compat_mkdtemp.c
++++ mdocml-1.14.4/compat_mkdtemp.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_MKDTEMP
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
+ 
+--- mdocml-1.14.4.orig/compat_ohash.c
++++ mdocml-1.14.4/compat_ohash.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_OHASH
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
+ 
+--- mdocml-1.14.4.orig/compat_progname.c
++++ mdocml-1.14.4/compat_progname.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_PROGNAME
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
+ 
+--- mdocml-1.14.4.orig/compat_reallocarray.c
++++ mdocml-1.14.4/compat_reallocarray.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_REALLOCARRAY
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
+ 
+--- mdocml-1.14.4.orig/compat_recallocarray.c
++++ mdocml-1.14.4/compat_recallocarray.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_RECALLOCARRAY
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
+ 
+--- mdocml-1.14.4.orig/compat_strcasestr.c
++++ mdocml-1.14.4/compat_strcasestr.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_STRCASESTR
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
+ 
+--- mdocml-1.14.4.orig/compat_stringlist.c
++++ mdocml-1.14.4/compat_stringlist.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_STRINGLIST
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
+ 
+--- mdocml-1.14.4.orig/compat_strlcat.c
++++ mdocml-1.14.4/compat_strlcat.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_STRLCAT
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
+ 
+--- mdocml-1.14.4.orig/compat_strlcpy.c
++++ mdocml-1.14.4/compat_strlcpy.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_STRLCPY
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
+ 
+--- mdocml-1.14.4.orig/compat_strndup.c
++++ mdocml-1.14.4/compat_strndup.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_STRNDUP
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
+ 
+--- mdocml-1.14.4.orig/compat_strsep.c
++++ mdocml-1.14.4/compat_strsep.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_STRSEP
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
+ 
+--- mdocml-1.14.4.orig/compat_strtonum.c
++++ mdocml-1.14.4/compat_strtonum.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_STRTONUM
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
+ 
+--- mdocml-1.14.4.orig/compat_vasprintf.c
++++ mdocml-1.14.4/compat_vasprintf.c
+@@ -2,7 +2,7 @@
+ 
+ #if HAVE_VASPRINTF
+ 
+-int dummy;
++//int dummy;
+ 
+ #else
