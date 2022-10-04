@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Runs ./configure then patches Makefile.local
+# This simplifies the automatic building of the src tree.
+
+./configure && \
+	patch < patches/Makefile.local.diff
