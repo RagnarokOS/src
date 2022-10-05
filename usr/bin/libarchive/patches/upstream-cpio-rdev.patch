@@ -1,0 +1,53 @@
+Description: Fix rdev field in cpio format for device nodes
+Origin: upstream; https://github.com/libarchive/libarchive/commit/1ef7a57a7024af4ae165e07fa10f3984c41fb9f6
+Author: Michael Forney <mforney@mforney.org>
+Applied-Upstream: yes
+Last-Update: 2020-06-02
+
+--- a/libarchive/archive_write_set_format_cpio.c
++++ b/libarchive/archive_write_set_format_cpio.c
+@@ -348,7 +348,7 @@
+ 	format_octal(archive_entry_nlink(entry), h + c_nlink_offset, c_nlink_size);
+ 	if (archive_entry_filetype(entry) == AE_IFBLK
+ 	    || archive_entry_filetype(entry) == AE_IFCHR)
+-	    format_octal(archive_entry_dev(entry), h + c_rdev_offset, c_rdev_size);
++	    format_octal(archive_entry_rdev(entry), h + c_rdev_offset, c_rdev_size);
+ 	else
+ 	    format_octal(0, h + c_rdev_offset, c_rdev_size);
+ 	format_octal(archive_entry_mtime(entry), h + c_mtime_offset, c_mtime_size);
+--- a/libarchive/test/test_write_format_cpio.c
++++ b/libarchive/test/test_write_format_cpio.c
+@@ -141,6 +141,17 @@
+ 	archive_entry_free(ae);
+ 	assertEqualIntA(a, 0, archive_write_data(a, "12345678", 9));
+ 
++	/*
++	 * Write a character device to it.
++	 */
++	assert((ae = archive_entry_new()) != NULL);
++	archive_entry_copy_pathname(ae, "tty0");
++	archive_entry_set_mode(ae, S_IFCHR | 0600);
++	archive_entry_set_size(ae, 0);
++	archive_entry_set_rdev(ae, 1024);
++	assertA(0 == archive_write_header(a, ae));
++	archive_entry_free(ae);
++
+ 
+ 	/* Close out the archive. */
+ 	assertEqualIntA(a, ARCHIVE_OK, archive_write_close(a));
+@@ -212,6 +223,15 @@
+ 	assertEqualInt(0, archive_entry_size(ae));
+ 	assertEqualIntA(a, 0, archive_read_data(a, filedata, 10));
+ 
++	/*
++	 * Read the character device entry back.
++	 */
++	assertEqualIntA(a, ARCHIVE_OK, archive_read_next_header(a, &ae));
++	assertEqualString("tty0", archive_entry_pathname(ae));
++	assertEqualInt((S_IFCHR | 0600), archive_entry_mode(ae));
++	assertEqualInt(0, archive_entry_size(ae));
++	assertEqualInt(1024, archive_entry_rdev(ae));
++
+ 	/* Verify the end of the archive. */
+ 	assertEqualIntA(a, 1, archive_read_next_header(a, &ae));
+ 	assertEqualIntA(a, ARCHIVE_OK, archive_read_close(a));

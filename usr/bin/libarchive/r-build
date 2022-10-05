@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Build file for libarchive (bsdtar, bsdcat & bsdcpio).
+# By LeCorbeau.
+
+HARDENING_CFLAGS=$(grep "HARDENING_CFLAGS" "../../share/mk/progs.mk" | cut -f2 -d '=')
+HARDENING_CPPFLAGS=$(grep "HARDENING_CPPFLAGS" "../../share/mk/progs.mk" | cut -f2 -d '=')
+HARDENING_LDFLAGS=$(grep "HARDENING_LDFLAGS" "../../share/mk/progs.mk" | cut -f2 -d '=')
+
+# Need to set DESTDIR at config time or else libtool complains
+DESTDIR=$1
+
+conf() {
+	autoreconf -f -i
+
+	export CC=clang LD=/usr/bin/ld.lld AR=llvm-ar AS=llvm-as NM=/usr/bin/llvm-nm \
+		RANLIB=llvm-ranlib STRIP=llvm-strip OBJDUMP=llvm-objdump \
+		CFLAGS="${HARDENING_CFLAGS}" CPPFLAGS="${HARDENING_CPPFLAGS}" LDFLAGS="${HARDENING_LDFLAGS}" \
+		&& ./configure --prefix="$DESTDIR"/usr --without-openssl --with-nettle --enable-bsdtar=shared \
+		--enable-bsdcpio=shared --enable-bsdcat=shared
+}
+
+build() {
+	make check && \
+		make install
+}
+
+cleanup() {
+	make clean && make maintainer-clean
+}
+
+if [ -z "$1" ]; then
+	printf '%s\n' "DESTDIR must be argument 1"
+else
+	conf
+	build
+	cleanup
+fi

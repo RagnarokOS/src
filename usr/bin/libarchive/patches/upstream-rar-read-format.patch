@@ -1,0 +1,21 @@
+Description: Fix uninitialized offset & size in rar5_read_data
+ Also: Initialize to zero only size + check for null
+ (the next commit from the same pull request)
+Origin: upstream; https://github.com/libarchive/libarchive/commit/ffd55a4b7ff0d70def5c5510c22ecee6489ee8ed
+Author: Kirill Zhumarin <kirill.zhumarin@gmail.com>
+Date: Thu Jul 2 14:37:15 2020 +0300
+Applied-Upstream: yes
+Last-Update: 2020-08-01
+
+--- a/libarchive/archive_read_support_format_rar5.c
++++ b/libarchive/archive_read_support_format_rar5.c
+@@ -3906,6 +3906,9 @@
+ 	int ret;
+ 	struct rar5* rar = get_context(a);
+ 
++	if (size)
++		*size = 0;
++
+ 	if(rar->file.dir > 0) {
+ 		/* Don't process any data if this file entry was declared
+ 		 * as a directory. This is needed, because entries marked as

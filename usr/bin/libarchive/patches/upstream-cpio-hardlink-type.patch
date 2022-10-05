@@ -1,0 +1,28 @@
+Description: Fix writing of cpio archives containing hardlinks without file type
+Origin: upstream; https://github.com/libarchive/libarchive/commit/84b27e52eb87d5d38cce9410e76e92a9d81c0318
+Author: Gleb Fotengauer-Malinovskiy <glebfm@altlinux.org>
+Applied-Upstream: yes
+Last-Update: 2020-06-02
+
+--- a/libarchive/archive_write_set_format_cpio.c
++++ b/libarchive/archive_write_set_format_cpio.c
+@@ -250,7 +250,7 @@
+ 	const char *path;
+ 	size_t len;
+ 
+-	if (archive_entry_filetype(entry) == 0) {
++	if (archive_entry_filetype(entry) == 0 && archive_entry_hardlink(entry) == NULL) {
+ 		archive_set_error(&a->archive, -1, "Filetype required");
+ 		return (ARCHIVE_FAILED);
+ 	}
+--- a/libarchive/archive_write_set_format_cpio_newc.c
++++ b/libarchive/archive_write_set_format_cpio_newc.c
+@@ -190,7 +190,7 @@
+ 	const char *path;
+ 	size_t len;
+ 
+-	if (archive_entry_filetype(entry) == 0) {
++	if (archive_entry_filetype(entry) == 0 && archive_entry_hardlink(entry) == NULL) {
+ 		archive_set_error(&a->archive, -1, "Filetype required");
+ 		return (ARCHIVE_FAILED);
+ 	}

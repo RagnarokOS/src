@@ -1,0 +1,21 @@
+Description: remove unneeded strlen
+ this is obviously s, no need to recompute it each time
+Origin: upstream; https://github.com/libarchive/libarchive/commit/4c9ed81759ead79b021ef42356fa55d3048c8c54
+Author: Marc Espie <espie@nerim.net>
+Date: Thu Jun 4 17:02:31 2020 +0200
+Applied-Upstream: yes
+Last-Update: 2020-08-01
+
+diff --git a/libarchive/archive_check_magic.c b/libarchive/archive_check_magic.c
+index 288ce233..1f40072f 100644
+--- a/libarchive/archive_check_magic.c
++++ b/libarchive/archive_check_magic.c
+@@ -54,7 +54,7 @@ errmsg(const char *m)
+ 	ssize_t written;
+ 
+ 	while (s > 0) {
+-		written = write(2, m, strlen(m));
++		written = write(2, m, s);
+ 		if (written <= 0)
+ 			return;
+ 		m += written;

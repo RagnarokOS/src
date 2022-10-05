@@ -1,0 +1,46 @@
+Description: Enable compression level up to 9 for xz, xar, 7zip
+Origin: upstream; https://github.com/libarchive/libarchive/commit/aff9809ca010305d21c61859215fb20f1c1b6267
+Author: Adrian Ebeling <devl@adrian-ebeling.de>
+Date: Sun Jul 26 10:51:46 2020 +0200
+Applied-Upstream: yes
+Last-Update: 2020-08-01
+
+--- a/libarchive/archive_write_add_filter_xz.c
++++ b/libarchive/archive_write_add_filter_xz.c
+@@ -382,8 +382,8 @@
+ 		    value[1] != '\0')
+ 			return (ARCHIVE_WARN);
+ 		data->compression_level = value[0] - '0';
+-		if (data->compression_level > 6)
+-			data->compression_level = 6;
++		if (data->compression_level > 9)
++			data->compression_level = 9;
+ 		return (ARCHIVE_OK);
+ 	} else if (strcmp(key, "threads") == 0) {
+ 		char *endptr;
+--- a/libarchive/archive_write_set_format_7zip.c
++++ b/libarchive/archive_write_set_format_7zip.c
+@@ -1927,8 +1927,8 @@
+ 		return (ARCHIVE_FATAL);
+ 	}
+ 	lzmafilters = (lzma_filter *)(strm+1);
+-	if (level > 6)
+-		level = 6;
++	if (level > 9)
++		level = 9;
+ 	if (lzma_lzma_preset(&lzma_opt, level)) {
+ 		free(strm);
+ 		lastrm->real_stream = NULL;
+--- a/libarchive/archive_write_set_format_xar.c
++++ b/libarchive/archive_write_set_format_xar.c
+@@ -2931,8 +2931,8 @@
+ 		return (ARCHIVE_FATAL);
+ 	}
+ 	lzmafilters = (lzma_filter *)(strm+1);
+-	if (level > 6)
+-		level = 6;
++	if (level > 9)
++		level = 9;
+ 	if (lzma_lzma_preset(&lzma_opt, level)) {
+ 		free(strm);
+ 		lastrm->real_stream = NULL;

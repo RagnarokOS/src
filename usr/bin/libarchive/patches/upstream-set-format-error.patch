@@ -1,0 +1,33 @@
+Description: Set an error message for setting invalid format by code on readers
+ The error message is consistent with `archive_read_set_format`.
+ The absence of an error message here also means that the error message
+ in `archive_read_set_format` is actually never used.
+ .
+ Writer functions does not seem to have the same issue.
+Origin: upstream; https://github.com/libarchive/libarchive/commit/2778b7e7026038313c55935808a0d5a68db1f72a
+Author: Yichao Yu <yyc1992@gmail.com>
+Date: Sun Jun 28 11:29:45 2020 -0400
+Applied-Upstream: yes
+Last-Update: 2020-08-01
+
+--- a/libarchive/archive_read_support_format_by_code.c
++++ b/libarchive/archive_read_support_format_by_code.c
+@@ -26,6 +26,10 @@
+ #include "archive_platform.h"
+ __FBSDID("$FreeBSD$");
+ 
++#ifdef HAVE_ERRNO_H
++#include <errno.h>
++#endif
++
+ #include "archive.h"
+ #include "archive_private.h"
+ 
+@@ -73,5 +77,7 @@
+ 		return archive_read_support_format_zip(a);
+ 		break;
+ 	}
++	archive_set_error(a, ARCHIVE_ERRNO_PROGRAMMER,
++	    "Invalid format code specified");
+ 	return (ARCHIVE_FATAL);
+ }

@@ -1,0 +1,28 @@
+Description: isint_w should use long literals
+ cut&paste from isint apparently forgot that
+Origin: upstream; https://github.com/libarchive/libarchive/commit/152c9234d18ab7e7b99f51f9f064547fc6273c5f
+Author: Marc Espie <espie@nerim.net>
+Date: Thu Jun 4 16:59:17 2020 +0200
+Applied-Upstream: yes
+Last-Update: 2020-08-01
+
+--- a/libarchive/archive_acl.c
++++ b/libarchive/archive_acl.c
+@@ -1402,14 +1402,14 @@
+ 	if (start >= end)
+ 		return (0);
+ 	while (start < end) {
+-		if (*start < '0' || *start > '9')
++		if (*start < L'0' || *start > L'9')
+ 			return (0);
+ 		if (n > (INT_MAX / 10) ||
+-		    (n == INT_MAX / 10 && (*start - '0') > INT_MAX % 10)) {
++		    (n == INT_MAX / 10 && (*start - L'0') > INT_MAX % 10)) {
+ 			n = INT_MAX;
+ 		} else {
+ 			n *= 10;
+-			n += *start - '0';
++			n += *start - L'0';
+ 		}
+ 		start++;
+ 	}

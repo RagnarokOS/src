@@ -1,0 +1,18 @@
+Description: memory.h is a non-standard header, so use stdlib.h instead
+Origin: upstream; https://github.com/libarchive/libarchive/commit/2d0df037918ef2f917df59d353eb5652dc3f2ebc
+Author: uyjulian <uyjulian@gmail.com>
+Date: Tue Jul 7 23:51:10 2020 -0500
+Applied-Upstream: yes
+Last-Update: 2020-08-01
+
+--- a/libarchive/archive_ppmd7.c
++++ b/libarchive/archive_ppmd7.c
+@@ -4,7 +4,7 @@
+ 
+ #include "archive_platform.h"
+ 
+-#include <memory.h>
++#include <stdlib.h>
+ 
+ #include "archive_ppmd7_private.h"
+ 

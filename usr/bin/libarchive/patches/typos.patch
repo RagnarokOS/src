@@ -1,0 +1,244 @@
+Description: Correct some typographical errors.
+Forwarded: https://github.com/libarchive/libarchive/pull/1249
+Author: Peter Pentchev <roam@ringlet.net>
+Last-Update: 2020-06-02
+
+--- a/libarchive/archive_string.c
++++ b/libarchive/archive_string.c
+@@ -3521,7 +3521,7 @@
+ 
+ 	if (sc->to_cp == CP_C_LOCALE) {
+ 		/*
+-		 * "C" locale special process.
++		 * "C" locale special processing.
+ 		 */
+ 		u16 = _p;
+ 		ll = 0;
+@@ -3640,7 +3640,7 @@
+ 	avail = as16->buffer_length - 2;
+ 	if (sc->from_cp == CP_C_LOCALE) {
+ 		/*
+-		 * "C" locale special process.
++		 * "C" locale special processing.
+ 		 */
+ 		count = 0;
+ 		while (count < length && *s) {
+--- a/libarchive/test/test_compat_lzip.c
++++ b/libarchive/test/test_compat_lzip.c
+@@ -48,7 +48,7 @@
+ rm -r $dir
+ }
+ #
+-# Make a lzip file from splitted tar file.
++# Make a lzip file from the split tar file.
+ #
+ name=test_compat_lzip_1
+ dir="$name`date +%Y%m%d%H%M%S`.$USER"
+@@ -76,7 +76,7 @@
+ */
+ 
+ /*
+- * Verify our ability to read sample files compatibly with lzip.
++ * Verify our ability to read the sample files compatibly with lzip.
+  *
+  * In particular:
+  *  * lzip will read multiple lzip streams, concatenating the output
+--- a/README.md
++++ b/README.md
+@@ -178,7 +178,7 @@
+   libraries.  This also reduces the size of statically-linked
+   binaries in environments where that matters.
+ 
+-* The library is generally _thread safe_ depending on the platform:
++* The library is generally _thread-safe_ depending on the platform:
+   it does not define any global variables of its own.  However, some
+   platforms do not provide fully thread-safe versions of key C library
+   functions.  On those platforms, libarchive will use the non-thread-safe
+@@ -190,7 +190,7 @@
+   multiple threads.  Of course, those modules are completely
+   optional and you can use the rest of libarchive without them.
+ 
+-* The library is _not_ thread aware, however.  It does no locking
++* The library is _not_ thread-aware, however.  It does no locking
+   or thread management of any kind.  If you create a libarchive
+   object and need to access it from multiple threads, you will
+   need to provide your own locking.
+--- a/libarchive/archive_read_support_filter_rpm.c
++++ b/libarchive/archive_read_support_filter_rpm.c
+@@ -216,7 +216,7 @@
+ 						archive_set_error(
+ 						    &self->archive->archive,
+ 						    ARCHIVE_ERRNO_FILE_FORMAT,
+-						    "Unrecoginized rpm header");
++						    "Unrecognized rpm header");
+ 						return (ARCHIVE_FATAL);
+ 					}
+ 					rpm->state = ST_ARCHIVE;
+--- a/libarchive/archive_read_support_format_cpio.c
++++ b/libarchive/archive_read_support_format_cpio.c
+@@ -819,9 +819,9 @@
+ }
+ 
+ /*
+- * NOTE: if a filename suffix is ".z", it is the file gziped by afio.
+- * it would be nice that we can show uncompressed file size and we can
+- * uncompressed file contents automatically, unfortunately we have nothing
++ * NOTE: if a filename suffix is ".z", it is a file gzipped by afio.
++ * it would be nice if we could show uncompressed file size and
++ * uncompress file contents automatically, unfortunately we have nothing
+  * to get a uncompressed file size while reading each header. It means
+  * we also cannot uncompress file contents under our framework.
+  */
+--- a/libarchive/test/test_compat_lzma.c
++++ b/libarchive/test/test_compat_lzma.c
+@@ -141,7 +141,7 @@
+ 
+ DEFINE_TEST(test_compat_lzma)
+ {
+-	/* This sample has been added junk datas to its tail. */
++	/* This sample has had junk data added to its tail. */
+ 	compat_lzma("test_compat_lzma_1.tlz");
+ 	/* This sample has been made by lzma with option -e,
+ 	 * the first byte of which is 0x5e.
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -77,7 +77,7 @@
+ # ?? Should there be more here ??
+ SET(SOVERSION "${INTERFACE_VERSION}")
+ 
+-# Enalbe CMAKE_PUSH_CHECK_STATE() and CMAKE_POP_CHECK_STATE() macros
++# Enable CMAKE_PUSH_CHECK_STATE() and CMAKE_POP_CHECK_STATE() macros
+ # saving and restoring the state of the variables.
+ INCLUDE(CMakePushCheckState)
+ 
+@@ -378,7 +378,7 @@
+   SET(__GNUWIN32PATH "C:/Program Files/GnuWin32")
+ ENDIF(WIN32 AND NOT CMAKE_CL_64 AND NOT CYGWIN)
+ IF(DEFINED __GNUWIN32PATH AND EXISTS "${__GNUWIN32PATH}")
+-  # You have to add a path availabel DLL file into PATH environment variable.
++  # You have to add a path available DLL file into PATH environment variable.
+   # Maybe DLL path is "C:/Program Files/GnuWin32/bin".
+   # The zlib and the bzip2 Setup program have installed programs and DLLs into
+   # "C:/Program Files/GnuWin32" by default.
+@@ -1015,8 +1015,8 @@
+         CMAKE_C_COMPILER_ID MATCHES "^Clang$")
+       #
+       # During checking iconv proto type, we should use -Werror to avoid the
+-      # success of iconv detection with a warnig which success is a miss
+-      # detection. So this needs for all build mode(even it's a release mode).
++      # success of iconv detection with a warning, which would be a false
++      # positive.  So this is needed for all build modes, even in release mode.
+       #
+       SET(CMAKE_REQUIRED_FLAGS "${CMAKE_REQUIRED_FLAGS} -Werror")
+     ENDIF (CMAKE_C_COMPILER_ID MATCHES "^GNU$" OR
+--- a/tar/test/test_option_safe_writes.c
++++ b/tar/test/test_option_safe_writes.c
+@@ -58,7 +58,7 @@
+ 	}
+ 	assertEqualInt(0, chdir(".."));
+ 
+-	/* Extract created archive withe safe writes */
++	/* Extract created archive with safe writes */
+ 	assertEqualInt(0,
+ 	    systemf("%s -x -C out --safe-writes -f t.tar "
+ 	    ">unpack.out 2>unpack.err", testprog));
+--- a/libarchive/archive_read_support_filter_uu.c
++++ b/libarchive/archive_read_support_filter_uu.c
+@@ -231,8 +231,8 @@
+ 		size_t nbytes_req = (*ravail+1023) & ~1023U;
+ 		ssize_t tested;
+ 
+-		/* Increase reading bytes if it is not enough to at least
+-		 * new two lines. */
++		/* Increase reading bytes if it is not enough for at least
++		 * two new lines. */
+ 		if (nbytes_req < (size_t)*ravail + 160)
+ 			nbytes_req <<= 1;
+ 
+@@ -248,7 +248,7 @@
+ 		*ravail = *avail;
+ 		*b += diff;
+ 		*avail -= diff;
+-		tested = len;/* Skip some bytes we already determinated. */
++		tested = len;/* Skip some bytes we already determined. */
+ 		len = get_line(*b + tested, *avail - tested, nl);
+ 		if (len >= 0)
+ 			len += tested;
+@@ -403,7 +403,7 @@
+ 
+ 		/*
+ 		 * Calculate a new buffer size for in_buff.
+-		 * Increase its value until it has enough size we need.
++		 * Increase its value until it is enough for our needs.
+ 		 */
+ 		newsize = uudecode->in_allocated;
+ 		do {
+@@ -464,7 +464,7 @@
+ 	if (uudecode->in_cnt) {
+ 		/*
+ 		 * If there is remaining data which is saved by
+-		 * previous calling, use it first.
++		 * a previous call, use it first.
+ 		 */
+ 		if (ensure_in_buff_size(self, uudecode,
+ 		    avail_in + uudecode->in_cnt) != ARCHIVE_OK)
+--- a/libarchive/archive_read_support_format_mtree.c
++++ b/libarchive/archive_read_support_format_mtree.c
+@@ -370,8 +370,8 @@
+ 		if (len >= MAX_LINE_LEN)
+ 			return (-1);
+ 
+-		/* Increase reading bytes if it is not enough to at least
+-		 * new two lines. */
++		/* Increase reading bytes if it is not enough for at least
++		 * two new lines. */
+ 		if (nbytes_req < (size_t)*ravail + 160)
+ 			nbytes_req <<= 1;
+ 
+@@ -386,7 +386,7 @@
+ 		*ravail = *avail;
+ 		*b += diff;
+ 		*avail -= diff;
+-		tested = len;/* Skip some bytes we already determinated. */
++		tested = len;/* Skip some bytes we already determined. */
+ 		len = get_line_size(*b + len, *avail - len, nl);
+ 		if (len >= 0)
+ 			len += tested;
+@@ -494,7 +494,7 @@
+ 
+ /*
+  * Test whether there is a set of mtree keywords.
+- * Returns the number of keyword.
++ * Returns the number of keywords.
+  * Returns -1 if we got incorrect sequence.
+  * This function expects a set of "<space characters>keyword=value".
+  * When "unset" is specified, expects a set of "<space characters>keyword".
+@@ -546,8 +546,8 @@
+ 				--len;
+ 				value = 1;
+ 			}
+-			/* A keyword should have a its value unless
+-			 * "/unset" operation. */ 
++			/* A keyword should have a value unless this is
++			 * an "/unset" operation. */ 
+ 			if (!unset && value == 0)
+ 				return (-1);
+ 		}
+@@ -733,7 +733,7 @@
+ 				} else if (form_D == 1) {
+ 					if (!last_is_path && keywords > 0)
+ 						/* This this is not `form D'
+-						 * and We cannot accept mixed
++						 * and we cannot accept mixed
+ 						 * format. */
+ 						break;
+ 				}
+@@ -786,7 +786,7 @@
+  * to read the entire mtree file into memory up front.
+  *
+  * The parsing is done in two steps.  First, it is decided if a line
+- * changes the global defaults and if it is, processed accordingly.
++ * changes the global defaults and if it does, it is processed accordingly.
+  * Otherwise, the options of the line are merged with the current
+  * global options.
+  */
