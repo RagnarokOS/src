@@ -1,0 +1,13 @@
+#!/bin/sh
+
+build() {
+	make
+	export DESTDIR="$1" && make install
+}
+
+cleanup() {
+	make clean
+}
+
+build
+cleanup

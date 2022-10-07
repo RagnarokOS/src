@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Runs ./configure then patches Makefile.local
+# This simplifies the automatic building of the src tree.
+
+conf() {
+	./configure && \
+		patch < patches/Makefile.local.diff
+}
+
+build() {
+	make
+	export DESTDIR="$1" && make install
+}
+
+cleanup() {
+	make clean
+}
+
+conf
+build
+cleanup

@@ -1,6 +1,15 @@
 Ragnarok source repository
 ==========================
 
+r-build
+-------
+
+Each source package directory contains a script named r-build containing build instructions, which
+greatly simplifies the scripts used to build the source tree.
+
+Patches
+-------
+
 The patches subdirectories contain the diffs showing the modifications made to the original source.
 These patches are already applied and are only there for transparency.  
 
