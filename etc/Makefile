@@ -11,6 +11,9 @@ install:
 	install -c -o ${OWNER} -g ${GROUP} -m 664 motd ${DESTDIR}/etc
 	install -c -o ${OWNER} -g ${GROUP} -m 600 nftables.conf ${DESTDIR}/etc
 	install -c -o ${OWNER} -g ${GROUP} -m 644 os-release ${DESTDIR}/etc
+	cd apt/apt.conf.d; \
+		install -c -o ${OWNER} -g ${GROUP} -m 644 80update-man \
+			${DESTDIR}/etc/apt/apt.conf.d
 	cd apt/preferences.d; \
 		install -c -o ${OWNER} -g ${GROUP} -m 644 systemd \
 			${DESTDIR}/etc/apt/preferences.d
