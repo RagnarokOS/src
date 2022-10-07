@@ -1,2 +1,2 @@
 # Updating man pages after package installation
-DPkg::Post-Invoke {"echo updating man pages && /usr/sbin/makewhatis /usr/share/man};
+DPkg::Post-Invoke {"echo updating man pages && /usr/sbin/makewhatis /usr/share/man"};
