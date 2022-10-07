@@ -9,5 +9,5 @@ cleanup() {
 	make clean
 }
 
-build
+build "$@"
 cleanup

@@ -18,5 +18,5 @@ cleanup() {
 }
 
 conf
-build
+build "$@"
 cleanup
