@@ -8,7 +8,11 @@ HARDENING_CPPFLAGS=$(grep "HARDENING_CPPFLAGS" "../../share/mk/progs.mk" | cut -
 HARDENING_LDFLAGS=$(grep "HARDENING_LDFLAGS" "../../share/mk/progs.mk" | cut -f2 -d '=')
 
 # Need to set DESTDIR at config time or else libtool complains
-DESTDIR=$1
+if [ -z "$1" ]; then
+	PREFIX=/usr
+else
+	PREFIX="$1"/usr
+fi
 
 conf() {
 	autoreconf -f -i
@@ -16,23 +20,21 @@ conf() {
 	export CC=clang LD=/usr/bin/ld.lld AR=llvm-ar AS=llvm-as NM=/usr/bin/llvm-nm \
 		RANLIB=llvm-ranlib STRIP=llvm-strip OBJDUMP=llvm-objdump \
 		CFLAGS="${HARDENING_CFLAGS}" CPPFLAGS="${HARDENING_CPPFLAGS}" LDFLAGS="${HARDENING_LDFLAGS}" \
-		&& ./configure --prefix="$DESTDIR"/usr --without-openssl --with-nettle --enable-bsdtar=shared \
+		&& ./configure --prefix="${PREFIX}" --without-openssl --with-nettle --enable-bsdtar=shared \
 		--enable-bsdcpio=shared --enable-bsdcat=shared
 }
 
 build() {
-	make check && \
-		make install
+	make -j "$(nproc)" check && \
+		make -j "$(nproc)" install
 }
 
 cleanup() {
 	make clean && make maintainer-clean
+
+	find "$PREFIX"/lib/ -type f -name libarchive.la -delete
 }
 
-if [ -z "$1" ]; then
-	printf '%s\n' "DESTDIR must be argument 1"
-else
-	conf
-	build
-	cleanup
-fi
+conf
+build
+cleanup
