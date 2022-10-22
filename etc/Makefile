@@ -7,6 +7,7 @@ GROUP= root
 install:
 	install -c -o ${OWNER} -g ${GROUP} -m 644 issue ${DESTDIR}/etc
 	install -c -o ${OWNER} -g ${GROUP} -m 644 issue.net ${DESTDIR}/etc
+	install -c -o ${OWNER} -g ${GROUP} -m 644 ksh.kshrc ${DESTDIR}/etc
 	install -c -o ${OWNER} -g ${GROUP} -m 644 lsb-release ${DESTDIR}/etc
 	install -c -o ${OWNER} -g ${GROUP} -m 664 motd ${DESTDIR}/etc
 	install -c -o ${OWNER} -g ${GROUP} -m 600 nftables.conf ${DESTDIR}/etc
@@ -40,5 +41,6 @@ install:
 		install -c -o ${OWNER} -g ${GROUP} -m 644 *.conf \
 			${DESTDIR}/etc/sysctl.d
 	cp skel/.bashrc ${DESTDIR}/etc/skel
+	cp skel/.kshrc ${DESTDIR}/etc/skel
 	cp skel/.profile ${DESTDIR}/etc/skel
 

@@ -1,0 +1,5 @@
+#!/bin/sh
+
+INSTDIR="$1"
+
+make && make DESTDIR="$INSTDIR" install
