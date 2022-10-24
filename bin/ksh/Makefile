@@ -35,7 +35,7 @@ install:
 	install -c -s -m 755 ${PROG} ${DESTDIR}${BINDIR}/sh
 	install -c -m 644 sh.1 ${DESTDIR}${MANDIR}/man1
 	echo "/bin/ksh" >> /etc/shells
-	echo "bin/sh" >> /etc/shells
+	#echo "bin/sh" >> /etc/shells
 
 uninstall:
 	rm -f ${DESTDIR}${BINDIR}/${PROG}
