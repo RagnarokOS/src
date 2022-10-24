@@ -32,7 +32,7 @@ build() {
 cleanup() {
 	make clean && make maintainer-clean
 
-	find "$PREFIX"/lib/ -type f -name libarchive.la -delete || exit
+	find "$PREFIX"/lib/ -type f -name libarchive.la -delete
 }
 
 conf

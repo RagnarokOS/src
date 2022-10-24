@@ -1,0 +1,10 @@
+#!/bin/sh
+
+# Temporary: removing coreutils' comm manpage before installing
+rm /usr/share/man/man1/comm.1.gz
+
+# Building OpenBSD's comm(1)
+make && make DESTDIR="$1" install
+
+# Cleaning up
+make clean

@@ -1,14 +1,14 @@
 #!/bin/bash
 
-BASE_PKGS=(dmenu doas dwm libarchive mandoc signify st)
-
-DESTDIR="$1"
+USRBIN_PKGS=(apply comm dmenu doas dwm libarchive mandoc signify st)
 
 build_bin() {
-	for dir in "${BASE_PKGS[@]}"; do
+	local _destdir="$1"
+
+	for dir in "${USRBIN_PKGS[@]}"; do
 		cd "$dir" && \
 			chmod +x r-build && \
-			./r-build "$DESTDIR" && \
+			./r-build "$_destdir" && \
 			cd ..
 	done
 }

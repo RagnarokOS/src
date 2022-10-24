@@ -1,0 +1,19 @@
+#!/bin/bash
+
+TARGET="$1"	# target for destdir
+
+# Making this as a function isn't really needed,
+# but we'll do it anyway in case this script gets
+# expanded.
+src_build() {
+	local _dirs=(bin usr/bin)
+
+	for dir in "${_dirs[@]}"; do
+		cd "$dir" && \
+			chmod +x build && \
+			./build "$TARGET" && \
+			cd ..
+	done
+}
+
+src_build

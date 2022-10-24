@@ -1,0 +1,7 @@
+#!/bin/sh
+
+# Building OpenBSD's comm(1)
+make && make DESTDIR="$1" install
+
+# Cleaning up
+make clean
