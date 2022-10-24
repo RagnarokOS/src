@@ -1,4 +1,4 @@
-# Ragnarok Makefile for OpenBSD's comm(1)
+# Ragnarok Makefile for OpenBSD's apply(1)
 
 include ../../share/mk/progs.mk
 
