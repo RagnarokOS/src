@@ -1,6 +1,6 @@
 #!/bin/bash
 
-USRBIN_PKGS=(apply comm dmenu doas dwm libarchive mandoc signify st)
+USRBIN_PKGS=(apply banner comm dmenu doas dwm libarchive mandoc signify st)
 
 build_bin() {
 	local _destdir="$1"
