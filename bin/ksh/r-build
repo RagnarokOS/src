@@ -2,4 +2,11 @@
 
 INSTDIR="$1"
 
+# build
 make && make DESTDIR="$INSTDIR" install
+
+# clean up
+make clean
+
+# set ksh as default shell (for ragnarok-dev-live)
+sed -i -e 's|bash|ksh|g' /etc/passwd
