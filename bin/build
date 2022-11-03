@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BIN_PKGS=(ksh)
+BIN_PKGS=(cat ksh)
 
 build_bin() {
 	local _destdir="$1"
