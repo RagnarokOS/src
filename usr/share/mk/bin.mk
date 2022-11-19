@@ -18,6 +18,5 @@ HARDENING_CPPFLAGS=-D_FORTIFY_SOURCE=2
 HARDENING_CFLAGS=-fPIE -fPIC -Wformat-security -fstack-protector-strong --param=ssp-buffer-size=4 -fstack-clash-protection -fcf-protection
 HARDENING_LDFLAGS=-Wl,-z,relro,-z,now,-z,defs -pie
 
-BINDIR=/bin
-PREFIX=/usr
-MANPREFIX=$(PREFIX)/share/man
+PREFIX=/bin
+MANPREFIX=/usr/share/man
