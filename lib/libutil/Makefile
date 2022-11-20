@@ -1,6 +1,6 @@
 LIBDIR = /lib
 
-INCS = -I/../usr/include/base
+INCS = -I../../usr/include -I../../usr/include/base
 RANLIB = ranlib
 
 CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE=700 -D_FILE_OFFSET_BITS=64
