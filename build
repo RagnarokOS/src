@@ -1,12 +1,19 @@
-#!/bin/bash
+#!/bin/ksh
 
 TARGET="$1"	# target for destdir
 
-# Making this as a function isn't really needed,
-# but we'll do it anyway in case this script gets
-# expanded.
+# Install library headers first
+inst_hdr() {
+	
+	cd usr/include/base && \
+		make DESTDIR="$TARGET" && \
+		cd ../../../
+}
+
+# build source
 src_build() {
-	local _dirs=(bin usr/bin)
+	local _dirs
+	set -A _dirs -- lib bin usr/bin
 
 	for dir in "${_dirs[@]}"; do
 		cd "$dir" && \
@@ -16,4 +23,5 @@ src_build() {
 	done
 }
 
+inst_hdr
 src_build
