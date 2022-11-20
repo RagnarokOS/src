@@ -6,4 +6,4 @@ HDR = arg.h compat.h crypt.h fs.h md5.h queue.h sha1.h sha224.h \
 
 install: 
 	mkdir -p ${DESTDIR}${INCSDIR}
-	cp -f ${HDR} ${DESTDIR}${INCSDIR}/
+	install -c -m 644 ${HDR} ${DESTDIR}${INCSDIR}/
