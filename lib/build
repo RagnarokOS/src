@@ -1,0 +1,32 @@
+#!/bin/ksh
+
+build_lib() {
+	local _destdir="$1" _lib
+	set -A _lib -- libutil libutf
+
+	for dir in "${_lib[@]}"; do
+		cd "$dir" && \
+			make && \
+			make DESTDIR="$_destdir" install && \
+			make clean && \
+			cd ..
+		done
+}
+
+# WARNING: if no destination directory is given,
+# all software will be installed on the base system.
+# This is more often than not undesired, but we need
+# the ability to do it for testing purposes.
+if [ -z "$1" ]; then
+	printf '%s' "WARNING: no destination directory was provided. This means everything will be installed on the host system.
+Continue anyway? [y/N]: "
+	read -r input
+	if [[ $input == "n" ]] || [[ $input == "N" ]]; then
+		echo "exiting..."
+		exit
+	else
+		build_lib
+	fi
+else
+	build_lib "$@"
+fi
