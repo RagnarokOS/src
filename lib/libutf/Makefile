@@ -1,6 +1,6 @@
 LIBDIR = /lib
 
-INCS= -I../../usr/include -I../../usr/include/base
+INCS= -I${DESTDIR}/usr/include -I${DESTDIR}/usr/include/base
 RANLIB= ranlib
 
 CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE=700 -D_FILE_OFFSET_BITS=64
@@ -25,8 +25,8 @@ ${LIB}: ${OBJS}
 	${RANLIB} $@
 
 install: all
-	mkdir -p ${DESTDIR}${LIBDIR}
-	cp -f ${LIB} ${DESTDIR}${LIBDIR}/
+	mkdir -p -m 755 ${DESTDIR}${LIBDIR}
+	install -c -o root -g root -m 644 ${LIB} ${DESTDIR}${LIBDIR}
 
 clean: 
 	rm -f ${LIB} ${OBJS}

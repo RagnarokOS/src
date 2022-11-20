@@ -14,7 +14,8 @@ STRINGS=llvm-strings
 READELF=llvm-readelf
 ADDR2LINE=llvm-addr2line
 
-INCS = -I../usr/include/base -I../usr/include
+INCS = -I${DESTDIR}/usr/include/base -I${DESTDIR}/usr/include
+LIBINCS = -L${DESTDIR}/lib
 
 HARDENING_CPPFLAGS=-D_FORTIFY_SOURCE=2
 HARDENING_CFLAGS=-fPIE -fPIC -Wformat-security -fstack-protector-strong --param=ssp-buffer-size=4 -fstack-clash-protection -fcf-protection
