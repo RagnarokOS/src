@@ -1,1 +1,1 @@
-See /lib's build file
+See main build file
