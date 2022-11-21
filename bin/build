@@ -1,5 +1,7 @@
 #!/bin/bash
 
+## deprecated
+
 BIN_PKGS=(cat ksh)
 
 build_bin() {

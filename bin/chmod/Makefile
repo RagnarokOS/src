@@ -4,8 +4,8 @@ CPPFLAGS = -D_DEFAULT_SOURCE -D_BSD_SOURCE -D_XOPEN_SOURCE=700 -D_FILE_OFFSET_BI
 CFLAGS   = -std=c99 -Wall -pedantic ${HARDENING_CFLAGS} ${INCS}
 LDFLAGS  = ${LIBINCS} -lbaseutil -s ${HARDENING_LDFLAGS}
 
-PROG = cat
-OBJS = cat.o
+PROG = chmod
+OBJS = chmod.o
 
 all: ${PROG}
 
