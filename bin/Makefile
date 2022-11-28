@@ -9,6 +9,7 @@ all:
 	${MAKE} date
 	${MAKE} dd
 	${MAKE} echo
+	${MAKE} ed
 	${MAKE} expr
 	${MAKE} hostname
 	${MAKE} kill
@@ -34,6 +35,7 @@ install:
 	${MAKE} date install
 	${MAKE} dd install
 	${MAKE} echo install
+	${MAKE} ed install
 	${MAKE} expr install
 	${MAKE} hostname install
 	${MAKE} kill install
