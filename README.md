@@ -1,7 +1,8 @@
 Ragnarok source repository
 ==========================
 
-Development notes for November 2022: https://RagnarokOS.github.io/logs/devnotes-november-2022.html
+* Development notes for December 2022: https://RagnarokOS.github.io/logs/devnotes-december-2022.html  
+* Development notes for November 2022: https://RagnarokOS.github.io/logs/devnotes-november-2022.html
 
 r-build
 -------
