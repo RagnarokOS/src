@@ -1,0 +1,37 @@
+#!/bin/sh
+
+# This variable is only necessary when compiling for a different rootfs.
+_target="$1"
+
+# Build
+build() {
+	make CONFIG_NATIVE=false -j"$(nproc)" && \
+		make VARIANT=medium CONFIG_NATIVE=false -j"$(nproc)" && \
+		make VARIANT=light CONFIG_NATIVE=false -j"$(nproc)"
+}
+
+# Install
+inst() {
+	# Make directory and copy the libs to it.
+	mkdir -p "$_target"/usr/lib/hardened_malloc
+	cp out-strong/libhardened_malloc-strong.so "$_target"/usr/lib/hardened_malloc/
+	cp out-medium/libhardened_malloc-medium.so "$_target"/usr/lib/hardened_malloc/
+	cp out-light/libhardened_malloc-light.so "$_target"/usr/lib/hardened_malloc/
+
+	# The ld.so.preload trick is used to load hardened_malloc before glibc's.
+	# By default, the medium variant is used, but can be changed by creating
+	# a symlink between the desired variant and /usr/lib/hardened_malloc.so
+	# e.g. ln -s /usr/lib/hardened_malloc/libhardened_malloc-strong.so /usr/lib/libhardened_malloc.so
+	cp out-medium/libhardened_malloc-medium.so "$_target"/usr/lib/libhardened_malloc.so
+	echo "/usr/lib/libhardened_malloc.so" > "$_target"/etc/ld.so.preload
+}
+
+# Cleaning up
+cleanup() {
+	make clean && \
+		rm -r out-*
+}
+
+build
+inst
+cleanup
