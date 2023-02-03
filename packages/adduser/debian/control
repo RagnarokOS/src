@@ -1,7 +1,8 @@
 Source: adduser
 Section: admin
 Priority: important
-Maintainer: Debian Adduser Developers <adduser@packages.debian.org>
+Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
+XSBC-Original-Maintainer: Debian Adduser Developers <adduser@packages.debian.org>
 Uploaders: Marc Haber <mh+debian-packages@zugschlus.de>
 Standards-Version: 4.2.1
 Build-Depends: po-debconf, debhelper (>= 9)
