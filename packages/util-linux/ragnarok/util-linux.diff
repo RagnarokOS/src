@@ -1,0 +1,12 @@
+diff -ur util-linux.orig/debian/util-linux.su.pam util-linux/debian/util-linux.su.pam
+--- util-linux.orig/debian/util-linux.su.pam	2022-01-20 14:55:14.000000000 -0500
++++ util-linux/debian/util-linux.su.pam	2023-02-07 12:42:09.924000000 -0500
+@@ -12,7 +12,7 @@
+ # denying "root" user, unless she's a member of "foo" or explicitly
+ # permitted earlier by e.g. "sufficient pam_rootok.so").
+ # (Replaces the `SU_WHEEL_ONLY' option from login.defs)
+-# auth       required   pam_wheel.so
++auth       required   pam_wheel.so
+ 
+ # Uncomment this if you want wheel members to be able to
+ # su without a password.
