@@ -40,9 +40,9 @@ do_update() {
 
 # Move all deb/udeb packages to a directory named pkgs
 mvpkg() {
-	mkdir -p pkgs
-	for _pkg in *.deb; do mv "$_pkg" pkgs/; done
-	for _pkg in *.udeb; do mv "$_pkg" pkgs/; done
+	mkdir -p ../pkgs
+	for _pkg in *.deb; do mv "$_pkg" ../pkgs/; done
+	for _pkg in *.udeb; do mv "$_pkg" ../pkgs/; done
 }
 
 # Clean the directory.
