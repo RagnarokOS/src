@@ -1,0 +1,25 @@
+#!/bin/sh
+
+# Self-explanatory
+PKG="oksh"
+VERSION="7.2"
+PKG_NAME="$PKG"-"$VERSION"
+
+# Build the package
+do_build() {
+	cd "$PKG_NAME" && debuild -i -us -uc -b && cd ..
+}
+
+# Move all deb/udeb packages to a directory named pkgs
+mvpkg() {
+	mkdir -p ../pkgs
+	for _pkg in *.deb; do mv "$_pkg" ../pkgs/; done
+}
+
+cleanup() {
+	dh_clean
+}
+
+do_build
+cleanup
+mvpkg
