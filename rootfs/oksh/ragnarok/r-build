@@ -17,9 +17,10 @@ mvpkg() {
 }
 
 cleanup() {
-	dh_clean
+	mvpkg
+	cd "$PKG_NAME" && make clean && dh_clean && cd ..
+	for _file in "$PKG"_*; do rm "$_file"; done
 }
 
 do_build
 cleanup
-mvpkg
