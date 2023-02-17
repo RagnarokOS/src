@@ -1,0 +1,8 @@
+diff -ur base-passwd.orig/group.master base-passwd/group.master
+--- base-passwd.orig/group.master	2021-07-10 07:57:43.000000000 -0400
++++ base-passwd/group.master	2023-02-16 14:42:09.456000000 -0500
+@@ -37,3 +37,4 @@
+ games:*:60:
+ users:*:100:
+ nogroup:*:65534:
++wheel:*:112:
