@@ -1,0 +1,26 @@
+#!/bin/sh
+
+# Self-explanatory
+PKG="ed"
+VERSION="7.2"
+PKG_NAME="$PKG"-"$VERSION"
+
+# Build the package
+do_build() {
+	cd "$PKG_NAME" && debuild -i -us -uc -b && cd ..
+}
+
+# Move all deb/udeb packages to a directory named pkgs
+mvpkg() {
+	mkdir -p ../pkgs
+	for _pkg in *.deb; do mv "$_pkg" ../pkgs/; done
+}
+
+cleanup() {
+	mvpkg
+	cd "$PKG_NAME" && make distclean && dh_clean && cd ..
+	for _file in "$PKG"_*; do rm "$_file"; done
+}
+
+do_build
+cleanup
