@@ -1,0 +1,7 @@
+#!/bin/sh
+
+set -e
+
+# This will undo the renaming of signify to signify-openbsd
+# without the need to modify the Debian source package.
+ln -sf /usr/bin/signify-openbsd /usr/bin/signify
