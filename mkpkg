@@ -1,0 +1,93 @@
+#!/usr/local/bin/ksh
+
+# WORK IN PROGRESS - not ready for use.
+
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+#											#
+#	Copyright (c) 2023, Ian LeCorbeau <I-LeCorbeau (at) protonmail (dot) com>	#
+#											#
+#	Permission to use, copy, modify, and/or distribute this software for any	#
+#	purpose with or without fee is hereby granted, provided that the above		#
+#	copyright notice and this permission notice appear in all copies.		#
+#											#
+#	THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES	#
+#	WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF		#
+#	MERCHANTABILITY AND FITNESS IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR		#
+#	ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES		#
+#	WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN		#
+#	ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF		#
+#	OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.			#
+#											#
+# # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
+
+# Script to automatically build/update the packages in the source tree.
+
+# Global variables
+
+usage() {
+	printf '%s\n' "
+Build or update one or more package. Valid options:
+
+-b	build package(s)
+-h	print this help message
+-s	sign package(s) with signify
+-t	custom target where .debs and SHA256(.sig) should go
+-u	update package(s)
+
+For the -b and -u options, one or more package can be supplied
+as arguments. When no package name is given, then all packages
+are built/signed/updated. The -s option does not take any package
+as an argument since the SHA256(.sig) files need to be regenerated
+after a package was updated.
+
+Example usage:
+
+Build and sign all packages and move everything to a directory in .local/packages:
+./mkpkg -t /home/<USERNAME>/.local/packages -b -s
+
+Update and sign a single package:
+./mkpkg -u oksh
+"
+}
+
+# Building packages by cd'ing into dir and running their build script.
+build_pkg() {
+	local _pkgs
+
+	shift
+	if [ $# -eq 0 ]; then
+		# we most definitely want word splitting.
+		# shellcheck disable=SC2046
+		set -A _pkgs -- $(cat pkgs.list)
+	else
+		set -A _pkgs -- "$@"
+	fi
+
+	for pkg in "${_pkgs[@]}"; do
+		cd "$pkg" && \
+			chmod +x r-build && \
+			./r-build && \
+			mv -- *.deb "$TARGET"/ && \
+			cd ..
+	done
+
+}
+
+# Sign all debs with signify
+sign_pkgs() {
+	true; # no-op for now
+}
+
+# Let's go
+TARGET="../pkgs"
+while getopts bhst:u args; do
+	case "$args" in
+		b)	build_pkg "$@" ;;
+		h)	usage ;;
+		s) 	sign_pkgs ;;
+		t)	TARGET="$OPTARG" ;;
+		u) 	update_pkgs ;;
+		*) 	usage ;;
+	esac
+done
+shift $((OPTIND-1))
