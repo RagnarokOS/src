@@ -67,24 +67,41 @@ build_pkg() {
 		cd "$pkg" && \
 			chmod +x r-build && \
 			./r-build && \
-			mv -- *.deb "$TARGET"/ && \
 			cd ..
 	done
 
 }
 
-# Sign all debs with signify
+# Sign all debs with signify.
 sign_pkgs() {
-	true; # no-op for now
+	local _seckey="$1"
+
+	# Generate BSD-style checksum file
+	/usr/bin/sha256sum --tag -- *.deb > SHA256
+
+	# Sign
+	/usr/bin/signify-openbsd -S -s "$_seckey" -m SHA256 -x SHA256.sig
+
+	/usr/bin/cat SHA256 >> SHA256.sig
+}
+
+# Move packages and sums to $TARGET dir.
+mv_pkgs() {
+	mkdir -p "$TARGET"
+	mv -- *.deb "$TARGET"
+	mv SHA256 "$TARGET"
+	mv SHA256.sig "$TARGET"
 }
 
 # Let's go
 TARGET="../pkgs"
-while getopts bhst:u args; do
+SEC_KEY=
+while getopts bhus:t: args; do
 	case "$args" in
 		b)	build_pkg "$@" ;;
 		h)	usage ;;
-		s) 	sign_pkgs ;;
+		s) 	SEC_KEY="$OPTARG"
+			sign_pkgs "$SEC_KEY" ;;
 		t)	TARGET="$OPTARG" ;;
 		u) 	update_pkgs ;;
 		*) 	usage ;;
