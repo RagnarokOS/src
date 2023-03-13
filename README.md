@@ -14,3 +14,4 @@ own, for whatever purpose someone might need them for. In essence, Ragnarok
 the distribution is merely an example of what can be achived by utilizing
 one, or all of these tools.
 
+Development notes: [https://ragnarokos.github.io/logs/logs.html](https://ragnarokos.github.io/logs/logs.html).
