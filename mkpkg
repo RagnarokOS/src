@@ -93,6 +93,19 @@ mv_pkgs() {
 	mv SHA256.sig "$TARGET"
 }
 
+# Create a tarball of target directory then sign with signify.
+mktar() {
+
+	local _targetname="$TARGET"-"$(date +"%Y%m%d")".tar.xz
+
+	# Create the tarball
+	bsdtar -cpvf "$TARGET".tar.xz
+
+	# Sign the tarball
+	signify-openbsd -S -s "$SEC_KEY" -m "$TARGET"-"$DATE".tar.xz -x 
+
+}
+
 # Let's go
 TARGET="../pkgs"
 SEC_KEY=
