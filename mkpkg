@@ -28,6 +28,8 @@ usage() {
 	printf '%s\n' "
 Build or update one or more package. Valid options:
 
+-a	create a tar.gz archive of the ports tree. If /path/to/sec_key is
+	given as argument 1, then the archive will be signed with signify.
 -b	build package(s)
 -h	print this help message
 -s	sign package(s) with signify
@@ -95,22 +97,27 @@ mv_pkgs() {
 
 # Create a tarball of target directory then sign with signify.
 mktar() {
-
-	local _targetname="$TARGET"-"$(date +"%Y%m%d")".tar.xz
+	_key="$1"
 
 	# Create the tarball
-	bsdtar -cpvf "$TARGET".tar.xz
+	bsdtar czf /home/"$USER"/ports.tar.gz -C "$TARGET" .
 
-	# Sign the tarball
-	signify-openbsd -S -s "$SEC_KEY" -m "$TARGET"-"$DATE".tar.xz -x 
+	# Sign the tarball if a path to security key was provided
+	if [ -z "$1" ]; then
+		:	# don't do anything
+	else
+		signify-openbsd -S -s "$_key" -m /home/"$USER"/ports.tar.gz -x /home/"$USER"/ports.tar.gz.sig
+	fi
 
 }
 
 # Let's go
 TARGET="/usr/packages"
 SEC_KEY=
-while getopts bhus:t: args; do
+while getopts abhus:t: args; do
 	case "$args" in
+		a)	KEY="$OPTARG"
+			mktar "$KEY" ;;
 		b)	build_pkg "$@" ;;
 		h)	usage ;;
 		s) 	SEC_KEY="$OPTARG"
