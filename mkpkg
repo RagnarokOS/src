@@ -107,7 +107,7 @@ mktar() {
 }
 
 # Let's go
-TARGET="../pkgs"
+TARGET="/usr/packages"
 SEC_KEY=
 while getopts bhus:t: args; do
 	case "$args" in
