@@ -100,7 +100,7 @@ mktar() {
 	_key="$1"
 
 	# Create the tarball
-	bsdtar czf /home/"$USER"/ports.tar.gz -C "$TARGET" .
+	bsdtar czf /home/"$USER"/ports.tar.gz .
 
 	# Sign the tarball if a path to security key was provided
 	if [ -z "$1" ]; then
