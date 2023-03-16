@@ -56,6 +56,8 @@ Update and sign a single package:
 build_pkg() {
 	local _pkgs
 
+	mkdir -p "$TARGET"
+
 	shift
 	if [ $# -eq 0 ]; then
 		# we most definitely want word splitting.
@@ -69,6 +71,7 @@ build_pkg() {
 		cd "$pkg" && \
 			chmod +x r-build && \
 			./r-build && \
+			mv -- *.deb ../ && \
 			cd ..
 	done
 
@@ -78,8 +81,10 @@ build_pkg() {
 sign_pkgs() {
 	local _seckey="$1"
 
+	cd "$TARGET" || exit
+
 	# Generate BSD-style checksum file
-	/usr/bin/sha256sum --tag -- *.deb > SHA256
+	/usr/bin/sha256sum --tag -- * > SHA256
 
 	# Sign
 	/usr/bin/signify-openbsd -S -s "$_seckey" -m SHA256 -x SHA256.sig
@@ -87,15 +92,7 @@ sign_pkgs() {
 	/usr/bin/cat SHA256 >> SHA256.sig
 }
 
-# Move packages and sums to $TARGET dir.
-mv_pkgs() {
-	mkdir -p "$TARGET"
-	mv -- *.deb "$TARGET"
-	mv SHA256 "$TARGET"
-	mv SHA256.sig "$TARGET"
-}
-
-# Create a tarball of target directory then sign with signify.
+# Create a tarball of ports tree then sign with signify.
 mktar() {
 	_key="$1"
 
@@ -114,6 +111,7 @@ mktar() {
 # Let's go
 TARGET="/usr/packages"
 SEC_KEY=
+
 while getopts abhus:t: args; do
 	case "$args" in
 		a)	KEY="$OPTARG"
