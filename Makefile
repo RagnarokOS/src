@@ -9,6 +9,7 @@ install:
 	install -d -m 755 -g 0 -o root /etc/signify
 	install -d -m 755 -g 0 -o root /etc/skel
 	install -d -m 755 -g 0 -o root /etc/sysctl.d
+	install -d -m 755 -g 0 -o root /usr/lib
 	install -m 644 -g 0 -o root etc/default/grub /etc/default/
 	install -m 644 -g 0 -o root etc/dpkg/buildflags.conf /etc/dpkg/
 	install -m 644 -g 0 -o root etc/signify/ragnarok${RAGNAROK_VERSION}.pub /etc/signify/
@@ -20,3 +21,4 @@ install:
 	install -m 644 -g 0 -o root etc/ksh.kshrc /etc/
 	install -m 644 -g 0 -o root etc/lsb-release /etc/
 	install -m 644 -g 0 -o root etc/nftables.conf /etc/
+	install -m 644 -g 0 -o root usr/lib/ragnarok-shlib /usr/lib/
