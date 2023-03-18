@@ -1,6 +1,12 @@
 Ragnarok source repository
 ==========================
 
+This contains all files and scripts not exclusive to the [ports](https://github.com/RagnarokOS/ports) and
+[iso](https://github.com/RagnarokOS/iso) infrastructures. Everything here is packaged as "ragnarok-files".
+
+About
+-----
+
 Ragnarok is a small project which aims to create a simple, Unix-like and
 hardened Debian by default.
 
