@@ -4,12 +4,14 @@ RAGNAROK_VERSION=01
 NEXT_VERSION=02
 
 install:
+	install -d -m 755 -g 0 -o root /etc/apt/preferences.d
 	install -d -m 755 -g 0 -o root /etc/default
 	install -d -m 755 -g 0 -o root /etc/dpkg
 	install -d -m 755 -g 0 -o root /etc/signify
 	install -d -m 755 -g 0 -o root /etc/skel
 	install -d -m 755 -g 0 -o root /etc/sysctl.d
 	install -d -m 755 -g 0 -o root /usr/lib
+	install -m 644 -g 0 -o root etc/apt/preferences.d/systemd /etc/apt/preferences.d/
 	install -m 644 -g 0 -o root etc/default/grub /etc/default/
 	install -m 644 -g 0 -o root etc/dpkg/buildflags.conf /etc/dpkg/
 	install -m 644 -g 0 -o root etc/signify/ragnarok${RAGNAROK_VERSION}.pub /etc/signify/
