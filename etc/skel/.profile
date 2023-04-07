@@ -1,6 +1,7 @@
 # ~/.profile: executed by the command interpreter for login shells.
 
-# Aliases for mandoc.
+# Aliases for mandoc. For details as to why this is here, see commit message:
+# https://github.com/RagnarokOS/src/commit/5021ef69ea27d21883329b515b226c9d0defae68
 manread() {
 	/usr/bin/mman "$1" | less;
 }
