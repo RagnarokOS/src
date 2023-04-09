@@ -1,0 +1,13 @@
+Source: ragnarok-source
+Priority: standard
+Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.6.1
+Homepage: https://github.com/RagnarokOS/src
+Rules-Requires-Root: no
+
+Package: ragnarok-files
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: files for Ragnarok
+ Package for files specific to Ragnarok systems.

@@ -1,0 +1,7 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+execute_after_dh_fixperms:
+	chmod a+x debian/ragnarok-files/etc/nftables.conf
