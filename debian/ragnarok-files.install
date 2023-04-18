@@ -7,6 +7,5 @@ etc/signify			/etc
 etc/skel/.kshrc			/etc/skel
 etc/skel/.profile		/etc/skel
 etc/sysctl.d/*			/etc/sysctl.d
-etc/lsb-release			/etc
 etc/nftables.conf		/etc
 usr/lib/ragnarok-shlib		/usr/lib
