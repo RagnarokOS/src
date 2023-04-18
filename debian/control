@@ -1,4 +1,5 @@
 Source: ragnarok-source
+Section: base
 Priority: standard
 Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
 Build-Depends: debhelper-compat (= 13)
