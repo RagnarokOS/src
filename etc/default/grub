@@ -6,7 +6,7 @@
 GRUB_DEFAULT=0
 GRUB_TIMEOUT=5
 GRUB_DISTRIBUTOR="Ragnarok"
-GRUB_CMDLINE_LINUX_DEFAULT="quiet init_on_free=1 page_alloc.shuffle=1 slab_nomerge oops=panic module.sig_enforce=1 lockdown=confidentiality debugfs=off"
+GRUB_CMDLINE_LINUX_DEFAULT="quiet"
 GRUB_CMDLINE_LINUX=""
 
 # Uncomment to enable BadRAM filtering, modify to suit your needs
