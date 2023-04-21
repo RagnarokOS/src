@@ -4,7 +4,6 @@ etc/dpkg/*			/etc/dpkg
 etc/grub			/etc/grub
 etc/rsyslog.d/*			/etc/rsyslog.d
 etc/signify			/etc
-etc/skel/.kshrc			/etc/skel
 etc/skel/.profile		/etc/skel
 etc/sysctl.d/*			/etc/sysctl.d
 etc/nftables.conf		/etc
