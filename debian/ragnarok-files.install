@@ -1,7 +1,7 @@
+boot/grub/custom.cfg		/boot/grub
 etc/apt/preferences.d/*		/etc/apt/preferences.d
 etc/default/*			/etc/default
 etc/dpkg/*			/etc/dpkg
-etc/grub			/etc/grub
 etc/rsyslog.d/*			/etc/rsyslog.d
 etc/signify			/etc
 etc/skel/.profile		/etc/skel
