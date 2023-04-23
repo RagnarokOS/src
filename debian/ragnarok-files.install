@@ -1,6 +1,7 @@
 boot/grub/custom.cfg		/boot/grub
 etc/*				/etc
 etc/apt/preferences.d/*		/etc/apt/preferences.d
+etc/apt/sources.list.d/*	/etc/apt/sources.list.d
 etc/default/*			/etc/default
 etc/dpkg/*			/etc/dpkg
 etc/rsyslog.d/*			/etc/rsyslog.d
