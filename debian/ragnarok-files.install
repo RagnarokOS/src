@@ -1,4 +1,5 @@
 boot/grub/custom.cfg		/boot/grub
+etc/*				/etc
 etc/apt/preferences.d/*		/etc/apt/preferences.d
 etc/default/*			/etc/default
 etc/dpkg/*			/etc/dpkg
@@ -8,3 +9,4 @@ etc/skel/.profile		/etc/skel
 etc/sysctl.d/*			/etc/sysctl.d
 etc/nftables.conf		/etc
 usr/lib/ragnarok-shlib		/usr/lib
+usr/share			/usr
