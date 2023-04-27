@@ -30,12 +30,13 @@ CONFIG=${CONFIG:-/etc/mkchroot/chroot.conf}
 # Parsing global config options
 _name=$(getvar NAME "$CONFIG")
 _version=$(getvar VERSION "$CONFIG")
+_type=$(getvar TYPE "$CONFIG")
 _parent=$(getvar PARENT "$CONFIG")
 _components=$(getvar COMPONENTS "$CONFIG")
 _variant=$(getvar VARIANT "$CONFIG")
 _format=$(getvar FORMAT "$CONFIG")
 _pkgs=$(getvar PKGS "$CONFIG")
-_chrootname="${_name}-${_version}-${DATE}"
+_chrootname="${_name}${_version}${_type}"
 [[ $_format = tar ]] && _chrootname=$_chrootname.tgz
 
 usage() {
@@ -92,4 +93,4 @@ case "$1" in
 	-h|--help) usage ;;
 	-l|--local) TARGET="$2" ;;
 esac
-echo "${TARGET}/${_chrootname}" # Testing purposes
+mk_rootfs
