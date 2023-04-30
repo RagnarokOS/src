@@ -1,3 +1,10 @@
+ragnarok-source (0.1-2) dev; urgency=medium
+
+  * Renamed etc/logrotate.d/rsyslog to nftables to avoid conflicting with
+    rsyslog's own file.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Sun, 30 Apr 2023 14:57:28 -0400
+
 ragnarok-source (0.1-1) dev; urgency=medium
 
   * Updated etc/default/grub
