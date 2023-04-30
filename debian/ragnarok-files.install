@@ -4,6 +4,7 @@ etc/apt/preferences.d/*		/etc/apt/preferences.d
 etc/apt/sources.list.d/*	/etc/apt/sources.list.d
 etc/default/*			/etc/default
 etc/dpkg/*			/etc/dpkg
+etc/logrotate.d/*		/etc/logrotate.d
 etc/rsyslog.d/*			/etc/rsyslog.d
 etc/skel/.profile		/etc/skel
 etc/sysctl.d/*			/etc/sysctl.d
