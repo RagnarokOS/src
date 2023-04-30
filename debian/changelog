@@ -1,3 +1,10 @@
+ragnarok-source (0.1-1) dev; urgency=medium
+
+  * Updated etc/default/grub
+  * Added etc/logrotate.d/rsyslog
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Sun, 30 Apr 2023 14:12:09 -0400
+
 ragnarok-source (0.1) dev; urgency=medium
 
   * initial release for Ragnarok 0.1 (-dev)
