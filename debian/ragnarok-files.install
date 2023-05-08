@@ -5,7 +5,7 @@ etc/default/*			/etc/default
 etc/dpkg/*			/etc/dpkg
 etc/logrotate.d/*		/etc/logrotate.d
 etc/rsyslog.d/*			/etc/rsyslog.d
-etc/skel/			/etc/skel
+etc/skel/			/etc
 etc/sysctl.d/*			/etc/sysctl.d
 etc/nftables.conf		/etc
 usr/lib/ragnarok-shlib		/usr/lib
