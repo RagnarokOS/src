@@ -1,13 +1,13 @@
 /var/log/nftables.log
 {
-	rotate 4
-	weekly
+	size +10M
+	maxage 30
 	missingok
 	notifempty
 	compress
-	delaycompress
 	sharedscripts
+	create 0600 root root
 	postrotate
-		/usr/lib/rsyslog/rsyslog-rotate
+		/etc/init.d/rsyslog rotate /dev/null 2>&1 || true
 	endscript
 }
