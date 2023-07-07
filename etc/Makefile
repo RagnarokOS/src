@@ -10,7 +10,7 @@ install:
 	install -m 755 -o root -g 0 apt/sources.list.d/ragnarok.sources ${DESTDIR}/etc/apt/sources.list.d
 	install -m 600 -o root -g 0 default/grub.d/01_hardening.cfg ${DESTDIR}/etc/default/grub.d/
 	install -m 644 -o root -g 0 default/grub ${DESTDIR}/etc/default
-	install -m 644 -o root -g 0 dpkg/buildflags.conf ${DESTDIR}/dpkg
+	install -m 644 -o root -g 0 dpkg/buildflags.conf ${DESTDIR}/etc/dpkg
 	install -m 644 -o root -g 0 init.d/rm-machineid ${DESTDIR}/etc/init.d
 	install -m 644 -o root -g 0 logrotate.d/nftables ${DESTDIR}/etc/logrotate.d
 	install -m 644 -o root -g 0 rsyslog.d/nftables ${DESTDIR}/etc/rsyslog.d
