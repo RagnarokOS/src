@@ -1,11 +1,14 @@
 # A small library that contains functions used by many of Ragnarok's scripts.
+# Will work with ksh and bash scripts.
 
+# Get a config value, formatted as 'config="value"', from a file.
 getvar() {
 	local _val="$1" _file="$2"
 
 	grep "$_val" "$_file" | cut -d '"' -f2
 }
 
+# Set config value in a file
 setvar() {
 	local _var="$1" _val="$2" _file="$3"
 
@@ -16,6 +19,26 @@ setvar() {
 	fi
 }
 
+# Some scripts need to be run as root, but contain commands that sould
+# be run as a non-privileged user.
+# Credits to the OpenBSD folks
+unpriv() {
+	local _user=$1 _file=$2
+
+	if [ "$1" == "-f" ]; then
+		chown "${_user}" "${_file}"
+		# when dealing with files, always put them in a tmp directory
+		# and set dir path in the script, e.g. _TMP=...
+		chmod 0711 "${TMP}"
+		shift 2
+	fi
+	(($# >= 1))
+
+	su - "$_user" -s /bin/ksh -c "$@"
+}
+
+
+# Verify something with signify(1)
 verify() {
 	local _pubkey="$2" _sig="$3" _file="$4"
 
