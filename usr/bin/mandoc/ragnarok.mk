@@ -13,6 +13,4 @@ changelog:
 
 pkg:
 	mk-build-deps --install --root-cmd doas debian/control
-	# Don't use -b to skip building a source package. Some people may
-	# want to grab the source without cloning the whole src repo.
-	debuild -i -us -uc -rfakeroot
+	debuild -i -us -uc -b -rfakeroot
