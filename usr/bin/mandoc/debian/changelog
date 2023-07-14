@@ -1,0 +1,5 @@
+mandoc (1.14.6-ragnarok01) stable; urgency=medium
+
+  * First push of Ragnarok's mandoc build
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Fri, 14 Jul 2023 12:44:25 -0400

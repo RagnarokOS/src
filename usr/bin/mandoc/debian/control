@@ -1,0 +1,20 @@
+Source: mandoc
+Section: doc
+Priority: optional
+Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
+Build-Depends: debhelper (>= 11), zlib1g-dev
+Standards-Version: 4.1.4
+Homepage: http://mdocml.bsd.lv/
+Vcs-Git: https://github.com/RagnarokOS/src.git
+Vcs-Browser: https://github.com/RagnarokOS/src
+
+Package: mandoc
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: BSD manpage compiler toolset
+ mandoc is a suite of tools compiling mdoc, the roff macro language of choice
+ for BSD manual pages, and man, the predominant historical language for UNIX
+ manuals. It is small, ISO C, ISC-licensed, and quite fast. The main component
+ of the toolset is the mandoc utility program, based on the libmandoc
+ validating compiler, to format output for UNIX terminals (with support for
+ wide-character locales), XHTML, HTML, PostScript, and PDF.
