@@ -1,6 +1,6 @@
 # Ragnarok Makefile for mandoc
 
-include usr/share/mk/ragnarok-config.mk
+include ../../share/mk/ragnarok-config.mk
 
 UPSTREAM_VERSION = 1.14.6
 
