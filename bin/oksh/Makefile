@@ -4,7 +4,7 @@ CC =		cc
 CFLAGS =	-D_FORTIFY_SOURCE=2 -fPIE -Wformat-security -fstack-protector-strong -fstack-clash-protection --param=ssp-buffer-size=4 -fcf-protection -DEMACS -DVI -w -D_GNU_SOURCE
 LDFLAGS =	-Wl,-z,relro,-z,now -Wl,-pie 
 
-PREFIX =	/usr/local
+PREFIX =	
 BINDIR =	/bin
 MANDIR =	/usr/share/man
 
