@@ -130,6 +130,17 @@ $(OUT)/random.o: random.c random.h chacha.h util.h $(CONFIG_FILE) | $(OUT)
 $(OUT)/util.o: util.c util.h $(CONFIG_FILE) | $(OUT)
 	$(COMPILE.c) $(OUTPUT_OPTION) $<
 
+install:
+	install -d -m 755 -g 0 -o root ${DESTDIR}/usr/lib/hardened_malloc
+	install -m 755 -g 0 -o root out-strong/libhardened_malloc-strong.so \
+		${DESTDIR}/usr/lib/hardened_malloc
+	install -m 755 -g 0 -o root out-strong/libhardened_malloc-medium.so \
+		${DESTDIR}/usr/lib/hardened_malloc
+	install -m 755 -g 0 -o root out-strong/libhardened_malloc-light.so \
+		${DESTDIR}/usr/lib/hardened_malloc
+	install -m 755 -g 0 -o root ${TOP_DIR}/etc/init.d/hardened-malloc \
+		${DESTDIR}/etc/init.d
+
 check: tidy
 
 tidy:
