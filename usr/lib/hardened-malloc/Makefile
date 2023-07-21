@@ -138,7 +138,7 @@ install:
 		${DESTDIR}/usr/lib/hardened_malloc
 	install -m 755 -g 0 -o root out-strong/libhardened_malloc-light.so \
 		${DESTDIR}/usr/lib/hardened_malloc
-	install -m 755 -g 0 -o root ${TOP_DIR}/etc/init.d/hardened-malloc \
+	install -m 755 -g 0 -o root ${TOP_DIR}/etc/init.d/hardened_malloc \
 		${DESTDIR}/etc/init.d
 
 check: tidy
