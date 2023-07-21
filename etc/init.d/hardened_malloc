@@ -10,14 +10,21 @@
 # Description:		fixes the long boot/poweroff times in the live iso.
 ### END INIT INFO
 
+. /usr/lib/ragnarok-shlib
+
+VARIANT=$(getvar VARIANT /etc/default/hardened_malloc)
+
 do_start() {
 	/usr/bin/printf '%s\n' "enabling the hardened memory allocator..."
+	/usr/bin/ln -sf /usr/lib/hardened_malloc/libhardened_malloc-"${VARIANT}".so \
+		/usr/lib/libhardened_malloc.so
 	/usr/bin/echo "/usr/lib/libhardened_malloc.so" > /etc/ld.so.preload
 }
 
 do_stop() {
 	/usr/bin/printf '%s\n' "disabling the hardened memory allocator..."
 	/usr/bin/echo "" > /etc/ld.so.preload
+	/usr/bin/rm /usr/lib/libhardened_malloc.so
 }
 
 do_check_status() {
