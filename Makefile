@@ -2,6 +2,8 @@
 
 MAKE = make -C
 
+SUBDIRS	= bin boot etc usr
+
 all: install
 
 install:
