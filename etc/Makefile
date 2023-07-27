@@ -1,6 +1,13 @@
 # Makefile for /etc
+# $Id: Makefile,v 1.2 2023/07/27 16:49:46 lecorbeau Exp $
 
-all: install
+# Miniroot requires less stuff
+miniroot:
+	install -m 755 -o root -g 0 apt/preferences.d/systemd ${DESTDIR}/etc/apt/preferences.d
+	install -m 755 -o root -g 0 apt/sources.list.d/ragnarok.sources ${DESTDIR}/etc/apt/sources.list.d
+	install -m 644 -o root -g 0 dpkg/buildflags.conf ${DESTDIR}/etc/dpkg
+	install -m 644 -o root -g 0 skel/.aliases ${DESTDIR}/etc/skel
+	install -m 644 -o root -g 0 skel/.profile ${DESTDIR}/etc/skel
 
 install:
 	# Create dirs that don't already exist
