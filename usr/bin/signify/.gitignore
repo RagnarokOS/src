@@ -1,0 +1,9 @@
+*.o
+.*.sw[po]
+*.pyc
+signify
+signify.1.gz
+sha512hl.c
+sha512_256hl.c
+sha256hl.c
+/libbsd-*
