@@ -1,0 +1,11 @@
+doas
+
+parse.c
+version.h
+
+*.a
+*.d
+*.o
+
+*.swp
+*.swo
