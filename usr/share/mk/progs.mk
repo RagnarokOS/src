@@ -1,5 +1,5 @@
 # Compile time options used by programs in Ragnarok
-# $Id: progs.mk,v 1.4 2023/08/01 15:56:06 lecorbeau Exp $
+# $Id: progs.mk,v 1.5 2023/08/01 16:00:56 lecorbeau Exp $
 
 # Flags to enable ThinLTO
 CFLAGS_LTO		= -flto=thin
@@ -11,5 +11,5 @@ O_FLAG			= -O2
 # Hardening flags
 HARDENING_CPPFLAGS	= -D_FORTIFY_SOURCE=2
 HARDENING_CFLAGS 	= ${O_FLAG} -fPIE -Wformat -Wformat-security -fstack-clash-protection \
-			  -fstack-protector-strong -fcf-protection --param=ssp-buffer-size=4
+			  -fstack-protector-strong --param=ssp-buffer-size=4 -fcf-protection
 HARDENING_LDFLAGS	= -Wl,-z,relro,-z,now -Wl,-pie -Wl,-zdefs
