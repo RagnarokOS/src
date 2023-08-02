@@ -1,13 +1,12 @@
 # Makefile for usr/bin
-# $Id: Makefile,v 1.1 2023/07/27 17:14:06 lecorbeau Exp $
+# $Id: Makefile,v 1.2 2023/08/02 14:33:47 lecorbeau Exp $
 
 MAKE	= make -C
 
-# There will be many directories
-SUBDIRS	= mandoc sysupdate
+SUBDIRS	= apply banner doas mandoc signify sysupdate
 
 # miniroot.tgz requires less stuff
-MINIROOTDIRS	= sysupdate
+MINIROOTDIRS	= signify sysupdate
 
 miniroot:
 	for _dir in ${MINIROOTDIRS}; do \
