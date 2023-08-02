@@ -6,8 +6,8 @@ AR		= ar
 CC		= cc
 CFLAGS		= -g ${O_FLAG} -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter \
 		  ${HARDENING_CPPFLAGS} ${HARDENING_CFLAGS}
-LDADD		=     ${HARDENING_LDFLAGS} -lz
-LDFLAGS		= 
+LDADD		=     -lz
+LDFLAGS		= ${HARDENING_LDFLAGS} 
 MANDOC_COBJS	=  compat_ohash.o compat_progname.o compat_recallocarray.o compat_strlcat.o compat_strlcpy.o compat_strtonum.o
 SOELIM_COBJS	=  compat_progname.o compat_stringlist.o
 STATIC		= -static
