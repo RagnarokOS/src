@@ -1,0 +1,377 @@
+file configure.local: reading...
+HAVE_WCHAR=1
+OSNAME="Ragnarok"
+PREFIX="/usr"
+MANDIR="${PREFIX}/share/man"
+EXAMPLEDIR="${PREFIX}/share/doc/mandoc"
+MANM_MAN="mandoc"           # default is "man"
+MANM_MDOC="mandoc_mdoc"         # default is "mdoc"
+MANM_ROFF="mandoc_roff"         # default is "roff"
+MANM_EQN="mandoc_eqn"           # default is "eqn"
+MANM_TBL="mandoc_tbl"           # default is "tbl"
+BINM_MAN=man                   # default is "man"
+BINM_APROPOS=apropos           # default is "apropos"
+BINM_SOELIM=soelim             # default is "soelim"
+BINM_WHATIS=whatis             # default is "whatis"
+BINM_CATMAN=catman             # default is "catman"
+BINM_PAGER=less
+BUILD_DB=0
+BUILD_CATMAN=1
+LN="ln -sf"
+
+tested operating system: Linux -> OSENUM=MANDOC_OS_OTHER
+
+testing cc -W: testing noop ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-noop test-noop.c 
+partial result of noop: cc succeeded
+result of running noop: yes
+
+selected CFLAGS="-g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter"
+
+testing noop-static ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-noop test-noop.c -static
+partial result of noop-static: cc succeeded
+result of running noop-static: yes
+
+selected STATIC="-static"
+
+testing attribute ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-attribute test-attribute.c 
+partial result of attribute: cc succeeded
+Test output: 42
+result of running attribute: yes
+
+testing cmsg ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-cmsg test-cmsg.c 
+partial result of cmsg: cc succeeded
+result of running cmsg: yes
+
+testing dirent-namlen ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-dirent-namlen test-dirent-namlen.c 
+./test-dirent-namlen.c:9:22: error: no member named 'd_namlen' in 'struct dirent'; did you mean 'd_name'?
+        return sizeof(entry.d_namlen) == 0;
+                            ^~~~~~~~
+                            d_name
+/usr/include/x86_64-linux-gnu/bits/dirent.h:33:10: note: 'd_name' declared here
+    char d_name[256];           /* We must not include limits.h! */
+         ^
+1 error generated.
+result of dirent-namlen: cc failed with exit status 0
+result of compiling dirent-namlen: no
+
+testing be32toh ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-be32toh test-be32toh.c 
+partial result of be32toh: cc succeeded
+result of running be32toh: yes
+
+testing be32toh-DSYS_ENDIAN ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-be32toh test-be32toh.c -DSYS_ENDIAN
+./test-be32toh.c:2:10: fatal error: 'sys/endian.h' file not found
+#include <sys/endian.h>
+         ^~~~~~~~~~~~~~
+1 error generated.
+result of be32toh-DSYS_ENDIAN: cc failed with exit status 0
+result of compiling be32toh-DSYS_ENDIAN: no
+
+testing EFTYPE ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-EFTYPE test-EFTYPE.c 
+./test-EFTYPE.c:6:10: error: use of undeclared identifier 'EFTYPE'
+        return !EFTYPE;
+                ^
+1 error generated.
+result of EFTYPE: cc failed with exit status 0
+result of compiling EFTYPE: no
+
+testing err ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-err test-err.c 
+partial result of err: cc succeeded
+test-err: 1. warnx
+test-err: 2. warn: Success
+test-err: 3. err: Success
+result of running err: yes
+
+testing getline ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-getline test-getline.c 
+partial result of getline: cc succeeded
+result of running getline: yes
+
+testing getsubopt ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-getsubopt test-getsubopt.c 
+partial result of getsubopt: cc succeeded
+result of running getsubopt: yes
+
+testing isblank ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-isblank test-isblank.c 
+partial result of isblank: cc succeeded
+result of running isblank: yes
+
+testing mkdtemp ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-mkdtemp test-mkdtemp.c 
+partial result of mkdtemp: cc succeeded
+result of running mkdtemp: yes
+
+testing mkstemps ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-mkstemps test-mkstemps.c 
+partial result of mkstemps: cc succeeded
+result of running mkstemps: yes
+
+testing nanosleep ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-nanosleep test-nanosleep.c 
+partial result of nanosleep: cc succeeded
+result of running nanosleep: yes
+
+testing ntohl ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-ntohl test-ntohl.c 
+partial result of ntohl: cc succeeded
+result of running ntohl: yes
+
+testing O_DIRECTORY ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-O_DIRECTORY test-O_DIRECTORY.c 
+partial result of O_DIRECTORY: cc succeeded
+result of running O_DIRECTORY: yes
+
+testing PATH_MAX ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-PATH_MAX test-PATH_MAX.c 
+partial result of PATH_MAX: cc succeeded
+PATH_MAX is defined to be 4096
+result of running PATH_MAX: yes
+
+testing pledge ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-pledge test-pledge.c 
+./test-pledge.c:6:11: error: call to undeclared function 'pledge'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+        return !!pledge("stdio", NULL);
+                 ^
+1 error generated.
+result of pledge: cc failed with exit status 0
+result of compiling pledge: no
+
+testing sandbox_init ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-sandbox_init test-sandbox_init.c 
+./test-sandbox_init.c:1:10: fatal error: 'sandbox.h' file not found
+#include <sandbox.h>
+         ^~~~~~~~~~~
+1 error generated.
+result of sandbox_init: cc failed with exit status 0
+result of compiling sandbox_init: no
+
+testing progname ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-progname test-progname.c 
+./test-progname.c:8:13: error: call to undeclared function 'getprogname'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+        progname = getprogname();
+                   ^
+./test-progname.c:8:11: error: incompatible integer to pointer conversion assigning to 'const char *' from 'int' [-Wint-conversion]
+        progname = getprogname();
+                 ^ ~~~~~~~~~~~~~
+2 errors generated.
+result of progname: cc failed with exit status 0
+result of compiling progname: no
+
+testing reallocarray ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-reallocarray test-reallocarray.c 
+partial result of reallocarray: cc succeeded
+result of running reallocarray: yes
+
+testing recallocarray ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-recallocarray test-recallocarray.c 
+./test-recallocarray.c:10:10: error: call to undeclared function 'recallocarray'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+        return !recallocarray(p, 2, 3, 2);
+                ^
+./test-recallocarray.c:10:10: note: did you mean 'reallocarray'?
+/usr/include/stdlib.h:582:14: note: 'reallocarray' declared here
+extern void *reallocarray (void *__ptr, size_t __nmemb, size_t __size)
+             ^
+1 error generated.
+result of recallocarray: cc failed with exit status 0
+result of compiling recallocarray: no
+
+testing recallocarray-D_OPENBSD_SOURCE ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-recallocarray test-recallocarray.c -D_OPENBSD_SOURCE
+./test-recallocarray.c:10:10: error: call to undeclared function 'recallocarray'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+        return !recallocarray(p, 2, 3, 2);
+                ^
+./test-recallocarray.c:10:10: note: did you mean 'reallocarray'?
+/usr/include/stdlib.h:582:14: note: 'reallocarray' declared here
+extern void *reallocarray (void *__ptr, size_t __nmemb, size_t __size)
+             ^
+1 error generated.
+result of recallocarray-D_OPENBSD_SOURCE: cc failed with exit status 0
+result of compiling recallocarray-D_OPENBSD_SOURCE: no
+
+testing recvmsg ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-recvmsg test-recvmsg.c 
+partial result of recvmsg: cc succeeded
+result of running recvmsg: yes
+
+testing rewb-bsd ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-rewb-bsd test-rewb-bsd.c 
+partial result of rewb-bsd: cc succeeded
+result of rewb-bsd: execution failed with exit status 0
+result of running rewb-bsd: no
+
+testing rewb-sysv ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-rewb-sysv test-rewb-sysv.c 
+partial result of rewb-sysv: cc succeeded
+result of running rewb-sysv: yes
+
+testing strcasestr ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-strcasestr test-strcasestr.c 
+./test-strcasestr.c:7:13: error: call to undeclared function 'strcasestr'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+        char *cp = strcasestr(big, "Gst");
+                   ^
+./test-strcasestr.c:7:13: note: did you mean 'strcasecmp'?
+/usr/include/strings.h:116:12: note: 'strcasecmp' declared here
+extern int strcasecmp (const char *__s1, const char *__s2)
+           ^
+./test-strcasestr.c:7:8: error: incompatible integer to pointer conversion initializing 'char *' with an expression of type 'int' [-Wint-conversion]
+        char *cp = strcasestr(big, "Gst");
+              ^    ~~~~~~~~~~~~~~~~~~~~~~
+2 errors generated.
+result of strcasestr: cc failed with exit status 0
+result of compiling strcasestr: no
+
+testing strcasestr-D_GNU_SOURCE ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-strcasestr test-strcasestr.c -D_GNU_SOURCE
+partial result of strcasestr-D_GNU_SOURCE: cc succeeded
+result of running strcasestr-D_GNU_SOURCE: yes
+
+testing stringlist ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-stringlist test-stringlist.c 
+./test-stringlist.c:19:10: fatal error: 'stringlist.h' file not found
+#include <stringlist.h>
+         ^~~~~~~~~~~~~~
+1 error generated.
+result of stringlist: cc failed with exit status 0
+result of compiling stringlist: no
+
+testing strlcat ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-strlcat test-strlcat.c 
+./test-strlcat.c:7:12: error: call to undeclared function 'strlcat'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+        return ! (strlcat(buf, "b", sizeof(buf)) == 2 &&
+                  ^
+1 error generated.
+result of strlcat: cc failed with exit status 0
+result of compiling strlcat: no
+
+testing strlcpy ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-strlcpy test-strlcpy.c 
+./test-strlcpy.c:7:12: error: call to undeclared function 'strlcpy'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+        return ! (strlcpy(buf, "a", sizeof(buf)) == 1 &&
+                  ^
+1 error generated.
+result of strlcpy: cc failed with exit status 0
+result of compiling strlcpy: no
+
+testing strndup ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-strndup test-strndup.c 
+partial result of strndup: cc succeeded
+result of running strndup: yes
+
+testing strptime ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-strptime test-strptime.c 
+./test-strptime.c:8:12: error: call to undeclared function 'strptime'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+        return ! (strptime(input, "%Y-%m-%d", &tm) == input + 10 &&
+                  ^
+./test-strptime.c:8:12: note: did you mean 'strftime'?
+/usr/include/time.h:100:15: note: 'strftime' declared here
+extern size_t strftime (char *__restrict __s, size_t __maxsize,
+              ^
+./test-strptime.c:8:45: error: comparison between pointer and integer ('int' and 'const char *') [-Werror,-Wpointer-integer-compare]
+        return ! (strptime(input, "%Y-%m-%d", &tm) == input + 10 &&
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~
+2 errors generated.
+result of strptime: cc failed with exit status 0
+result of compiling strptime: no
+
+testing strptime-D_GNU_SOURCE ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-strptime test-strptime.c -D_GNU_SOURCE
+partial result of strptime-D_GNU_SOURCE: cc succeeded
+result of running strptime-D_GNU_SOURCE: yes
+
+testing strsep ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-strsep test-strsep.c 
+partial result of strsep: cc succeeded
+result of running strsep: yes
+
+testing strtonum ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-strtonum test-strtonum.c 
+./test-strtonum.c:25:6: error: call to undeclared function 'strtonum'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+        if (strtonum("1", 0, 2, &errstr) != 1)
+            ^
+1 error generated.
+result of strtonum: cc failed with exit status 0
+result of compiling strtonum: no
+
+testing strtonum-D_OPENBSD_SOURCE ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-strtonum test-strtonum.c -D_OPENBSD_SOURCE
+./test-strtonum.c:25:6: error: call to undeclared function 'strtonum'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+        if (strtonum("1", 0, 2, &errstr) != 1)
+            ^
+1 error generated.
+result of strtonum-D_OPENBSD_SOURCE: cc failed with exit status 0
+result of compiling strtonum-D_OPENBSD_SOURCE: no
+
+testing vasprintf ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-vasprintf test-vasprintf.c 
+./test-vasprintf.c:32:8: error: call to undeclared function 'vasprintf'; ISO C99 and later do not support implicit function declarations [-Werror,-Wimplicit-function-declaration]
+        irc = vasprintf(ret, format, ap);
+              ^
+./test-vasprintf.c:32:8: note: did you mean 'vsprintf'?
+/usr/include/stdio.h:373:12: note: 'vsprintf' declared here
+extern int vsprintf (char *__restrict __s, const char *__restrict __format,
+           ^
+1 error generated.
+result of vasprintf: cc failed with exit status 0
+result of compiling vasprintf: no
+
+testing vasprintf-D_GNU_SOURCE ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-vasprintf test-vasprintf.c -D_GNU_SOURCE
+partial result of vasprintf-D_GNU_SOURCE: cc succeeded
+result of running vasprintf-D_GNU_SOURCE: yes
+
+testing fts-DFTS_COMPARE_CONST ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-fts test-fts.c -DFTS_COMPARE_CONST
+./test-fts.c:24:34: error: incompatible function pointer types passing 'int (const FTSENT *const *, const FTSENT *const *)' (aka 'int (const struct _ftsent *const *, const struct _ftsent *const *)') to parameter of type 'int (*)(const FTSENT **, const FTSENT **)' (aka 'int (*)(const struct _ftsent **, const struct _ftsent **)') [-Werror,-Wincompatible-function-pointer-types]
+            FTS_PHYSICAL | FTS_NOCHDIR, fts_compare);
+                                        ^~~~~~~~~~~
+/usr/include/fts.h:185:12: note: passing argument to parameter here
+                   int (*)(const FTSENT **, const FTSENT **));
+                         ^
+1 error generated.
+result of fts-DFTS_COMPARE_CONST: cc failed with exit status 0
+result of compiling fts-DFTS_COMPARE_CONST: no
+
+testing fts ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-fts test-fts.c 
+partial result of fts: cc succeeded
+result of running fts: yes
+
+selected BINM_PAGER=less (manual)
+tested less -T: yes
+
+testing UTF8_LOCALE ...
+selected UTF8_LOCALE=C.utf8
+
+tested wchar: HAVE_WCHAR=1 (manual)
+
+testing ohash ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-ohash test-ohash.c 
+./test-ohash.c:4:10: fatal error: 'ohash.h' file not found
+#include <ohash.h>
+         ^~~~~~~~~
+1 error generated.
+result of ohash: cc failed with exit status 0
+result of compiling ohash: no
+
+testing ohash-lutil ...
+cc -g -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wno-unused -Werror -o test-ohash test-ohash.c -lutil
+./test-ohash.c:4:10: fatal error: 'ohash.h' file not found
+#include <ohash.h>
+         ^~~~~~~~~
+1 error generated.
+result of ohash-lutil: cc failed with exit status 0
+result of compiling ohash-lutil: no
+
+selected LDADD="    -lz"
+
+file config.h: written
+file Makefile.local: written
