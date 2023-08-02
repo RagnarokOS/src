@@ -1,13 +1,10 @@
-include ../../share/mk/progs.mk
-
 BUILD_TARGETS	=  mandocd catman
 INSTALL_TARGETS	=  catman-install
 AR		= ar
 CC		= cc
-CFLAGS		= -g ${O_FLAG} -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter \
-		  ${HARDENING_CPPFLAGS} ${HARDENING_CFLAGS}
+CFLAGS		= -D_FORTIFY_SOURCE=2 -g -O2 -W -Wall -Wmissing-prototypes -Wstrict-prototypes -Wwrite-strings -Wno-unused-parameter -Wformat -Wformat-security -fPIE -fstack-clash-protection -fstack-protector-strong --param=ssp-buffer-size=4 -fcf-protection
 LDADD		=     -lz
-LDFLAGS		= ${HARDENING_LDFLAGS} 
+LDFLAGS		= -Wl,-z,relro,-z,now -Wl,-pie -Wl,-zdefs
 MANDOC_COBJS	=  compat_ohash.o compat_progname.o compat_recallocarray.o compat_strlcat.o compat_strlcpy.o compat_strtonum.o
 SOELIM_COBJS	=  compat_progname.o compat_stringlist.o
 STATIC		= -static
