@@ -17,7 +17,7 @@ URL="${MIRROR}/${VERSION}"
 # I take no credit for this function. All credit goes to
 # Antoine Jacoutot, who wrote OpenBSD's syspatch(1).
 unpriv() {
-	local _file=$2 _user=_sysupdate
+	local _file=$2 _ret=0 _user=_sysupdate
 
 	if [[ $1 == -f && -n ${_file} ]]; then
 		# shellcheck disable=SC2188
@@ -28,9 +28,11 @@ unpriv() {
 	fi
 	(($# >= 1))
 
-	su -s /bin/sh ${_user} -c "$@"
+	su -s /bin/sh ${_user} -c "$@" || _ret=$?
 
 	[[ -n ${_file} ]] && chown root "${_file}"
+
+	return ${_ret}
 }
 
 # Get the patches file and sig
