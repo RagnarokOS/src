@@ -3,13 +3,13 @@
 include ../../share/mk/progs.mk
 
 CFLAGS	=	-O2 -pipe ${HARDENING_CFLAGS} ${HARDENING_CPPFLAGS}
-LDFLAGS	=	${HARDENING_LDFLAGS} -lbsd
+LDFLAGS	=	${HARDENING_LDFLAGS}
 
 PROG =	banner
 OBJS =	banner.o chset.o
 
 all: ${OBJS}
-	${CC} ${LDFLAGS} -o ${PROG} ${OBJS}
+	${CC} ${LDFLAGS} -o ${PROG} ${OBJS} -lbsd
 
 install:
 	install -d -m 755 ${DESTDIR}/usr/bin
