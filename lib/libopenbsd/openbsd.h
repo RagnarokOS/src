@@ -15,6 +15,7 @@
 #define __dead		__attribute__((__noreturn__))
 #endif
 
+extern int	 getopt(int, char * const *, const char *);
 extern size_t	 strlcat(char *, const char *, size_t);
 extern size_t	 strlcpy(char *, const char *, size_t);
 extern void	*reallocarray(void *, size_t, size_t);
