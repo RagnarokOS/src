@@ -1,6 +1,6 @@
-# $Id: Makefile,v 1.1 2023/08/09 18:34:47 lecorbeau Exp $
+# $Id: Makefile,v 1.2 2023/08/10 16:44:56 lecorbeau Exp $
 
-include ../usr/share/mk/libs.mk
+include ../../usr/share/mk/libs.mk
 
 CFLAGS	?= ${O_FLAG} -pipe ${HARDENING_CPPFLAGS} ${HARDENING_CFLAGS}
 CFLAGS	+= -I.
