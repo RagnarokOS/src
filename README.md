@@ -9,6 +9,6 @@ Binary updates to the base system (sysupdates) are here [https://github.com/Ragn
 Relevant links
 --------------
 
-* About Ragnarok: [https://ragnarokos.github.io/logs/about.html](https://ragnarokos.github.io/logs/about.html).  
+* About Ragnarok: [https://ragnarokos.github.io/about.html](https://ragnarokos.github.io/about.html).  
 
 * Development notes: [https://ragnarokos.github.io/logs/logs.html](https://ragnarokos.github.io/logs/logs.html).
