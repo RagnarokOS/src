@@ -35,11 +35,11 @@
 
 #include <sys/wait.h>
 
-#include <bsd/err.h>
-#include <bsd/stdio.h>
-#include <bsd/stdlib.h>
-#include <bsd/string.h>
-#include <bsd/unistd.h>
+#include <err.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <unistd.h>
 #include <ctype.h>
 #include <paths.h>
 #include <signal.h>

@@ -1,15 +1,16 @@
 # Ragnarok Makefile for OpenBSD's banner(1)
 
-include ../../share/mk/progs.mk
+include ${TOPDIR}/usr/share/mk/progs.mk
 
-CFLAGS	=	-O2 -pipe ${HARDENING_CFLAGS} ${HARDENING_CPPFLAGS}
+CFLAGS	=	-O2 -pipe ${HARDENING_CFLAGS} ${HARDENING_CPPFLAGS} ${OBSD_INC}
 LDFLAGS	=	${HARDENING_LDFLAGS}
+LIBS	=	${OBSD_LIB}
 
 PROG =	banner
 OBJS =	banner.o chset.o
 
 all: ${OBJS}
-	${CC} ${LDFLAGS} -o ${PROG} ${OBJS} -lbsd
+	${CC} ${LDFLAGS} -o ${PROG} ${OBJS} ${LIBS}
 
 install:
 	install -d -m 755 ${DESTDIR}/usr/bin
