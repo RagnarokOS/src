@@ -6,6 +6,18 @@ This contains sources for Ragnarok's base system.
 See ISOs and releases here [https://github.com/RagnarokOS/iso](https://github.com/RagnarokOS/iso).  
 Binary updates to the base system (sysupdates) are here [https://github.com/RagnarokOS/packages/releases/](https://github.com/RagnarokOS/packages/releases/).
 
+Build
+=====
+
+1) Don't attempt to build the whole thing at once. This isn't ready yet.
+2) On non-Ragnarok systems, before running make in any directory, set the
+TOPDIR variable to the full path to the repository on the filesystem, e.g.
+
+```
+    $ export TOPDIR=/home/username/src
+    $ make
+```
+
 Relevant links
 --------------
 
