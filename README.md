@@ -10,8 +10,9 @@ Build
 =====
 
 1) Don't attempt to build the whole thing at once. This isn't ready yet.
-2) On non-Ragnarok systems, before running make in any directory, set the
-TOPDIR variable to the full path to the repository on the filesystem, e.g.
+2) On non-Ragnarok systems, before running make, set the TOPDIR environment
+variable to the full path to the repository on the filesystem so that the build
+process can use the repo's own usr/share/mk/* and lib directories, e.g.
 
 ```
     $ export TOPDIR=/home/username/src
