@@ -2,7 +2,7 @@
 
 # sysupdate: update Ragnarok base system.
 #
-# $Id: sysupdate,v 1.1 2023/08/15 15:46:04 lecorbeau Exp $
+# $Id: sysupdate,v 1.2 2023/08/18 18:12:56 lecorbeau Exp $
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #											#
@@ -29,11 +29,30 @@ umask 0022
 export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 CONF="/etc/sysupdate.conf"
-TMP=$(mktemp -d -p /tmp syspatch.XXXXXXXXXX)
+TMP=$(mktemp -d -p /tmp sysupdate.XXXXXXXXXX)
 MIRROR=$(getvar MIRROR "$CONF")
 PUBKEY=$(getvar PUBKEY "$CONF")
 VERSION=$(getvar VERSION "$CONF")
 URL="${MIRROR}/${VERSION}"
+
+usage() {
+	printf '%s\n' "
+Options:
+
+-d	download, but don't install, update specified as argument 1.
+
+-h	Show this help message.
+
+-l	List installed updates, if there are any.
+
+-q	Check if there are any updates available.
+
+-r	Revert an update. Must supply name of program as argument 1.
+
+The most common operation is to run sysupdate with no option, which will
+download and install available binary updates.
+"
+}
 
 # Never download stuff from the internet as the root user
 # I take no credit for this function. All credit goes to
@@ -191,7 +210,7 @@ do_update() {
 
 	for patch in "${_patches[@]}"; do
 		printf '%s\n' "Verifying $patch signature"
-		check_sig "${patch}.tgz"
+		check_sig "${TMP}/${patch}.tgz"
 		printf '%s\n' "Installing ${patch}..."
 		handle_tar -e "${TMP}/${patch}.tgz" -C "${TMP}"
 		install_files "${TMP}/${patch}"
@@ -249,17 +268,19 @@ $(comm -1 -3 --output-delimiter="" "/var/db/updates/sysupdate.list" "${TMP}/sysu
 # Downgrade if an update caused an issue. Untested yet.
 # Not tested yet
 do_revert() {
-	local _upd=$1
+	local _upd _u
 
-	echo "${TMP}"
-	unpriv -f "${TMP}/${_upd}.old.tgz" "cp /var/db/updates/${_upd}.old.tgz ${TMP}/"
+	_upd=$(find /var/db/updates/ -type f -name "${1}.old.tgz")
+	_u=${_upd##*/}
+
+	unpriv -f "${TMP}/${_u}" "cp /var/db/updates/${_u} ${TMP}/"
 
 	# Install the files. Keep the .old files where they are, which will allow them to be
 	# tested and/or inspected further by the user. They will get removed once the faulty
 	# update gets fixed.
-	handle_tar -e "${TMP}/${_upd}.old.tgz" -C "${TMP}"
-	printf '%s\n' "Reverting ${_upd##*_}"
-	install_files "${TMP}/${_upd}"
+	handle_tar -e "${TMP}/${_u}" -C "${TMP}"
+	printf '%s\n' "Reverting ${_u%%.*}"
+	install_files "${TMP}/${_u%%.*}"
 }
 
 # Cleanup after finish
@@ -284,4 +305,4 @@ case "$1" in
 		;;
 	*)	do_update
 		;;
-	esac
+esac
