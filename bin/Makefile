@@ -1,23 +1,18 @@
 # Makefile for /bin dir
-# $Id: Makefile,v 1.2 2023/07/27 16:44:13 lecorbeau Exp $
+# $Id: Makefile,v 1.3 2023/08/21 17:08:44 lecorbeau Exp $
 
 MAKE	= make -C
 
 # There will be many directories
-SUBDIRS	= oksh
+SUBDIRS	= oksh ed
 
-# miniroot.tgz requires less stuff
-MINIROOTDIRS	= oksh
-
-miniroot:
-	for _dir in ${MINIROOTDIRS}; do \
-		${MAKE} $$_dir && \
-		${MAKE} $$_dir install; \
+all:
+	for _dir in ${SUBDIRS}; do \
+		${MAKE} $$_dir; \
 		done
 
 install:
 	for _dir in ${SUBDIRS}; do \
-		${MAKE} $$_dir && \
 		${MAKE} $$_dir install; \
 		done
 
