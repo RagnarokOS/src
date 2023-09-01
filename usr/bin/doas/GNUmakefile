@@ -14,7 +14,7 @@ OBJS:=	${SRCS:.y=.c}
 OBJS:=	${OBJS:.c=.o}
 
 ${PROG}: ${OBJS}
-	${CC} ${CFLAGS} $^ -o $@ ${LDFLAGS} ${LDLIBS}
+	${CC} ${CFLAGS} $^ -o $@ ${LDFLAGS} ${HARDENING_LDFLAGS} ${LDLIBS}
 
 install: ${PROG} ${PAM_DOAS} ${MAN}
 	mkdir -p -m 0755 ${DESTDIR}${BINDIR}
