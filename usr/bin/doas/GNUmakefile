@@ -3,7 +3,7 @@ MAN=	doas.1 doas.conf.5
 
 SRCS=	parse.y doas.c env.c
 
-include config.mk ../../share/mk/progs.mk
+include config.mk ${TOPDIR}/usr/share/mk/progs.mk
 
 override CFLAGS:=-I. -Ilibopenbsd ${O_FLAG} -Wall -Wextra ${OS_CFLAGS} \
 	${HARDENING_CPPFLAGS} ${CFLAGS} ${HARDENING_CFLAGS}
@@ -14,15 +14,18 @@ OBJS:=	${SRCS:.y=.c}
 OBJS:=	${OBJS:.c=.o}
 
 ${PROG}: ${OBJS}
-	${CC} ${CFLAGS} $^ -o $@ ${LDFLAGS} ${HARDENING_LDFLAGS} ${LDLIBS}
+	${CC} ${CFLAGS} $^ -o $@ ${LDFLAGS} ${LDLIBS}
 
-install: ${PROG} ${MAN}
+install: ${PROG} ${PAM_DOAS} ${MAN}
 	mkdir -p -m 0755 ${DESTDIR}${BINDIR}
+	[ -n "${PAM_DOAS}" ] && mkdir -p -m 0755 ${DESTDIR}${PAMDIR} || true
 	mkdir -p -m 0755 ${DESTDIR}${MANDIR}/man1
 	mkdir -p -m 0755 ${DESTDIR}${MANDIR}/man5
 	cp -f ${PROG} ${DESTDIR}${BINDIR}
 	chown ${BINOWN}:${BINGRP} ${DESTDIR}${BINDIR}/${PROG}
 	chmod ${BINMODE} ${DESTDIR}${BINDIR}/${PROG}
+	[ -n "${PAM_DOAS}" ] && cp ${PAM_DOAS} ${DESTDIR}${PAMDIR}/doas || true
+	[ -n "${PAM_DOAS}" ] && chmod 0644 ${DESTDIR}${PAMDIR}/doas || true
 	cp -f doas.1 ${DESTDIR}${MANDIR}/man1
 	cp -f doas.conf.5 ${DESTDIR}${MANDIR}/man5
 
