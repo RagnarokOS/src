@@ -1,5 +1,5 @@
 # Makefile for usr/bin
-# $Id: Makefile,v 1.3 2023/08/02 22:41:33 lecorbeau Exp $
+# $Id: Makefile,v 1.4 2023/09/01 15:56:58 lecorbeau Exp $
 
 MAKE	= make -C
 
@@ -7,7 +7,7 @@ MAKE	= make -C
 # before 'make'.
 CONFIGURE = mandoc
 
-SUBDIRS	= apply banner doas mandoc signify sysupdate
+SUBDIRS	= apply banner doas mandoc signify
 
 # miniroot.tgz requires less stuff
 MINIROOTDIRS	= signify sysupdate
@@ -29,7 +29,7 @@ miniroot:
 		${MAKE} $$_dir install; \
 		done
 
-install: all
+install:
 	for _dir in ${SUBDIRS}; do \
 		${MAKE} $$_dir install; \
 		done
