@@ -2,7 +2,7 @@
 
 MAKE = make -C
 
-SUBDIRS	= bin boot etc usr
+SUBDIRS	= bin usr etc boot
 
 all: install
 
