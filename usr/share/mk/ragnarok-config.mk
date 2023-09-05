@@ -1,9 +1,5 @@
 # Config file to build Ragnarok packages
 
-# Directory where the repo is cloned. Needs to be writable by
-# an unprivileged user.
-TOP_DIR		= /usr/src/ragnarok/src
-
 # Path to directories within the repo
 ETC		= ${TOP_DIR}/etc
 BIN		= ${TOP_DIR}/bin
@@ -13,4 +9,4 @@ MAN		= ${TOP_DIR}/usr/share/man
 DISTRO		= ragnarok
 CODENAME	= stable
 VERSION		= 01
-
+NEXT		= 02
