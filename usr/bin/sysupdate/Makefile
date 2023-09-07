@@ -1,9 +1,10 @@
-# $Id: Makefile,v 1.1 2023/09/07 16:43:05 lecorbeau Exp $
-
-include ${TOPDIR}/usr/share/mk/ragnarok-config.mk
+# $Id: Makefile,v 1.2 2023/09/07 18:01:19 lecorbeau Exp $
 
 PROG	= sysupdate
 CONF	= ${PROG}.conf
+
+all:
+	@echo "Nothing to do for target 'all', skipping..."
 
 install:
 	install -d -m 755 -g 0 -o root ${DESTDIR}/var/db/updates
