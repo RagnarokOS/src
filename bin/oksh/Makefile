@@ -24,9 +24,12 @@ ${PROG}: ${OBJS}
 
 install:
 	install -d ${DESTDIR}${BINDIR}
+	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/skel
 	install -d ${DESTDIR}${MANDIR}/man1
 	install -c -s -m 755 ${PROG} ${DESTDIR}${BINDIR}
 	install -c -m 644 ${PROG}.1 ${DESTDIR}${MANDIR}/man1
+	install -c -m 644 -o root -g 0 ksh.kshrc ${DESTDIR}/etc
+	install -c -m 644 .kshrc ${DESTDIR}/etc/skel
 	@echo "Please add /bin/ksh to /etc/shells"
 
 uninstall:
