@@ -1,5 +1,5 @@
 # Compile time options used by programs in Ragnarok
-# $Id: progs.mk,v 1.7 2023/08/10 17:18:00 lecorbeau Exp $
+# $Id: progs.mk,v 1.8 2023/09/19 15:14:14 lecorbeau Exp $
 
 # Flags to enable ThinLTO
 CFLAGS_LTO		= -flto=thin
@@ -7,6 +7,9 @@ LDFLAGS_LTO		= -flto=thin -Wl,-O2
 
 # -D_FORTIFY_SOURCE=2 needs -O2 or higher.
 O_FLAG			= -O2
+
+# CFLAGS for control flow integrity. Depends on the LTO flags.
+CFLAGS_CFI		= ${CFLAGS_LTO} -fvisibility=hidden -fsanitize=cfi
 
 # Hardening flags
 HARDENING_CPPFLAGS	= -D_FORTIFY_SOURCE=2
