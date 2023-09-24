@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.7 2023/09/23 17:22:20 lecorbeau Exp $
+# $Id: Makefile,v 1.8 2023/09/24 16:55:31 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/libs.mk
 
@@ -7,8 +7,8 @@ CFLAGS	+= -I.
 LDFLAGS += ${HARDENING_LDFLAGS}
 
 LIB	 = libopenbsd.a
-OBJS	 = getopt_long.o reallocarray.o recallocarray.o \
-	   strlcat.o strlcpy.o
+OBJS	 = fgetln.o getopt_long.o reallocarray.o recallocarray.o \
+	   strlcat.o strlcpy.o strtonum.o
 
 all: ${OBJS}
 	${AR} cr ${LIB} ${OBJS}
