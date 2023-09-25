@@ -1,11 +1,11 @@
 # Makefile for OpenBSD's version of RCS (Revision Control System)
-# $Ragnarok: Makefile,v 1.1 2023/09/24 17:02:01 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.2 2023/09/25 18:27:34 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/progs.mk
 
 CC ?=		cc
 CFLAGS ?=	${O_FLAG} -pipe ${HARDENING_CPPFLAGS} ${HARDENING_CFLAGS}
-CFLAGS +=	${OBSD_INC} -I. -D_GNU_SOURCE -fcommon
+CFLAGS +=	${OBSD_INC} -I. -D_GNU_SOURCE
 LDFLAGS +=	${HARDENING_LDFLAGS}
 
 LIBS =		${OBSD_LIB}
