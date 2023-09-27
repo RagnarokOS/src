@@ -1,9 +1,9 @@
 # Makefile for /usr/share/ragnarok-keys
-# $Id: Makefile,v 1.1 2023/09/05 16:28:47 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.2 2023/09/27 17:24:01 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/ragnarok-config.mk
 
-KEYS	= ragnarok${VERSION}.pub ragnarok${NEXT}.pub ragnarok${VERSION}.gpg.key
+KEYS	= ragnarok${VERSION}.pub ragnarok${NEXT}.pub
 
 all:
 	@# Nothing to do here, but do something to avoid make running
