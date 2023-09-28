@@ -1,5 +1,5 @@
 # Construct the Ragnarok base system
-# $Ragnarok: Makefile,v 1.2 2023/09/28 16:43:53 lecorbeau Exp i $
+# $Ragnarok: Makefile,v 1.2 2023/09/28 16:50:46 lecorbeau Exp $
 
 MAKE = make -C
 
