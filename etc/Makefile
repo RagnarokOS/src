@@ -15,6 +15,7 @@ all:
 # stuff in, so not everything needs to be copied over.
 miniroot:
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/dpkg/origins
+	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/signify
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/update-motd.d
 	install -m 755 -o root -g 0 apt/preferences.d/systemd ${DESTDIR}/etc/apt/preferences.d
 	install -m 755 -o root -g 0 apt/sources.list.d/llvm.sources ${DESTDIR}/etc/apt/sources.list.d
@@ -25,6 +26,8 @@ miniroot:
 	ln -sf ${DESTDIR}/etc/dpkg/origins/ragnarok ${DESTDIR}/etc/dpkg/origins/default
 	install -m 644 -o root -g 0 skel/.aliases ${DESTDIR}/etc/skel
 	install -m 644 -o root -g 0 skel/.profile ${DESTDIR}/etc/skel
+	install -m 644 -o root -g 0 signify/ragnarok${VERSION} ${DESTDIR}/etc/signify
+	install -m 644 -o root -g 0 signify/ragnarok${NEXT} ${DESTDIR}/etc/signify
 	install -m 755 -o root -g 0 update-motd.d/10-uname ${DESTDIR}/etc/update-motd.d
 	install -m 644 -o root -g 0 ${644FILES} ${DESTDIR}/etc
 
