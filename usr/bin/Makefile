@@ -1,5 +1,5 @@
 # Makefile for usr/bin
-# $Ragnarok: Makefile,v 1.7 2023/09/24 17:25:43 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.8 2023/09/28 23:01:53 lecorbeau Exp $
 
 MAKE	= make -C
 
@@ -13,19 +13,18 @@ SUBDIRS	= yacc apply banner doas mandoc rcs signify sysupdate
 MINIROOTDIRS	= signify sysupdate
 
 all:
-	echo "Pre-configuring..."
+	@echo "Pre-configuring..."
 	@for _dir in ${CONFIGURE}; do \
 		cd $$_dir && \
 		./configure; \
 		done
-	echo "Running make..."
+	@echo "Running make..."
 	@for _dir in ${SUBDIRS}; do \
 		${MAKE} $$_dir; \
 		done
 
 miniroot:
 	for _dir in ${MINIROOTDIRS}; do \
-		${MAKE} $$_dir && \
 		${MAKE} $$_dir install; \
 		done
 
