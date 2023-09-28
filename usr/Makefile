@@ -1,13 +1,16 @@
 # Makefile for /usr
+# $Ragnarok: Makefile,v 1.1 2023/09/28 20:15:25 lecorbeau Exp $
 
 MAKE = make -C
 
-KEYDIR = share/ragnarok-keys
-KEYS = ${KEYDIR}/ragnarok01.pub ${KEYDIR}/ragnarok02.pub ${KEYDIR}/ragnarok01.gpg.key
+SUBDIRS = lib share bin
 
-all: install
+all: 
+	for _dir in ${SUBDIRS}; do \
+		${MAKE} $$_dir; \
+		done
 
 install:
-	install -d 755 -o root -g 0 ${DESTDIR}/usr/share/ragnarok-keys
-	install -m 755 -o root -g 0 lib/ragnarok-shlib ${DESTDIR}/usr/lib
-	install -m 755 -o root -g 0 ${KEYS} ${DESTDIR}/usr/share/ragnarok-keys
+	for _dir in ${SUBDIRS}; do \
+		${MAKE} $$_dir install; \
+		done
