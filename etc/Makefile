@@ -1,5 +1,5 @@
 # Makefile for /etc
-# $Id: Makefile,v 1.3 2023/09/26 16:44:15 lecorbeau Exp $
+# $Id: Makefile,v 1.4 2023/09/28 15:15:10 lecorbeau Exp $
 
 644FILES = debian_version host.conf issue issue.net lsb-release motd
 
@@ -18,7 +18,8 @@ install:
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/update-motd.d
 	# Install the files
 	install -m 755 -o root -g 0 apt/preferences.d/systemd ${DESTDIR}/etc/apt/preferences.d
-	install -m 755 -o root -g 0 apt/sources.list.d/ragnarok.sources ${DESTDIR}/etc/apt/sources.list.d
+	install -m 755 -o root -g 0 apt/sources.list.d/llvm.sources ${DESTDIR}/etc/apt/sources.list.d
+	install -m 755 -o root -g 0 apt/trusted.gpg.d/apt.llvm.org.asc ${DESTDIR}/etc/apt/trusted.gpg.d
 	install -m 600 -o root -g 0 default/grub.d/01_hardening.cfg ${DESTDIR}/etc/default/grub.d/
 	install -m 644 -o root -g 0 default/grub ${DESTDIR}/etc/default
 	install -m 644 -o root -g 0 dpkg/buildflags.conf ${DESTDIR}/etc/dpkg
