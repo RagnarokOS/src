@@ -1,9 +1,9 @@
 # Makefile for /usr/share
-# $Id: Makefile,v 1.1 2023/09/05 16:41:00 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.2 2023/09/28 23:15:03 lecorbeau Exp $
 
 MAKE = make -C
 
-SUBDIRS	= mk ragnarok-keys
+SUBDIRS	= mk
 
 all: 
 	@# Nothing to do here, but do something to avoid make from running

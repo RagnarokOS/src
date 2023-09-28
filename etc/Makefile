@@ -1,7 +1,9 @@
 # Makefile for /etc
 # Ragnarok: Makefile,v 1.4 2023/09/28 15:15:10 lecorbeau Exp i $
 
-644FILES = debian_version host.conf issue issue.net lsb-release motd
+include ${TOPDIR}/usr/share/mk/ragnarok-config.mk
+
+644FILES	= debian_version host.conf issue issue.net lsb-release motd
 
 # Nothing to be done for 'all' target, but do something to prevent
 # make from doing anything when it's being run without 'miniroot'
@@ -30,6 +32,7 @@ install:
 	# Create dirs that don't already exist
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/default/grub.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/dpkg/origins
+	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/signify
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/update-motd.d
 	# Install the files
 	install -m 755 -o root -g 0 apt/preferences.d/systemd ${DESTDIR}/etc/apt/preferences.d
@@ -46,6 +49,8 @@ install:
 	install -m 644 -o root -g 0 rsyslog.d/nftables ${DESTDIR}/etc/rsyslog.d
 	install -m 644 -o root -g 0 skel/.aliases ${DESTDIR}/etc/skel
 	install -m 644 -o root -g 0 skel/.profile ${DESTDIR}/etc/skel
+	install -m 644 -o root -g 0 signify/ragnarok${VERSION} ${DESTDIR}/etc/signify
+	install -m 644 -o root -g 0 signify/ragnarok${NEXT} ${DESTDIR}/etc/signify
 	install -m 644 -o root -g 0 sysctl.d/01-hardening.conf ${DESTDIR}/sysctl.d
 	install -m 644 -o root -g 0 sysctl.d/01-hardening_net.conf ${DESTDIR}/sysctl.d
 	install -m 755 -o root -g 0 update-motd.d/10-uname ${DESTDIR}/etc/update-motd.d
