@@ -1,15 +1,30 @@
 # Makefile for /etc
-# $Id: Makefile,v 1.4 2023/09/28 15:15:10 lecorbeau Exp $
+# Ragnarok: Makefile,v 1.4 2023/09/28 15:15:10 lecorbeau Exp i $
 
 644FILES = debian_version host.conf issue issue.net lsb-release motd
 
-# Miniroot requires less stuff
+# Nothing to be done for 'all' target, but do something to prevent
+# make from doing anything when it's being run without 'miniroot'
+# or 'install' specified.
+all:
+	@echo "Nothing to make, skipping..."
+
+# Miniroot's purpose is to provide a minimal dev environment to build
+# stuff in, so not everything needs to be copied over.
 miniroot:
+	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/dpkg/origins
+	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/update-motd.d
 	install -m 755 -o root -g 0 apt/preferences.d/systemd ${DESTDIR}/etc/apt/preferences.d
-	install -m 755 -o root -g 0 apt/sources.list.d/ragnarok.sources ${DESTDIR}/etc/apt/sources.list.d
+	install -m 755 -o root -g 0 apt/sources.list.d/llvm.sources ${DESTDIR}/etc/apt/sources.list.d
+	install -m 755 -o root -g 0 apt/trusted.gpg.d/apt.llvm.org.asc ${DESTDIR}/etc/apt/trusted.gpg.d
 	install -m 644 -o root -g 0 dpkg/buildflags.conf ${DESTDIR}/etc/dpkg
+	install -m 644 -o root -g 0 dpkg/origins/debian ${DESTDIR}/etc/dpkg/origins
+	install -m 644 -o root -g 0 dpkg/origins/ragnarok ${DESTDIR}/etc/dpkg/origins
+	ln -sf ${DESTDIR}/etc/dpkg/origins/ragnarok ${DESTDIR}/etc/dpkg/origins/default
 	install -m 644 -o root -g 0 skel/.aliases ${DESTDIR}/etc/skel
 	install -m 644 -o root -g 0 skel/.profile ${DESTDIR}/etc/skel
+	install -m 755 -o root -g 0 update-motd.d/10-uname ${DESTDIR}/etc/update-motd.d
+	install -m 644 -o root -g 0 ${644FILES} ${DESTDIR}/etc
 
 install:
 	# Create dirs that don't already exist

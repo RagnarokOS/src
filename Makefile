@@ -1,13 +1,23 @@
-# Install Ragnarok-specific files
+# Construct the Ragnarok base system
+# $Ragnarok: Makefile,v 1.2 2023/09/28 16:43:53 lecorbeau Exp i $
 
 MAKE = make -C
 
-SUBDIRS	= bin usr etc boot
+SUBDIRS	= lib etc bin usr boot
 
-all: install
+all: 
+	for _dir in ${SUBDIRS}; do \
+		${MAKE} $$_dir; \
+		done
+
+# Build miniroot files
+miniroot:
+	${MAKE} lib miniroot
+	${MAKE} etc miniroot
+	${MAKE} bin miniroot
+	${MAKE} usr miniroot
 
 install:
-	${MAKE} bin install
-	${MAKE} boot install
-	${MAKE} etc install
-	${MAKE} usr install
+	for _dir in ${SUBDIRS}; do \
+		${MAKE} $$_dir install; \
+		done
