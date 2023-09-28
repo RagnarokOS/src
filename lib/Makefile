@@ -1,5 +1,5 @@
 # Makefile for /lib
-# $Id: Makefile,v 1.1 2023/08/28 17:33:54 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.2 2023/09/28 20:11:36 lecorbeau Exp $
 
 MAKE = make -C
 
@@ -8,6 +8,11 @@ SUBDIRS = libopenbsd
 all:
 	@for _dir in ${SUBDIRS}; do \
 		${MAKE} $$_dir; \
+		done
+
+miniroot:
+	@for _dir in ${SUBDIRS}; do \
+		${MAKE} $$_dir miniroot; \
 		done
 
 install:
