@@ -1,5 +1,5 @@
 # Construct the Ragnarok base system
-# $Ragnarok: Makefile,v 1.2 2023/09/28 16:50:46 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.3 2023/09/29 14:29:44 lecorbeau Exp $
 
 MAKE = make -C
 
@@ -12,9 +12,9 @@ all:
 
 # Build miniroot files
 miniroot:
-	${MAKE} lib miniroot
+	${MAKE} lib install
+	${MAKE} bin install
 	${MAKE} etc miniroot
-	${MAKE} bin miniroot
 	${MAKE} usr miniroot
 
 install:
