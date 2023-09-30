@@ -3,7 +3,7 @@
 
 include ${TOPDIR}/usr/share/mk/ragnarok-config.mk
 
-644FILES	= debian_version host.conf issue issue.net lsb-release motd
+644FILES	= debian_version host.conf issue issue.net lsb-release motd sysctl.conf
 
 # Nothing to be done for 'all' target, but do something to prevent
 # make from doing anything when it's being run without 'miniroot'
@@ -54,8 +54,6 @@ install:
 	install -m 644 -o root -g 0 skel/.profile ${DESTDIR}/etc/skel
 	install -m 644 -o root -g 0 signify/ragnarok${VERSION} ${DESTDIR}/etc/signify
 	install -m 644 -o root -g 0 signify/ragnarok${NEXT} ${DESTDIR}/etc/signify
-	install -m 644 -o root -g 0 sysctl.d/01-hardening.conf ${DESTDIR}/sysctl.d
-	install -m 644 -o root -g 0 sysctl.d/01-hardening_net.conf ${DESTDIR}/sysctl.d
 	install -m 755 -o root -g 0 update-motd.d/10-uname ${DESTDIR}/etc/update-motd.d
 	install -m 700 -o root -g 0 nftables.conf ${DESTDIR}/etc
 	install -m 644 -o root -g 0 ${644FILES} ${DESTDIR}/etc
