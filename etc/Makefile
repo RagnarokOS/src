@@ -26,8 +26,8 @@ miniroot:
 	ln -sf ${DESTDIR}/etc/dpkg/origins/ragnarok ${DESTDIR}/etc/dpkg/origins/default
 	install -m 644 -o root -g 0 skel/.aliases ${DESTDIR}/etc/skel
 	install -m 644 -o root -g 0 skel/.profile ${DESTDIR}/etc/skel
-	install -m 644 -o root -g 0 signify/ragnarok${VERSION} ${DESTDIR}/etc/signify
-	install -m 644 -o root -g 0 signify/ragnarok${NEXT} ${DESTDIR}/etc/signify
+	install -m 644 -o root -g 0 signify/ragnarok${VERSION}.pub ${DESTDIR}/etc/signify
+	install -m 644 -o root -g 0 signify/ragnarok${NEXT}.pub ${DESTDIR}/etc/signify
 	install -m 755 -o root -g 0 update-motd.d/10-uname ${DESTDIR}/etc/update-motd.d
 	install -m 644 -o root -g 0 ${644FILES} ${DESTDIR}/etc
 
@@ -52,8 +52,8 @@ install:
 	install -m 644 -o root -g 0 rsyslog.d/nftables ${DESTDIR}/etc/rsyslog.d
 	install -m 644 -o root -g 0 skel/.aliases ${DESTDIR}/etc/skel
 	install -m 644 -o root -g 0 skel/.profile ${DESTDIR}/etc/skel
-	install -m 644 -o root -g 0 signify/ragnarok${VERSION} ${DESTDIR}/etc/signify
-	install -m 644 -o root -g 0 signify/ragnarok${NEXT} ${DESTDIR}/etc/signify
+	install -m 644 -o root -g 0 signify/ragnarok${VERSION}.pub ${DESTDIR}/etc/signify
+	install -m 644 -o root -g 0 signify/ragnarok${NEXT}.pub ${DESTDIR}/etc/signify
 	install -m 755 -o root -g 0 update-motd.d/10-uname ${DESTDIR}/etc/update-motd.d
 	install -m 700 -o root -g 0 nftables.conf ${DESTDIR}/etc
 	install -m 644 -o root -g 0 ${644FILES} ${DESTDIR}/etc
