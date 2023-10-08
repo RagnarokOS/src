@@ -1,4 +1,4 @@
-# $Id: Makefile,v 1.8 2023/09/24 16:55:31 lecorbeau Exp $
+# $Id: Makefile,v 1.9 2023/10/08 19:21:57 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/libs.mk
 
@@ -15,8 +15,9 @@ all: ${OBJS}
 	ranlib ${LIB}
 
 install:
-	install -d -m 755 -g 0 -o root ${DESTDIR}/lib
-	install -m 755 -g 0 -o root ${LIB} ${DESTDIR}/lib
+	install -d -m 755 -g 0 -o root ${DESTDIR}/lib/libopenbsd
+	install -m 755 -g 0 -o root ${LIB} ${DESTDIR}/lib/libopenbsd
+	install -m 755 -g 0 -o root openbsd.h ${DESTDIR}/lib/libopenbsd
 
 clean:
 	rm -f ${LIB} ${OBJS}
