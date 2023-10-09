@@ -16,7 +16,7 @@ all:
 miniroot:
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/preferences.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/sources.list.d
-	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/trusted.gpg.d
+	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/trusted.gpg.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/dpkg/origins
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/signify
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/skel
