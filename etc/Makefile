@@ -14,8 +14,12 @@ all:
 # Miniroot's purpose is to provide a minimal dev environment to build
 # stuff in, so not everything needs to be copied over.
 miniroot:
+	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/preferences.d
+	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/sources.list.d
+	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/trusted.gpg.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/dpkg/origins
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/signify
+	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/skel
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/update-motd.d
 	install -m 644 -o root -g 0 apt/preferences.d/systemd ${DESTDIR}/etc/apt/preferences.d
 	install -m 644 -o root -g 0 apt/sources.list.d/llvm.sources ${DESTDIR}/etc/apt/sources.list.d
@@ -33,9 +37,13 @@ miniroot:
 
 install:
 	# Create dirs that don't already exist
+	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/preferences.d
+	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/sources.list.d
+	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/trusted.gpg.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/default/grub.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/dpkg/origins
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/signify
+	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/skel
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/update-motd.d
 	# Install the files
 	install -m 644 -o root -g 0 apt/preferences.d/systemd ${DESTDIR}/etc/apt/preferences.d
