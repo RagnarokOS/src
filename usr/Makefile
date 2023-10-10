@@ -1,9 +1,9 @@
 # Makefile for /usr
-# $Ragnarok: Makefile,v 1.2 2023/09/28 20:17:47 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.3 2023/10/10 18:27:44 lecorbeau Exp $
 
 MAKE = make -C
 
-SUBDIRS = lib share bin
+SUBDIRS = lib share bin sbin
 
 all: 
 	for _dir in ${SUBDIRS}; do \
