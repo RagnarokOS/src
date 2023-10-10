@@ -1,5 +1,5 @@
 # Makefile for usr/bin
-# $Ragnarok: Makefile,v 1.8 2023/09/28 23:01:53 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.9 2023/10/10 18:44:54 lecorbeau Exp $
 
 MAKE	= make -C
 
@@ -7,7 +7,7 @@ MAKE	= make -C
 # before 'make'.
 CONFIGURE = mandoc
 
-SUBDIRS	= yacc apply banner doas mandoc rcs signify sysupdate
+SUBDIRS	= yacc apply banner bsd-mailx doas mandoc rcs signify sysupdate
 
 # miniroot.tgz requires less stuff
 MINIROOTDIRS	= signify sysupdate
