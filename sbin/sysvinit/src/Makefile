@@ -8,8 +8,11 @@
 # Version:	@(#)Makefile  2.85-13  23-Mar-2004  miquels@cistron.nl
 #
 
-CPPFLAGS =
-CFLAGS  ?= -O2
+include ${TOPDIR}/usr/share/mk/progs.mk
+
+CPPFLAGS = ${HARDENING_CPPFLAGS}
+CFLAGS  ?= ${O_FLAG} ${HARDENING_CFLAGS}
+LDFLAGS += ${HARDENING_LDFLAGS}
 override CFLAGS += -ansi -fomit-frame-pointer -fstack-protector-strong -W -Wall -Wunreachable-code -Wformat -Werror=format-security -D_FORTIFY_SOURCE=2 -D_XOPEN_SOURCE -D_GNU_SOURCE -DVERSION=\"$(VERSION)\"
 override CFLAGS += $(shell getconf LFS_CFLAGS)
 STATIC	=
