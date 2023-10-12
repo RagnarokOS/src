@@ -1,0 +1,82 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2003 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by 
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the  
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH BOOTLOGD 8 "21 Julho, 2003" "sysvinit " "Manual de Administrador de Sistema Linux"
+.SH NOME
+bootlogd \- regista mensagens de arranque
+.SH RESUMO
+\fB/sbin/bootlogd\fP [\fB\-c\fP] [\fB\-d\fP] [\fB\-e\fP] [\fB\-r\fP] [\fB\-s\fP] [\fB\-v\fP] [\fI
+\fP\fB\-l\fP\fI logfile \fP] [\fI \fP\fB\-p\fP\fI pidfile \fP]
+.SH DESCRIÇÃO
+\fBbootlogd\fP corre em segundo plano e copia todas as strings enviadas para o
+dispositivo \fI/dev/console\fP para um ficheiro de registo. Se o \fIlogfile\fP não
+estiver acessível, as mensagens serão mantidas em memória até que esteja.
+.SH OPÇÕES
+.IP \fB\-d\fP
+Não se bifurca e corre nos bastidores.
+.IP \fB\-e\fP
+Escreve caracteres de escape no ficheiro de registo do arranque. Isto
+desliga a filtragem do caracteres de escape e permite que ferramentas como o
+\fBless\fP(1) do GNU vejam e usem caracteres de controlo de cores (mostram o
+registo a cores).
+.IP \fB\-c\fP
+Tenta escrever para o logfile mesmo que este não exista ainda. Sem esta
+opção, o \fBbootlogd\fP irá esperar que o logfile apareça antes de tentar
+escrever nele. Este comportamento previne o \fBbootlogd\fP de criar logfiles
+debaixo de pontos de montagem.
+.IP \fB\-r\fP
+Se existir um logfile chamado \fIlogfile\fP renomeia\-o para \fIlogfile~\fP a menos
+que \fIlogfile~\fP já exista.
+.IP \fB\-s\fP
+Assegura que os dados são escritos no ficheiro após cada linha ao chamar
+\fBfdatasync\fP(3).  Isto irá abrandar um processo \fBfsck\fP(8) a correr em
+paralelo.
+.IP \fB\-v\fP
+Mostra a versão.
+.IP "\fB\-l\fP \fIlogfile\fP"
+Regista para este logfile. A predefinição é \fI/var/log/boot\fP.
+.IP "\fB\-p\fP \fIpidfile\fP"
+Coloca id de processo neste ficheiro. A predefinição é nenhum pidfile.
+.SH NOTAS
+O \fBbootlogd\fP salva dados de registo que incluem caracteres de controle. O
+registo é tecnicamente um ficheiro de texto, mas não muito fácil para
+humanos lerem. Para resolver isto pode ser usado o comando \fBreadbootlog\fP(1)
+para mostrar o registo de arranque sem os caracteres de controle.
+.SH BUGS
+O \fBbootlogd\fP funciona ao redirecionar os resultados da consola a partir do
+dispositivo de consola. (Como consequência o \fBbootlogd\fP requer suporte PTY
+na configuração do kernel.) Ele copia esses resultados para o dispositivo de
+consola real e para um ficheiro de registo (log). Não existe um modo
+standard de determinar o dispositivo de consola real se você tiver um
+dispositivo \fI/dev/console\fP ao estilo novo (maior 5, menor 1)  assim o
+\fBbootlogd\fP analisa a linha de comandos do kernel à procura de linhas
+\fBconsole=...\fP e deduz o dispositivo de consola real a partir daí. Se essa
+sintaxe for alguma vez modificada pelo kernel, ou se for usado um tipo de
+consola que o \fBbootlogd\fP não conhece, então o \fBbootlogd\fP não irá
+funcionar.
+
+.SH AUTOR
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME
+.SH "VEJA TAMBÉM"
+\fBdmesg\fP(8), \fBfdatasync\fP(3), \fBreadbootlog\fP(1)

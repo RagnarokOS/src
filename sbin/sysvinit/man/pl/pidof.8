@@ -1,0 +1,100 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH PIDOF 8 "1 września 1998" "sysvinit " "Podręcznik administratora systemu Linux"
+.SH NAZWA
+pidof \- znajduje identyfikator procesu działającego programu
+.SH SKŁADNIA
+\fBpidof\fP [\fB\-s\fP] [\fB\-c\fP] [\fB\-n\fP] [\fB\-x\fP] [\fB\-z\fP] [\fB\-o\fP
+\fIomitpid[,omitpid...]\fP] [\fB\-o\fP \fIomitpid[,omitpid...]...\fP] [\fB\-d\fP \fIsep\fP]
+\fIprogram\fP [\fIprogram...\fP]
+.SH OPIS
+\fBpidof\fP wyszukuje identyfikatory procesów (PID\-y) wskazanych
+programów. Wypisuje je następnie na standardowe wyjście. Program ten jest na
+ogół używany w skryptach zmian poziomu pracy (runlevel change scripts),
+szczególnie jeśli system ma strukturę \fIrc\fP typu \fISystem\-V\fP. Skrypty te są
+wtedy zlokalizowane w \fI/etc/rc.?d\fP, gdzie ? oznacza poziom pracy. Jeżeli
+system posiada program \fBstart\-stop\-daemon\fP(8), to powinien być on stosowany
+zamiast \fBpidof\fP.
+.SH OPCJE
+.IP \fB\-s\fP
+Pojedynczy strzał \- mówi to programowi, by wyświetlił tylko jeden \fIpid\fP.
+.IP \fB\-c\fP
+Only return process PIDs that are running with the same root directory.
+This option is ignored for non\-root users, as they will be unable to check
+the current root directory of processes they do not own.
+.IP \fB\-n\fP
+Zapobiega wywołaniu funkcji systemowej \fBstat\fP(2) na wszystkich plikach
+binarnych, zlokalizowanych w sieciowym systemie plików, takim jak
+\fBNFS\fP. Zamiast użycia tej opcji, można również ustawić i wyeksportować
+zmienną \fBPIDOF_NETFS\fP.
+.IP \fB\-q\fP
+Do not display matched PIDs to standard out. Simply exit with a status of
+true or false to indicate whether a matching PID was found.
+.IP \fB\-x\fP
+Skrypty również \- to powoduje, że program zwraca również identyfikatory
+procesów powłok, pracujących z podanymi skryptami.
+.IP \fB\-z\fP
+Try to detect processes which are stuck in zombie (Z)  status. Usually these
+processes are skipped as trying to deal with them can cause pidof or related
+tools to hang. Note: In the past pidof would ignore processes in the
+uninterruptable state (D), unless the \fB\-z\fP flag was specified. This is no
+longer the case. The \fBpidof\fP program will find and report processes in the
+D state whether \fB\-z\fP is specified or not.
+.IP "\-d \fIsep\fP"
+Tells \fIpidof\fP to use \fIsep\fP as an output separator if more than one PID is
+shown. The default separator is a space.
+.IP "\fB\-o\fP \fIpomiń\-pid\fP"
+Mówi programowi, by ominął procesy z podanym identyfikatorem
+procesu. Istnieje specjalny pid \fB%PPID\fP, który może być używany do
+wskazywania procesu rodzicielskiego programu \fBpidof\fP, czyli innymi słowy do
+wywołującej powłoki lub skryptu.
+.SH "KOD ZAKOŃCZENIA"
+.TP 
+\fB0\fP
+Znaleziono przynajmniej jeden program o żądanej nazwie.
+.TP 
+\fB1\fP
+Nie znaleziono programu o żądanej nazwie.
+.SH UWAGI
+\fBpidof\fP jest w rzeczywistości tym samym programem co \fBkillall5\fP(8), a jego
+zachowanie zależy od nazwy, spod której został wywołany.
+.PP
+Gdy \fBpidof\fP jest wywoływany z pełną, ścieżkową nazwą programu, którego PID
+ma znaleźć, jest rozsądnie bezpieczny. W przeciwnym razie możliwe, że zwróci
+identyfikatory pid programów, które przypadkowo mają tę samą nazwę, co
+szukany przez nas, ale faktycznie są innymi programami. Proszę zauważyć, że
+nazwy plików wykonywalnych działających procesów są pozyskiwane za pomocą
+\fBreadlink\fP(2), tak więc dowiązania symboliczne do plików wykonywalnych
+również są dopasowywane.
+.PP
+Zombie processes or processes in disk sleep (states Z and D, respectively)
+are ignored, as attempts to access the stats of these will sometimes fail.
+The \fB\-z\fP flag (see above) tells \fBpidof\fP to try to detect these sleeping
+and zombie processes, at the risk of failing or hanging.
+
+.SH "ZOBACZ TAKŻE"
+\fBshutdown\fP(8), \fBinit\fP(8), \fBhalt\fP(8), \fBreboot\fP(8), \fBkillall5\fP(8)
+.SH AUTOR
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME

@@ -1,0 +1,88 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2006 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH SULOGIN 8 "17. Januar 2006" "sysvinit " Linux\-Systemverwaltungshandbuch
+.SH BEZEICHNUNG
+sulogin \- Einzelbenutzeranmeldung
+.SH ÜBERSICHT
+\fBsulogin\fP [ \fB\-e\fP ] [ \fB\-p\fP ] [ \fB\-t\fP \fISEKUNDEN\fP ] [ \fITTY\fP ]
+.SH BESCHREIBUNG
+\fIsulogin\fP wird von \fBinit\fP(8) aufgerufen, wenn das System in den
+Einzelbenutzer\-Modus eintritt (dies geschieht durch einen Eintrag in
+\fBinittab\fP(5)). \fBinit\fP(8) versucht auch, \fBsulogin\fP auszuführen, wenn an
+den Bootloader (zum Beispiel \fBgrub\fP(8)) die Option \fB\-b\fP übergeben wird.
+.PP
+Der Benutzer wird um folgende Eingaben gebeten:
+.IP "" .5i
+Administratorpasswort für Wartungszwecke eingeben
+.br
+(oder Strg+D drücken, um fortzufahren):
+.PP
+\fBsulogin\fP wird mit dem aktuellen Terminal oder mit dem optional in der
+Befehlszeile angegebenen Gerät verbunden (letzteres ist typischerweise
+\fI/dev/console\fP).
+.PP
+Wenn die Option \fB\-t\fP verwendet wird, wartet das Programm nur die angegebene
+Anzahl Sekunden auf Benutzereingaben.
+.PP
+Wenn die Option \fB\-p\fP verwandt wird, dann wird eine Einzelbenutzer\-Shell mit
+\fIdash\fP als erstem Zeichen in \fIargv[0]\fP aufgerufen. Dies führt dazu, dass
+sich der Shell\-Prozess wie eine Anmelde\-Shell verhält. Standardmäßig erfolgt
+dies \fBnicht\fP, so dass die Shell \fI/etc/profile\fP oder \fI$HOME/.profile\fP beim
+Starten \fBnicht\fP lesen wird.
+.PP
+Wenn der Benutzer die Einzelbenutzer\-Shell verlässt oder an der
+Eingabeaufforderung Strg\-D drückt, wird der Bootvorgang in den
+Standard\-Runlevel gestartet bzw. fortgesetzt.
+.SH UMGEBUNGSVARIABLEN
+\fBsulogin\fP schaut nach der Umgebungsvariable \fBSUSHELL\fP oder \fBsushell\fP, um
+zu bestimmen, welche Shell gestartet werden soll. Falls die
+Umgebungsvariable nicht gesetzt ist, versucht es, die Shell des
+Root\-Benutzers aus \fI/etc/passwd\fP zu starten. Falls dies fehlschlägt, fällt
+es auf \fI/bin/sh\fP zurück.
+.PP
+In Zusammenhang mit der Option \fB\-b\fP von \fBinit\fP(8) ist das sehr
+nützlich. Um das System in den Einzelbenutzermodus zu starten, wobei das
+Wurzeldateisystem lese\- und schreibbar eingehängt ist, wird eine besondere
+»fehlertolerante« Shell verwandt, die statisch gelinkt ist (dieses Beispiel
+ist für Systemstart\-Eingabeaufforderung von LILO gültig):
+.PP
+boot: linux \-b rw sushell=/sbin/sash
+.SH AUSWEICHMETHODEN
+\fBsulogin\fP prüft das Root\-Password zuerst mit der Standardmethode
+(\fBgetpwnam\fP(3)). Dann, falls die Option \fB\-e\fP angegeben wurde, untersucht
+\fBsulogin\fP folgende Dateien direkt, um das Root\-Passwort zu finden:
+.PP
+/etc/passwd,
+.br
+/etc/shadow (falls vorhanden)
+.PP
+Falls diese beschädigt oder nicht vorhanden sind, startet \fBsulogin\fP eine
+Root\-Shell, ohne nach einem Passwort zu fragen. Verwenden Sie die Option
+\fB\-e\fP nur dann, wenn Sie sicher sind, dass die Konsole physisch gegen
+unerlaubten Zugriff geschützt ist.
+.SH AUTOR
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME
+.SH "SIEHE AUCH"
+\fBinit\fP(8), \fBinittab\fP(5)

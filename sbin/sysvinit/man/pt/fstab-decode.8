@@ -1,0 +1,70 @@
+'\" -*- coding: UTF-8 -*-
+.\" A man page for fstab-decode(8).
+.\"
+.\" Copyright (C) 2006 Red Hat, Inc. All rights reserved.
+.\"
+.\" This copyrighted material is made available to anyone wishing to use,
+.\" modify, copy, or redistribute it subject to the terms and conditions of the
+.\" GNU General Public License v.2.
+.\"
+.\" This program is distributed in the hope that it will be useful, but WITHOUT
+.\" ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+.\" FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for
+.\" more details.
+.\"
+.\" You should have received a copy of the GNU General Public License along
+.\" with this program; if not, write to the Free Software Foundation, Inc.,
+.\" 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+.\"
+.\" Author: Miloslav Trmac <mitr@redhat.com>
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH FSTAB\-DECODE 8 "Maio 2006" "sysvinit " "Manual de Administrador de Sistema Linux"
+
+.SH NOME
+fstab\-decode \- corre um comando com argumentos codificados a fstab
+
+.SH RESUMO
+\fBfstab\-decode\fP \fICOMANDO\fP [\fIARGUMENTO\fP]...
+
+.SH DESCRIÇÃO
+\fBfstab\-decode\fP descodifica escapes (tais como caracteres de nova\-linha e
+outros espaços em branco)  nos \fIARGUMENTO\fPs especificados e usa\-os para
+correr o \fICOMANDO\fP. O escapamento de argumentos usa as mesmas regras que o
+escapamento de caminho em \fI/etc/fstab\fP, \fI/etc/mtab\fP e \fI/proc/mtab\fP.
+
+Essencialmente o \fBfstab\-decode\fP pode ser usado a qualquer altura que
+queremos passar vários parâmetros a um comando como uma lista de argumentos
+de linha de comandos. Transforma resultados como estes:
+
+.nf
+/root
+/mnt/remote\-disk
+/home
+
+Numa longa lista de parâmetros, "/root /mnt/remote\-disk /home". Isto
+pode ser útil quando se tenta trabalhar com vários sistemas de ficheiros
+duma vez. Por exemplo, podemos usa\-lo para desmontar várias partilhas NFS.
+Este programa também remove os espaços em branco e outros caracteres que
+podem causar falhas em programas como \fBmount\fP(8) ou \fBumount\fP(8).
+
+.SH "ESTADO DE SAÍDA"
+O \fBfstab\-decode\fP termina com estado 127 se o \fICOMANDO\fP não puder ser
+corrido. Caso contrário, termina com o estado retornado pelo \fICOMANDO\fP.
+
+.SH EXEMPLOS
+O seguinte exemplo lê \fIfstab\fP, encontra todas as instâncias de sistemas de
+ficheiros VFAT e escreve os seus pontos de montagem (argumento 2 no ficheiro
+\fIfstab\fP).  O \fBfstab\-decode\fP depois corre o programa especificado,
+\fBumount\fP(8), e passa\-lhe a lista de pontos de montagem VFAT. Isto desmonta
+todas as partições VFAT.
+
+.nf
+\fBfstab\-decode umount $(awk \[aq]$3 == \[dq]vfat\[dq] { print $2 }\[aq] /etc/fstab)\fP
+.fi
+
+.SH "VEJA TAMBÉM"
+\fBfstab\fP(5)

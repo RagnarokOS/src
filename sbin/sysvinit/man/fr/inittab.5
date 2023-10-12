@@ -1,0 +1,297 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2001 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"{{{}}}
+.\"{{{  Title
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH INITTAB 5 "4 décembre 2001" "sysvinit " "Formats de fichier"
+.\"}}}
+.\"{{{  Name
+.SH NOM
+.\"}}}
+.\"{{{  Description
+inittab \- Format du fichier inittab utilisé dans le processus de démarrage
+des systèmes UNIX Système\ V et compatibles
+.SH DESCRIPTION
+Le fichier \fBinittab\fP décrit l'ensemble des processus qui doivent être
+lancés au démarrage du système et pendant un fonctionnement normal (par
+exemple, /etc/init.d/boot, /etc/init.d/rc, gettys…). Le programme \fBinit\fP(8)
+distingue différents \fIniveaux_exécution\fP (runlevel), chacun pouvant avoir
+ses propres processus à démarrer. Les niveaux d'exécution valables sont
+\fB0\fP\-\fB6\fP, et \fBA\fP, \fBB\fP ou \fBC\fP pour des niveaux personnalisés
+(\fBondemand\fP). Typiquement, une entrée dans le fichier inittab a la forme
+suivante\ :
+.RS
+.sp
+\fIid\fP:\fIniveaux_exécution\fP:\fIaction\fP:\fIprocessus\fP
+.sp
+.RE
+.\"{{{  id
+Les lignes commençant par le caractère «\ #\ » sont ignorées.
+.IP \fIid\fP
+Séquence unique de 1 à 4 caractères qui identifient une entrée dans
+\fBinittab\fP (pour les versions de sysvinit compilées avec les \fIanciennes\fP
+bibliothèques libc5 (< 5.2.18) ou a.out, la limite est de 2 caractères).
+.sp
+.\"}}}
+.\"{{{  runlevels
+Remarque\ : pour les programmes de connexion comme les getty ou d'autres, le
+champ \fIid\fP doit être le numéro du tty correspondant à la console, par
+exemple \fB1\fP pour \fBtty1\fP. Des anciens programmes de gestion des connexions
+peuvent également se baser là\-dessus, même si je n'en ai pas le souvenir.
+.IP \fIniveaux_exécution\fP
+.\"}}}
+.\"{{{  action
+Liste des niveaux d'exécution pour lesquels l'action doit être faite.
+.IP \fIaction\fP
+.\"}}}
+.\"{{{  process
+Description de l'action à faire.
+.IP \fIprocessus\fP
+Commande à exécuter. Si ce champ commence par le caractère «\ +\ », \fBinit\fP
+n'enregistrera pas les connexions dans utmp et wtmp. C'est requis par getty
+qui utilise son propre gestionnaire de utmp ou de wtmp. C'est également un
+bogue qui reste pour des raisons historiques. La taille de ce champ est
+limitée à 127\ caractères.
+
+.\"'<>?
+Please note that including certain characters in the process field will
+result in \fBinit\fP attempting to launch a shell to interpret the command
+contained in the process field.  The characters which will trigger a shell
+are: \fB~`!$^&*()=|\{}[];\fP
+
+On systems which do not have a shell to be launched or which do not wish to
+use a shell to interpret the process field, the process field can be
+prefixed with the @ symbol. The @ will be ignored and everything followed
+will be treated as a command to be launched, literally, by the \fBinit\fP
+service.
+
+In cases where both a + and @ sign are to be used (to turn off logging and
+shell interpretation), place the + sign before the @ symbol. Both flags will
+be handled and then everything following the @ will be handled by \fBinit\fP
+
+.\"}}}
+.PP
+Le champ \fIniveaux_exécution\fP peut contenir plusieurs caractères indiquant
+différents niveaux d'exécution. Par exemple, \fB123\fP signifie que le
+processus sera exécuté dans les niveaux d'exécution 1, 2 et 3. Les \fIniveaux
+d'exécution\fP pour les entrées \fBondemand\fP peuvent contenir un \fBA\fP, \fBB\fP ou
+\fBC\fP. Les champs \fIniveaux_exécution\fP des entrées \fBsysinit\fP, \fBboot\fP et
+\fBbootwait\fP sont ignorés.
+.PP
+Quand le niveau d'exécution est changé, tous les processus qui ne sont pas
+spécifiés démarrés dans ce nouveau niveau d'exécution sont tués, d'abord
+avec \s-2SIGTERM\s0, puis avec \s-2SIGKILL\s0.
+.PP
+.\"{{{  respawn
+Les actions valables pour le champ \fIaction\fP sont\ :
+.IP \fBrespawn\fP
+.\"}}}
+.\"{{{  wait
+Le processus est redémarré à chaque fois qu'il se termine (par exemple\ :
+getty).
+.IP \fBwait\fP
+.\"}}}
+.\"{{{  once
+Le processus n'est démarré qu'une seul fois, lors de l'entrée dans le niveau
+d'exécution et \fBinit\fP attend qu'il se termine.
+.IP \fBonce\fP
+.\"}}}
+.\"{{{  boot
+Le processus est exécuté une seule fois, lors de l'entrée dans le niveau
+d'exécution.
+.IP \fBboot\fP
+.\"}}}
+.\"{{{  bootwait
+Le processus est exécuté pendant le démarrage du système. Le champ
+\fIniveaux_exécution\fP est ignoré.
+.IP \fBbootwait\fP
+.\"}}}
+.\"{{{  off
+Le processus est exécuté pendant le démarrage du système et \fBinit\fP attend
+que le processus se termine (par exemple\ : /etc/rc). Le champ
+\fIniveaux_exécution\fP est ignoré.
+.IP \fBoff\fP
+.\"}}}
+.\"{{{  ondemand
+Ne fait rien.
+.IP \fBondemand\fP
+.\"}}}
+.\"{{{  initdefault
+Un processus marqué dans un niveau d'exécution \fBondemand\fP est exécuté à
+chaque fois que le niveau d'exécution \fBondemand\fP est appelé. Cependant,
+aucun changement de niveau d'exécution ne survient (les modes de démarrage
+pour \fBondemand\fP sont «\ a\ », «\ b\ » et «\ c\ »).
+.IP \fBinitdefault\fP
+.\"}}}
+.\"{{{  sysinit
+Une entrée \fBinitdefault\fP indique qu'on entrera dans ce niveau d'exécution
+une fois le système effectivement opérationnel. Si aucun n'existe, \fBinit\fP
+demandera un niveau d'exécution sur la console. Le champ \fIprocessus\fP est
+ignoré.
+.IP \fBsysinit\fP
+.\"}}}
+.\"{{{  powerwait
+Le processus est exécuté pendant le démarrage du système. Il est exécuté
+avant les entrées \fBboot\fP ou \fBbootwait\fP. Le champ \fIniveaux_exécution\fP est
+ignoré.
+.IP \fBpowerwait\fP
+.\"}}}
+.\"{{{  powerfail
+Le processus est exécuté quand la machine est sur le point de
+s'éteindre. \fBinit\fP est normalement informé de cela par un programme qui
+discute avec un UPS connecté à la machine. \fBinit\fP attend que le processus
+se termine avant de continuer.
+.IP \fBpowerfail\fP
+.\"}}}
+.\"{{{  powerokwait
+Comme \fBpowerwait\fP, mis à part que \fBinit\fP n'attend pas la fin du processus
+avant de continuer.
+.IP \fBpowerokwait\fP
+.\"}}}
+.\"{{{  powerfailnow
+Le processus est exécuté dès que \fBinit\fP est informé que l'alimentation est
+remise en route.
+.IP \fBpowerfailnow\fP
+.\"}}}
+.\"{{{  ctrlaltdel
+Ce processus est exécuté quand \fBinit\fP est informé que la batterie de
+l'onduleur externe est presque vide et que la tension faiblit (à condition
+que l'onduleur et le processus de surveillance soient capables de détecter
+cette condition).
+.IP \fBctrlaltdel\fP
+.\"}}}
+.\"{{{  kbrequest
+Le processus est exécuté lorsque \fBinit\fP reçoit le signal \fBSIGINT\fP. Cela
+signifie que quelqu'un a tapé dans la console système la combinaison de
+touches \fBCTRL\-ALT\-SUPPR\fP. Typiquement, on a voulu exécuter une sorte
+d'arrêt, soit pour démarrer en mode mono\-utilisateur, soit pour redémarrer
+la machine.
+.IP \fBkbrequest\fP
+Le processus est exécuté quand \fBinit\fP reçoit un signal du gestionnaire de
+clavier indiquant qu'une combinaison spéciale de touches a été actionnée sur
+le clavier de la console.
+.sp
+La documentation pour cette fonction n'est pas encore complète\ ; il est
+possible de trouver de la documentation supplémentaire dans le paquet
+kbd\-x.xx paquets (le plus récent était kbd\-0.94 au moment où ces lignes sont
+écrites). Vous pouvez affecter des combinaisons de touches à l'action
+«\ KeyboardSignal\ ». Par exemple, pour affecter Alt\-FlècheHaut pour cet
+usage, utilisez ce qui suit dans votre fichier keymaps\ :
+.RS
+.sp
+alt keycode 103 = KeyboardSignal
+.sp
+.RE
+.\"}}}
+.\"}}}
+.\"{{{  Examples
+.SH EXEMPLES
+Voici un exemple d'un fichier inittab qui ressemble à un ancien fichier
+inittab sous linux\ :
+.RS
+.sp
+.nf
+.ne 7
+# inittab for Linux
+id:1:initdefault:
+rc::bootwait:/etc/rc
+1:1:respawn:/etc/getty 9600 tty1
+2:1:respawn:/etc/getty 9600 tty2
+3:1:respawn:/etc/getty 9600 tty3
+4:1:respawn:/etc/getty 9600 tty4
+.fi
+.sp
+.RE
+Ce fichier inittab exécute \fI/etc/rc\fP pendant le démarrage du système et
+démarre getty sur les tty 1 à 4.
+.PP
+Un fichier \fBinittab\fP plus élaboré avec différents niveaux d'exécution
+(notez bien les commentaires)\ :
+.RS
+.sp
+.nf
+.ne 19
+# Runlevel à démarrer
+id:2:initdefault:
+
+# Script de configuration / initialisation du système au démarrage.
+si::sysinit:/etc/init.d/rcS
+
+# Que faire dans le mode mono\-utilisateur.
+~:S:wait:/sbin/sulogin
+
+# /etc/init.d exécute les scripts S et K pour les changements
+# de niveau d'exécution.
+#
+# Le niveau 0 est pour l'arrêt.
+# Le niveau 1 est pour le mode mono\-utilisateur.
+# Les niveaux 2 à 5 correspondent aux niveaux multi\-utilisateurs.
+# Le niveau 6 correspond au redémarrage.
+
+l0:0:wait:/etc/init.d/rc 0
+l1:1:wait:/etc/init.d/rc 1
+l2:2:wait:/etc/init.d/rc 2
+l3:3:wait:/etc/init.d/rc 3
+l4:4:wait:/etc/init.d/rc 4
+l5:5:wait:/etc/init.d/rc 5
+l6:6:wait:/etc/init.d/rc 6
+
+# Que faire du «\ salut à 3 doigts\ ».
+ca::ctrlaltdel:/sbin/shutdown \-t1 \-h now
+
+# niveau d'exécution 2,3\ : getty sur les consoles virtuelles
+# niveau d'exécution   3\ : getty sur le terminal (ttyS0) et
+#                          sur le port modem.
+1:23:respawn:/sbin/getty tty1 VC linux
+2:23:respawn:/sbin/getty tty2 VC linux
+3:23:respawn:/sbin/getty tty3 VC linux
+4:23:respawn:/sbin/getty tty4 VC linux
+S0:3:respawn:/sbin/getty \-L 9600 ttyS0 vt320
+S1:3:respawn:/sbin/mgetty \-x0 \-D ttyS1
+
+.fi
+.sp
+.RE
+.\"}}}
+.\"{{{  Files
+.SH FICHIERS
+.\"}}}
+.\"{{{  Author
+/etc/inittab
+.SH AUTEUR
+.\"}}}
+.\"{{{  See also
+\fBinit\fP was written by
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME .
+This manual page was written by
+.MT lederer@\:francium\:.informatik\:.uni\-bonn\:.de
+Sebastian Lederer
+.ME
+and modified by
+.MT u31b3hs@\:pool\:.informatik\:.rwth\-aachen\:.de
+Michael Haardt
+.ME .
+.SH "VOIR AUSSI"
+\fBinit\fP(8), \fBtelinit\fP(8)
+.\"}}}

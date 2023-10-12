@@ -1,0 +1,63 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 2010 Michael Krapp
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by 
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the  
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH UTMPDUMP 1 "8 Fevereiro, 2010" "sysvinit " "Comandos de Utilizador"
+.SH NOME
+utmpdump \- despeja ficheiros UTMP e WTMP em formato cru
+.SH RESUMO
+\fButmpdump\fP [\fB\-froh\fP] \fInome\-de\-ficheiro\fP
+.SH DESCRIÇÃO
+O \fButmpdump\fP é um programa simples que despeja os ficheiros UTMP e WTMP em
+formato raw, para que possam ser examinados.
+.SH OPÇÕES
+.IP \fB\-f\fP
+resulta dados acrescentados quando o ficheiro cresce.
+.IP \fB\-r\fP
+reverso. Escreve de volta a informação de login editada nos ficheiros utmp
+ou wtmp.
+.IP \fB\-o\fP
+usa o antigo formato libc5.
+.IP \fB\-h\fP
+informação de utilização.
+.PP
+O utmpdump pode ser útil nos casos de entradas corrompidas em utmp ou
+wtmp. Ele consegue despejar o utmp/wtmp para um ficheiro ASCII, depois esse
+ficheiro pode ser editado para se remover entradas danificadas e
+re\-entregado, usando
+.PP
+.sp 1
+.in +1c
+.nf
+\fButmpdump \-r < ficheiro ascii > wtmp\fP
+.fi
+.in -1c
+.sp 1
+mas tenha atenção que o \fButmpdump\fP foi escrito apenas para objectivos de
+depuração.
+.SH BUGS
+Você \fBnão\fP pode usar a opção \fB\-r\fP pois o formato para os ficheiros
+utmp/wtmp depende fortemente no formato de entrada. Esta ferramenta \fBnão\fP
+foi escrita para uso normal mas só para depuração.
+.SH AUTOR
+Michael Krapp
+.SH "VEJA TAMBÉM"
+\fBlast\fP(1), \fBw\fP(1), \fBwho\fP(1), \fButmp\fP(5),

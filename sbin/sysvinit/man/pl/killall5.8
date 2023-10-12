@@ -1,0 +1,50 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2003 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH KILLALL5 8 "4 listopada 2003" "sysvinit " "Podręcznik administratora systemu Linux"
+.SH NAZWA
+killall5 \- wysyła sygnał do wszystkich procesów
+.SH SKŁADNIA
+\fBkillall5\fP \fB\-numer\-sygnału\fP [\fB\-o\fP \fIpomiń\-pid\fP[,\fIpomiń\-pid\fP...]] [\fB\-o\fP
+\fIpomiń\-pid\fP[,\fIpomiń\-pid\fP...]...]
+.SH OPIS
+\fBkillall5\fP jest poleceniem \fBkillall\fP z SystemV. Wysyła sygnał do
+wszystkich procesów, poza procesami jądra i procesami swojej sesji, więc nie
+ubije powłoki, w której pracuje skrypt, w którym wywołano tę
+komendę. Podstawowym (jedynym) zastosowaniem polecenia jest użycie w plikach
+startowych \fBrc\fP, z katalogu \fI/etc/init.d\fP.
+.SH OPCJE
+.IP "\fB\-o\fP \fIpomiń\-pid\fP"
+Nakazuje \fBkillall5\fP pomijać procesy o podanym identyfikatorze procesu.
+.SH UWAGI
+\fBkillall5\fP może zostać wywołany również jako \fBpidof\fP(8), który jest
+dowiązaniem symbolicznym do programu \fBkillall5\fP.
+.SH "KOD ZAKOŃCZENIA"
+Program zwraca zero, jeśli istnieje zabity proces. Zwraca 2, gdy nie zabito
+żadnego procesu i 1, gdy nie udało się znaleźć żadnego procesu (brak
+\fI/proc/\fP).
+.SH "ZOBACZ TAKŻE"
+\fBhalt\fP(8), \fBreboot\fP(8), \fBpidof\fP(8)
+.SH AUTOR
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME

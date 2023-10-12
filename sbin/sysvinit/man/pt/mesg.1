@@ -1,0 +1,65 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2001 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"{{{}}}
+.\"{{{  Title
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH MESG 1 "26 Fevereiro, 2001" "sysvinit " "Comandos de Utilizador"
+.\"}}}
+.\"{{{  Name
+.SH NOME
+.\"}}}
+.\"{{{  Synopsis
+mesg \- controla o acesso de escrita ao seu terminal
+.SH RESUMO
+.\"}}}
+.\"{{{  Description
+\fBmesg\fP [\fBy\fP|\fBn\fP]
+.SH DESCRIÇÃO
+.\"}}}
+.\"{{{  Options
+\fBmesg\fP controla o acesso ao seu terminal por outros. É tipicamente usado
+para permitir ou proibir que outros utilizadores escrevam no seu terminal
+(veja \fBwrite\fP(1)).
+.SH OPÇÕES
+.IP \fBy\fP
+Permite acesso de escrita ao seu terminal.
+.IP \fBn\fP
+Retira permissão de acesso de escrita ao seu terminal.
+.PP
+.\"}}}
+.\"{{{  Notes
+Se não for dada nenhuma opção, o \fBmesg\fP escreve o estado de acesso actual
+do seu terminal.
+.SH NOTAS
+O \fBmesg\fP assume que a sua entrada standard está ligada ao seu
+terminal. Isso também significa que se você tiver vários logins abertos,
+você pode obter/definir o estado do mesg de outras sessões ao usar
+redirecionamento. Por exemplo, "mesg n < /dev/pts/46".
+.SH AUTOR
+.\"}}}
+.\"{{{  See also
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME
+.SH "VEJA TAMBÉM"
+\fBtalk\fP(1), \fBwrite\fP(1), \fBwall\fP(1)
+.\"}}}

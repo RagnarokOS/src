@@ -1,0 +1,61 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2003 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH WALL 1 "15. April 2003" "sysvinit " "Dienstprogramme für Benutzer"
+
+.SH BEZEICHNUNG
+wall \- eine Nachricht an die Terminals aller Benutzer senden
+
+.SH ÜBERSICHT
+\fBwall\fP [\fB\-n\fP] [\fINachricht\fP]
+
+.SH BESCHREIBUNG
+\fBWall\fP sendet eine Meldung an alle angemeldeten Personen, bei denen die
+\fBmesg\fP(1)\-Berechtigung auf \fByes\fP gesetzt ist. Die Meldung kann als
+Argument für \fBwall\fP angegeben oder an die Standardeingabe von \fBwall\fP
+geschickt werden. Wird die Standardeingabe auf einem Terminal verwandt, dann
+sollte die Meldung mit der Taste \fBEOF\fP (normalerweise Strg\-D) beendet
+werden.
+.PP
+Die Länge der Meldung ist auf 20 Zeilen begrenzt. Für jeden Aufruf von
+\fBwall\fP wird eine Benachrichtigung ins Syslog (mit der Einrichtung
+\fBLOG_USER\fP und Stufe \fBLOG_INFO\fP) geschrieben.
+
+.SH OPTIONEN
+.IP \fB\-n\fP
+unterdrückt das normalerweise von \fBwall\fP ausgegebenen Banner und ändert es
+in »Remote broadcast message«. Diese Option ist nur für Root verfügbar,
+falls \fBwall\fP set\-group\-id installiert ist und wird von \fBrpc.walld\fP(8)
+verwandt.
+.PP
+
+.SH UMGEBUNGSVARIABLEN
+\fBwall\fP ignoriert die Umgebungsvariable \fBTZ\fP \- die im Banner ausgegebene
+Zeit basiert auf der lokalen Zeit des Systems.
+
+.SH "SIEHE AUCH"
+\fBmesg\fP(1), \fBrpc.rwalld\fP(8)
+
+.SH AUTOR
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME

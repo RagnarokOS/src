@@ -1,0 +1,49 @@
+.\" -*- nroff -*-
+.\" Copyright 2003 by Theodore Ts'o.  All Rights Reserved.
+.\" This file may be copied under the terms of the GNU Public License.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH LOGSAVE 8 "" "sysvinit " Linux\-Systemverwaltungshandbuch
+.SH BEZEICHNUNG
+logsave \- die Ausgabe eines Befehls in einer Protokolldatei speichern
+.SH ÜBERSICHT
+\fBlogsave\fP [ \fB\-asv\fP ] \fIProtokolldatei Befehl [ … ]\fP
+.SH BESCHREIBUNG
+Das Programm \fBlogsave\fP führt den \fIBefehl\fP mit den angegebenen Argumenten
+aus und speichert eine Kopie der Ausgabe in die \fIProtokolldatei\fP. Falls das
+Verzeichnis für die \fIProtokolldatei\fP nicht existiert, sammelt \fBlogsave\fP
+die Ausgabe im Speicher, bis die Datei geschrieben werden kann. Außerdem
+wird eine Kopie der Ausgabe in die Standardausgabe gschrieben.
+.PP
+Falls das Programm als einzelnes Minuszeichen (»\-«) angegeben wird, dann
+bezieht \fBlogsave\fP seine Eingabe aus der Standardeingabe, anstatt ein
+Programm auszuführen, und speichert die Ausgabe in der \fIProtokolldatei\fP.
+.PP
+\fBlogsave\fP eignet sich zum Speichern der Ausgaben initialer Boot\-Skripte,
+bis die \fI/var\fP\-Partition eingehängt ist und die Ausgabe in \fI/var/log\fP
+geschrieben werden kann.
+.SH OPTIONEN
+.TP 
+\fB\-a\fP
+bewirkt, dass die Ausgabe an die \fIProtokolldatei\fP angehängt wird, anstatt
+deren momentanen Inhalt zu ersetzen.
+.TP 
+\fB\-s\fP
+führt dazu, dass \fBlogsave\fP das Schreiben in die Protokolldatei von Text
+überspringt, der in Strg\-A (ASCII 001 oder »Start of Header«) und Strg\-B
+(ASCII 002 oder »Start of Text«) eingeschlossen ist. Dies ermöglicht es, dem
+Benutzer auf der Konsole Fortschrittsinformationen anzuzeigen, die aber
+nicht in die Protokolldatei geschrieben werden.
+.TP 
+\fB\-v\fP
+bewirkt, dass die Ausgaben von \fBlogsave\fP ausführlicher werden.
+.SH AUTOR
+.MT tytso@mit\:.edu
+Theodore Ts'o
+.ME
+.SH "SIEHE AUCH"
+\fBfsck\fP(8)

@@ -1,0 +1,50 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2003 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH KILLALL5 8 "4 Novembro 2003" "sysvinit " "Manual de Administrador de Sistema Linux"
+.SH NOME
+killall5 \- envia um sinal a todos os processos
+.SH RESUMO
+\fBkillall5\fP \fB\-signalnumber\fP [\fB\-o\fP \fIomitpid\fP[,\fIomitpid\fP...]] [\fB\-o\fP
+\fIomitpid\fP[,\fIomitpid\fP...]...]
+.SH DESCRIÇÃO
+\fBkillall5\fP é o comando \fBkillall\fP do SystemV. Envia um sinal a todos os
+processos excepto tópicos do kernel e aos processos da sua própria sessão,
+assim não mata a shell que está a correr o script de onde foi chamado. O seu
+uso principal (e único) está nos scripts \fBrc\fP encontrados no directório
+\fI/etc/init.d\fP.
+.SH OPÇÕES
+.IP "\fB\-o\fP \fIomitpid\fP"
+Diz ao \fBkillall5\fP para omitir processos com esse id de processo.
+.SH NOTAS
+O \fBkillall5\fP também pode ser invocado como \fBpidof\fP(8), o que é
+simplesmente um link (simbólico) para o programa \fBkillall5\fP.
+.SH "ESTADO DE SAÍDA"
+O programa retorna zero se matou processos. Retorna 2 se nenhum processo foi
+morto, e 1 se foi incapaz de encontrar quaisquer processos (\fI/proc/\fP em
+falta).
+.SH "VEJA TAMBÉM"
+\fBhalt\fP(8), \fBreboot\fP(8), \fBpidof\fP(8)
+.SH AUTOR
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME

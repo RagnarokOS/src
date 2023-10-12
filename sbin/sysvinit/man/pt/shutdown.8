@@ -1,0 +1,248 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2003 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"{{{}}}
+.\"{{{  Title
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH SHUTDOWN 8 "12 Novembro, 2003" "sysvinit " "Manual de Administrador de Sistema Linux"
+.\"}}}
+.\"{{{  Name
+.SH NOME
+.\"}}}
+.\"{{{  Synopsis
+shutdown \- desliga o sistema
+.SH RESUMO
+.\"}}}
+.\"{{{  Description
+\fB/sbin/shutdown\fP [\fB\-akrhPHfFncqQ\fP] [\fB\-t\fP \fIsec\fP] \fItempo\fP [\fImensagem de
+aviso\fP]
+.SH DESCRIÇÃO
+.\"}}}
+.\"{{{  Options
+O \fBshutdown\fP desliga o sistema num modo seguro. Todos os utilizadores com
+sessão aberta são notificados de que o sistema vai desligar, e o \fBlogin\fP(1)
+é bloqueado. É possível desligar o sistema imediatamente ou após um atraso
+especificado. Todos os processos são primeiro notificados de que o sistema
+vai desligar pelo sinal \fBSIGTERM\fP. Isto dá a programas como o \fBvi\fP(1)  o
+tempo para salvar o ficheiro que está a ser editado, a programas de
+processamento de mail e notícias a hipótese de terminar de maneira limpa,
+etc. O \fBshutdown\fP faz o seu trabalho ao sinalizar o processo \fBinit\fP,
+pedindo\-lhe para mudar o runlevel. O runlevel \fB0\fP é usado para parar o
+sistema, o runlevel \fB6\fP é usado para reiniciar o sistema, e o runlevel \fB1\fP
+é usado para pôr o sistema num estado em que se podem executar tarefas
+administrativas; esta é a predefinição se nenhuma das bandeiras \fB\-h\fP ou
+\fB\-r\fP forem dadas ao \fBshutdown\fP. Para ver que acções são tomadas no
+desligar ou reiniciar veja as entradas apropriadas para esses runlevels no
+ficheiro \fI/etc/inittab\fP.
+.SH OPÇÕES
+.\"{{{  -a
+.IP \fB\-a\fP
+.\"}}}
+.\"{{{  -k
+Usa \fI/etc/shutdown.allow\fP.
+.IP \fB\-k\fP
+.\"}}}
+.\"{{{  -r
+Não desliga realmente; apenas envia mensagens de aviso a toda a gente.
+.IP \fB\-r\fP
+.\"}}}
+.\"{{{  -h
+Reinicia após desligar.
+.IP \fB\-h\fP
+.\"}}}
+.\"{{{  -P
+Pára ou desliga energia após o desligar do sistema. Normalmente usando com
+as bandeiras \fB\-P\fP ou \fB\-H\fP, dependendo se queremos mesmo desligar a energia
+à máquina ou apenas parar o sistema operativo.
+.IP \fB\-P\fP
+.\"}}}
+.\"{{{  -H
+Modificador da bandeira \fB\-h\fP. A acção de parar deve desligar a energia. Tem
+de ser usado com a bandeira \fB\-h\fP.
+.IP \fB\-H\fP
+.\"}}}
+.\"{{{  -f
+Modificador da bandeira \fB\-h\fP. A acção de parar é de parar ou de cair para o
+monitor de arranque em sistemas que o suportam. Tem de ser usado com a
+bandeira \fB\-h\fP. Este modo de parar é muitas vezes usado para se correr pelo
+processo de desligar e deixar o resultado no ecrã para objectivos de
+depuração. Ou quando o utilizador quer que o SO pare, mas deixe a energia
+ligada. Para desligar a energia no final da sequência do shutdown use o
+modificador \fB\-P\fP em vez deste.
+.IP \fB\-f\fP
+.\"}}}
+.\"{{{  -F
+Salta o \fBfsck\fP(8) ao reiniciar.
+.IP \fB\-F\fP
+.\"}}}
+.\"{{{  -n
+Força o \fBfsck\fP(8) ao reiniciar.
+.IP \fB\-n\fP
+.\"}}}
+.\"{{{  -c
+[DESCONTINUADO] Não chame o \fBinit\fP(8) para desligar o computador mas faça\-o
+você mesmo. O uso desta opção está desencorajado, e os seus resultados nem
+sempre são aqueles que você espera.
+.IP \fB\-c\fP
+.\"{{{  -q
+Cancela um desligar em espera. (\fBshutdown now\fP não fica mais à espera.) Com
+esta opção está claro que não é possível dar um argumento de tempo, mas você
+pode inserir argumentos de mensagem explicativa na linha de comandos que
+será enviada a todos os utilizadores.
+.IP \fB\-q\fP
+.\"{{{  -Q
+Reduz o número de avisos que o \fBshutdown\fP mostra. Normalmente o \fBshutdown\fP
+mostra avisos a cada 15 minutos e depois a cada minuto nos últimos 10
+minutos da contagem decrescente até que \fItime\fP seja alcançado. Quando \fB\-q\fP
+é especificado, o \fBshutdown\fP apenas avisa em intervalos de 60 minutos, na
+marca dos 10 minutos, na marca dos 5 minutos, e quando o processo de
+desligar acontece na realidade.
+.IP \fB\-Q\fP
+.\"}}}
+.\"{{{  -t sec
+Silencia avisos anteriores ao desligar. Normalmente o \fBshutdown\fP mostra
+avisos a cada 15 minutos e depois a cada minuto nos últimos 10 minutos da
+contagem até \fItime\fP ser atingido. Quando \fB\-Q\fP é especificado  O
+\fBshutdown\fP apenas avisa quando o processo de desligar vai realmente
+acontecer. Todos os outros avisos intervalados são suprimidos.
+.IP "\fB\-t\fP \fIsec\fP"
+.\"}}}
+.\"{{{  time
+Diz ao \fBinit\fP(8) para esperar \fIsec\fP segundos entre enviar a todos os
+processos o sinal de aviso (\fBSIGTERM\fP) e o sinal de morte (\fBSIGKILL\fP),
+antes de mudar para outro. O tempo predefinido, se nenhum valor for
+especificado, entre estes dois sinais é de três segundos. Aviso: quando o
+\fBshutdown\fP chama o \fBinit\fP(8) para executar o desligamento (o comportamento
+predefinido). o \fBinit\fP(8) verifica se já todos os processos terminaram e
+pára de esperar assim que os seus filhos todos terminarem. Quando o
+\fBshutdown\fP é chamado com a bandeira \fB\-n\fP, espera o tempo total
+especificado (ou os 3 segundos) mesmo que todos os processos já tenham
+terminado.
+.IP \fItime\fP
+.\"}}}
+.\"{{{  warning-message
+Quando deve desligar.
+.IP "\fIwarning message\fP"
+.\"}}}
+Mensagem a enviar a todos os utilizadores.
+.PP
+O argumento \fItime\fP pode ter diferentes formatos. Primeiro, pode ser um
+tempo absoluto no formato \fIhh:mm\fP, no qual \fIhh\fP é a hora (1 ou 2 dígitos)
+e \fImm\fP é o minuto da hora (em dois dígitos). Segundo, pode estar no formato
+\fB+\fP\fIm\fP, no qual \fIm\fP é o número de minutos a esperar. Terceiro, pode estar
+no formato \fB+\fP\fIhh:mm\fP, no qual \fIhh:mm\fP é o número de horas e minutos a
+esperar. A palavra \fBnow\fP é uma alternativa para \fB+0\fP.
+.PP
+Se o \fBshutdown\fP for chamado com um atraso, irá criar o ficheiro de
+advertência \fI/etc/nologin\fP o qual faz com que programas como o \fBlogin\fP(1)
+não permitam novos logins de utilizadores. Este ficheiro é criado cinco
+minutos antes da sequência de encerramento começar. O \fBshutdown\fP remove
+este ficheiro se for parado antes de puder sinalizar ao init (isto é, se for
+cancelado ou se algo correr mal). Também o remove antes de chamar o
+\fBinit\fP(8) para mudar o nível de execução.
+.PP
+A bandeira \fB\-f\fP significa `reiniciar rápido'. Isto apenas cria um ficheiro
+de advertência \fI/fastboot\fP o qual pode ser testado pelo sistema quando este
+volta a arrancar. O ficheiro rc de arranque consegue testar se este ficheiro
+está presente, e decidir não correr o \fBfsck\fP(8) pois o sistema foi
+desligado de maneira apropriada. Após isso, o processo de arranque deve
+remover o \fI/fastboot\fP.
+.PP
+A bandeira \fB\-F\fP significa `força o fsck'. Isto apenas cria um ficheiro de
+advertência \fI/forcefsck\fP o qual consegue ser testado pelo sistema quando
+este volta a arrancar. O ficheiro rc de arranque consegue testar se este
+ficheiro está presente, e decidir correr o \fBfsck\fP(8) com a bandeira
+especial `force' para que mesmo os sistemas de ficheiros desmontados de modo
+apropriado sejam verificados. Após isso, o processo de arranque deve remover
+o \fI/forcefsck\fP.
+.PP
+.\"}}}
+.\"{{{  Files
+A bandeira \fB\-n\fP faz o \fBshutdown\fP não chamar o \fBinit\fP(8), mas matar ele
+próprio todos os processos a correr. O \fBshutdown\fP irá então desligar as
+cotas, acesso a contas, a memória virtual e desmontar todos os sistemas de
+ficheiros.
+.SH "CONTROLE DE ACESSO"
+O \fBshutdown\fP pode ser chamado a partir do \fBinit\fP(8) quando as teclas
+mágicas \fBCTRL\-ALT\-DEL\fP são pressionadas, ao criar uma entrada apropriada em
+\fI/etc/inittab\fP. Isto significa que qualquer um que tenha acesso físico ao
+teclado de consola consegue desligar o sistema. Para prevenir isto, o
+\fBshutdown\fP pode verificar e ver se um utilizador autorizado tem sessão
+aberta em uma das consolas virtuais. Se o If \fBshutdown\fP é chamado com o
+argumento \fB\-a\fP (adicionar isto na invocação do shutdown em
+\fI/etc/inittab\fP), ele verifica se o ficheiro \fI/etc/shutdown.allow\fP está
+presente. Ele então compara os nomes de login nesse ficheiro com a lista de
+pessoas que têm sessão aberta numa consola virtual (a partir de
+\fI/var/run/utmp\fP). Apenas se um desses utilizadores autorizados \fBou o root\fP
+estiver com login aberto, isto irá prosseguir. Caso contrário irá escrever a
+mensagem
+.sp 1
+.nf
+\fBshutdown: no authorized users logged in\fP
+.fi
+.sp 1
+na consola de sistema (física). O formato de \fI/etc/shutdown.allow\fP é um
+nome de utilizador por linha. São permitidas linhas vazias e linhas
+comentário (prefixadas com um \fB#\fP). Actualmente existe um limite de 32
+utilizadores neste ficheiro.
+.sp 1
+Note que se \fI/etc/shutdown.allow\fP não estiver presente, o argumento \fB\-a\fP é
+ignorado.
+.SH "HALT OU POWEROFF"
+A opção \fB\-H\fP apenas define a variável de ambiente \fBINIT_HALT\fP do \fBinit\fP
+para \fBHALT\fP, e a opção \fB\-P\fP apenas define essa variável para
+\fBPOWEROFF\fP. O script (normalmente \fI/etc/init.d/halt\fP) que chama o programa
+\fBhalt\fP(8) como a última coisa na sequência de encerramento deve verificar
+esta variável de ambiente e chamar o programa \fBhalt\fP(8) com as opções
+certas para que estas opções tenham algum efeito.
+.SH FICHEIROS
+.nf
+/fastboot
+/etc/inittab
+/etc/init.d/halt
+/etc/init.d/reboot
+/etc/shutdown.allow
+.fi
+.\"}}}
+.SH NOTAS
+Muitos utilizadores esquecem de dar o argumento \fItime\fP e ficam baralhados
+com a mensagem de erro que o \fBshutdown\fP produz. O argumento \fItime\fP é
+obrigatório; em 90 por cento dos casos este argumento será a palavra \fBnow\fP.
+.PP
+O \fBinit\fP(8) pode apenas capturar CTRL\-ALT\-DEL e arrancar o \fBshutdown\fP em
+mod de consola. Se o sistema está a correr o Sistema de janelas X, o
+servidor X processa todas as teclas. Alguns ambientes X11 tornam possível
+capturar CTRL\-ALT\-DEL, mas o que exactamente é feito com esse evento depende
+desse ambiente.
+.PP
+.\"{{{  Author
+O \fBshutdown\fP não foi desenhado para correr setuid. O \fI/etc/shutdown.allow\fP
+não é usado para descobrir quem está a executar o shutdown, APENAS verifica
+quem tem actualmente sessão aberta nas consolas (numa delas).
+.SH AUTOR
+.\"}}}
+.\"{{{  See also
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME
+.SH "VEJA TAMBÉM"
+\fBfsck\fP(8), \fBinit\fP(8), \fBhalt\fP(8), \fBpoweroff\fP(8), \fBreboot\fP(8)
+.\"}}}

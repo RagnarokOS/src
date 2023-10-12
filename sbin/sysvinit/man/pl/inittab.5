@@ -1,0 +1,282 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2001 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"{{{}}}
+.\"{{{  Title
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH INITTAB 5 "4 grudnia 2001" "sysvinit " "File Formats"
+.\"}}}
+.\"{{{  Name
+.SH NAZWA
+.\"}}}
+.\"{{{  Description
+inittab \- format pliku inittab używanego przez proces init, kompatybilny z
+sysv
+.SH OPIS
+Plik \fBinittab\fP opisuje które procesy zostały uruchomione podczas startu i
+podczas normalnego działania (np. /etc/init.d/boot, /etc/init.d/rc,
+getty...). \fBinit\fP(8) rozróżnia różne \fIpoziomy pracy\fP, z których każdy może
+mieć swój własny zestaw procesów uruchamianych na starcie. Dopuszczalne
+poziomy pracy to \fB0\fP\-\fB6\fP i \fBA\fP, \fBB\fP i \fBC\fP dla wpisów \fBondemand\fP (na
+żądanie). Wpis w pliku inittab ma następujący format:
+.RS
+.sp
+\fIid\fP:\fIpoziomy pracy\fP:\fIakcja\fP:\fIproces\fP
+.sp
+.RE
+.\"{{{  id
+Linie rozpoczynające się od "#" są ignorowane.
+.IP \fIid\fP
+jest unikalną sekwencją 1\-4 znaków, która identyfikuje wpis w \fBinittab\fP
+(dla wersji sysvinit skompilowanych ze \fIstarą\fP biblioteką libc5 (<
+5.2.18 lub z bibliotekami a.out, jego długość może być ograniczona do dwóch
+znaków).
+.sp
+.\"}}}
+.\"{{{  runlevels
+Uwaga: Dla procesów getty, lub innych procesów loginowych, pole \fIid\fP
+powinno być końcówką odpowiadającego im tty, np. \fB1\fP dla \fBtty1\fP.  Część
+bardzo starych programów login może oczekiwać takiej konwencji, choć trudno
+podać w tej chwili jakiś przykład.
+.IP "\fIpoziomy pracy\fP"
+.\"}}}
+.\"{{{  action
+opisują, w których poziomach pracy podjąć podaną akcję.
+.IP \fIakcja\fP
+.\"}}}
+.\"{{{  process
+opisuje jaką akcję podjąć.
+.IP \fIproces\fP
+podaje proces, który należy uruchomić. Jeśli pole procesu rozpoczyna się
+znakiem "+", init nie dokona dla niego wpisów wtmp i utmp. Jest to wymagane
+dla getty, które wolą robić to samodzielnie. Jest to też błąd
+historyczny. Ograniczenie długości tego pola wynosi 127 znaków.
+
+.\"'<>?
+Please note that including certain characters in the process field will
+result in \fBinit\fP attempting to launch a shell to interpret the command
+contained in the process field.  The characters which will trigger a shell
+are: \fB~`!$^&*()=|\{}[];\fP
+
+On systems which do not have a shell to be launched or which do not wish to
+use a shell to interpret the process field, the process field can be
+prefixed with the @ symbol. The @ will be ignored and everything followed
+will be treated as a command to be launched, literally, by the \fBinit\fP
+service.
+
+In cases where both a + and @ sign are to be used (to turn off logging and
+shell interpretation), place the + sign before the @ symbol. Both flags will
+be handled and then everything following the @ will be handled by \fBinit\fP
+
+.\"}}}
+.PP
+Pole \fIpoziomy pracy\fP może zawierać wiele znaków dla różnych poziomów. Na
+przykład, \fB123\fP określa, że proces powinien być uruchamiany w poziomach
+pracy 1, 2 i 3. \fIpoziomy pracy\fP do wpisów \fBondemand\fP mogą zawierać \fBA\fP,
+\fBB\fP lub \fBC\fP. Pole to jest ignorowane w przypadku następujących wpisów:
+\fBsysinit\fP, \fBboot\fP i \fBbootwait\fP.
+.PP
+Gdy poziom pracy jest zmieniany, zabijane są wszystkie procesy, które nie są
+podane w nowym poziomie pracy, zaczynając od sygnału \s-2SIGTERM\s0, a
+następnie \s-2SIGKILL\s0.
+.PP
+.\"{{{  respawn
+Dopuszczalne akcje w polu \fIakcje\fP to:
+.IP \fBrespawn\fP
+.\"}}}
+.\"{{{  wait
+Proces będzie uruchomiony od nowa po każdym jego zakończeniu (np. getty).
+.IP \fBwait\fP
+.\"}}}
+.\"{{{  once
+Proces będzie uruchomiony raz (gdy nadejdzie właściwy poziom pracy), a
+\fBinit\fP będzie czekał na jego zakończenie.
+.IP \fBonce\fP
+.\"}}}
+.\"{{{  boot
+Proces będzie wywołany raz po wejściu we właściwy poziom pracy.
+.IP \fBboot\fP
+.\"}}}
+.\"{{{  bootwait
+Proces zostanie wywołany podczas rozruchu. Pole \fIpoziomy pracy\fP jest
+ignorowane.
+.IP \fBbootwait\fP
+.\"}}}
+.\"{{{  off
+Proces zostanie wywołany podczas rozruchu, podczas gdy init czeka na jego
+zakończenie (np. /etc/rc). Pole \fIpoziomy pracy\fP jest ignorowane.
+.IP \fBoff\fP
+.\"}}}
+.\"{{{  ondemand
+Nie robi nic.
+.IP \fBondemand\fP
+.\"}}}
+.\"{{{  initdefault
+Proces, który jest zaznaczony poziomem pracy \fBondemand\fP będzie wywoływany
+za każdym razem, gdy zostanie wywołany wskazany poziom żądania.  Mimo to
+jednak, nie nastąpi zmiana poziomu pracy (poziomy pracy \fBondemand\fP to "a",
+"b", "c").
+.IP \fBinitdefault\fP
+.\"}}}
+.\"{{{  sysinit
+Pole to określa poziom pracy, który powinien być uruchomiony po procesie
+rozruchu. Jeśli żaden taki nie istnieje, init zapyta o poziom pracy na
+konsoli. Pole \fIproces\fP jest ignorowane.
+.IP \fBsysinit\fP
+.\"}}}
+.\"{{{  powerwait
+Proces zostanie wywołany podczas rozruchu. Zostanie wywołany przed wszelkimi
+wpisami \fBboot\fP czy \fB bootwait\fP.  Pole \fIpoziomy pracy\fP jest ignorowane.
+.IP \fBpowerwait\fP
+.\"}}}
+.\"{{{  powerfail
+Proces zostanie wywołany w czasie problemów z zasilaniem. \fBinit\fP jest z
+reguły informowany o takim zdarzeniu przez proces porozumiewający się z
+podłączonym do komputera UPS\-em. \fBinit\fP będzie czekał na zakończenie tego
+procesu przed dalszą kontynuacją.
+.IP \fBpowerfail\fP
+.\"}}}
+.\"{{{  powerokwait
+Podobne do \fBpowerwait\fP, lecz init nie będzie czekał na zakończenie tego
+procesu.
+.IP \fBpowerokwait\fP
+.\"}}}
+.\"{{{  powerfailnow
+Proces zostanie wywołany, gdy \fBinit\fP otrzyma sygnał, że zasilanie zostało
+przywrócone.
+.IP \fBpowerfailow\fP
+.\"}}}
+.\"{{{  ctrlaltdel
+Proces zostanie wykonany, gdy \fBinit\fP dowie się o krytycznym poziomie
+baterii zewnętrznego UPS\-a i o właśnie zawodzącym zasilaniu (jeśli
+zewnętrzny UPS i monitorujący go proces są w stanie wykryć taki stan).
+.IP \fBctrlaltdel\fP
+.\"}}}
+.\"{{{  kbrequest
+Proces zostanie wykonany gdy \fBinit\fP otrzyma sygnał \fBSIGINT\fP.  Znaczy to,
+że ktoś na konsoli nacisnął kombinację \fBCTRL\-ALT\-DEL\fP. Zazwyczaj wywołuje
+się wtedy coś w rodzaju \fBshutdown\fP, zarówno w celu przejścia do poziomu
+jednoużytkownikowego, jak i do ponownego uruchomienia komputera.
+.IP \fBkbrequest\fP
+Proces zostanie wywołany gdy \fBinit\fP otrzyma sygnał z sterownika klawiatury,
+mówiący że na konsoli została naciśnięta specjalna kombinacja klawiszy.
+.sp
+Dokumentacja tej funkcji nie jest jeszcze kompletna; więcej danych można
+znaleźć w pakietach kbd\-x.xx (w chwili powstania tego tekstu było to
+kbd\-0.94). Ogólnie, można mapować niektóre kombinacje klawiszy do akcji
+"KeyboardSignal". Na przykład, aby zmapować na ten cel kombinację alt plus
+strzałka w górę, należy użyć następującego wpisu w swoim pliku keymap:
+.RS
+.sp
+alt keycode 103 = KeyboardSignal
+.sp
+.RE
+.\"}}}
+.\"}}}
+.\"{{{  Examples
+.SH PRZYKŁADY
+Oto przykład inittab, który zawiera stary inittab Linuksa:
+.RS
+.sp
+.nf
+.ne 7
+# inittab do Linuksa
+id:1:initdefault:
+rc::bootwait:/etc/rc
+1:1:respawn:/etc/getty 9600 tty1
+2:1:respawn:/etc/getty 9600 tty2
+3:1:respawn:/etc/getty 9600 tty3
+4:1:respawn:/etc/getty 9600 tty4
+.fi
+.sp
+.RE
+Ten plik inittab wywołuje \fI/etc/rc\fP podczas rozruchu i uruchamia getty dla
+tty1\-tty4.
+.PP
+Bardziej wykwintny inittab, z różnymi poziomami pracy (patrz komentarze):
+.RS
+.sp
+.nf
+.ne 19
+# Poziom, w którym startować
+id:2:initdefault:
+
+# Skrypt inicjujący/konfigurujący system w czasie rozruchu.
+si::sysinit:/etc/init.d/rcS
+
+# Co robić w trybie jednoużytkownikowym.
+~:S:wait:/sbin/sulogin
+
+# /etc/init.d wykonuje skrypty S i K w trakcie
+# zmiany poziomu pracy.
+#
+# Poziom pracy 0 oznacza zatrzymanie.
+# Poziom pracy 1 jest jednoużytkownikowy.
+# Poziomy pracy 2\-5 są wieloużytkownikowe.
+# Poziom pracy 6 oznacza ponowne uruchomienie.
+
+l0:0:wait:/etc/init.d/rc 0
+l1:1:wait:/etc/init.d/rc 1
+l2:2:wait:/etc/init.d/rc 2
+l3:3:wait:/etc/init.d/rc 3
+l4:4:wait:/etc/init.d/rc 4
+l5:5:wait:/etc/init.d/rc 5
+l6:6:wait:/etc/init.d/rc 6
+
+# Co zrobić przy ctrl+alt+del.
+ca::ctrlaltdel:/sbin/shutdown \-t1 \-h now
+
+# Poziomy 2 i 3: getty na konsolach wirtualnych
+# Poziom      3: getty na terminalu (ttyS0) i modemie (ttyS1)
+1:23:respawn:/sbin/getty tty1 VC linux
+2:23:respawn:/sbin/getty tty2 VC linux
+3:23:respawn:/sbin/getty tty3 VC linux
+4:23:respawn:/sbin/getty tty4 VC linux
+S0:3:respawn:/sbin/getty \-L 9600 ttyS0 vt320
+S1:3:respawn:/sbin/mgetty \-x0 \-D ttyS1
+
+.fi
+.sp
+.RE
+.\"}}}
+.\"{{{  Files
+.SH PLIKI
+.\"}}}
+.\"{{{  Author
+/etc/inittab
+.SH AUTOR
+.\"}}}
+.\"{{{  See also
+\fBinit\fP was written by
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME .
+This manual page was written by
+.MT lederer@\:francium\:.informatik\:.uni\-bonn\:.de
+Sebastian Lederer
+.ME
+and modified by
+.MT u31b3hs@\:pool\:.informatik\:.rwth\-aachen\:.de
+Michael Haardt
+.ME .
+.SH "ZOBACZ TAKŻE"
+\fBinit\fP(8), \fBtelinit\fP(8)
+.\"}}}

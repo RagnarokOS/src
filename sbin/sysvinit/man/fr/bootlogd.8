@@ -1,0 +1,86 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2003 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by 
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the  
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH BOOTLOGD 8 "21 juillet 2003" "sysvinit " "Manuel de l’Administrateur de Système Linux"
+.SH NOM
+bootlogd – Enregistrer les messages au démarrage
+.SH SYNOPSIS
+\fB/sbin/bootlogd\fP [\fB\-c\fP] [\fB\-d\fP] [\fB\-e\fP] [\fB\-r\fP] [\fB\-s\fP] [\fB\-v\fP] [\fI
+\fP\fB\-l\fP\fI fichier_journal \fP] [\fI \fP\fB\-p\fP\fI fichier_pid \fP]
+.SH DESCRIPTION
+\fBbootlogd\fP fonctionne en arrière plan et copie toutes les chaînes envoyées
+au périphérique \fI/dev/console\fP dans un fichier journal. Si le
+\fIfichier_journal\fP n'est pas disponible, les messages sont conservés en
+mémoire jusqu'à ce qu'il le soit.
+.SH OPTIONS
+.IP \fB\-d\fP
+Ne pas fourcher et exécuter en arrière plan.
+.IP \fB\-e\fP
+Écrire les caractères d’échappement dans le fichier journal de
+démarrage. Cela empêche le filtrage des caractères d’échappement et permet à
+des outils comme \fBless\fP(1) de GNU d’afficher des caractères de contrôle
+colorés (affichage du journal en couleur).
+.IP \fB\-c\fP
+Essayer d'écrire dans le fichier journal même s'il n'existe pas. Sans cette
+option, \fBbootlogd\fP attendra que le fichier journal apparaisse avant
+d'essayer d'y écrire. Ce comportement permet d'éviter à \fBbootlogd\fP de créer
+des fichiers journal sous les points de montage.
+.IP \fB\-r\fP
+Si un fichier journal \fIfichier_journal\fP existe déjà, le renommer en
+\fIfichier_journal~\fP à moins que \fIfichier_journal~\fP n'existe déjà.
+.IP \fB\-s\fP
+S'assurer que les données sont écrites dans le fichier après chaque ligne en
+appelant \fBfdatasync\fP(3). Cela ralentira un processus \fBfsck\fP(8) qui
+s'exécuterait en parallèle.
+.IP \fB\-v\fP
+Afficher la version.
+.IP "\fB\-l\fP \fIfichier_journal\fP"
+Enregistrer dans ce fichier journal. La valeur par défaut est
+\fI/var/log/boot\fP.
+.IP "\fB\-p\fP \fIfichier_pid\fP"
+Mettre l'identifiant du processus dans ce fichier. Par défaut, il n'y a pas
+de fichier de PID écrit.
+.SH NOTES
+\fBbootlogd\fP enregistre les données de journal qui incluent des caractères de
+contrôle. Le journal est techniquement un fichier texte, mais n’est pas de
+lecture aisée. Pour remédier à cela, la commande \fBreadbootlog\fP(1) peut être
+utilisée pour afficher le journal de démarrage sans ces caractères de
+contrôle.
+.SH BOGUES
+\fBbootlogd\fP fonctionne en redirigeant la sortie de la console du
+périphérique de la console (en conséquence, \fBbootlogd\fP nécessite la gestion
+des pseudoterminaux (PTY) dans la configuration du noyau). Il copie cette
+sortie vers le périphérique réel de la console et vers un fichier
+journal. Il n'y a aucun moyen d'obtenir avec certitude le périphérique réel
+de la console si vous avez le nouveau type de périphérique \fI/dev/console\fP
+(numéro majeur\ 5, mineur\ 1). \fBbootlogd\fP analyse donc la ligne de commande
+du noyau pour rechercher des lignes \fBconsole=...\fP et en déduire le
+périphérique réel. Si cette syntaxe est changée par le noyau ou qu'un type
+de console inconnu de \fBbootlogd\fP est utilisé, alors \fBbootlogd\fP ne
+fonctionnera pas.
+
+.SH AUTEUR
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME
+.SH "VOIR AUSSI"
+\fBdmesg\fP(8), \fBfdatasync\fP(3), \fBreadbootlog\fP(1)

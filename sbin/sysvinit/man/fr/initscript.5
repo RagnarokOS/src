@@ -1,0 +1,79 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2003 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH INITSCRIPT 5 "10 juillet 2003" "sysvinit " "Formats de fichier"
+.SH NOM
+initscript \- Script qui exécute les commandes incluses dans inittab
+.SH SYNOPSIS
+/bin/sh /etc/initscript id niveaux_exécution action processus
+.SH DESCRIPTION
+Quand le script shell \fI/etc/initscript\fP est présent, \fBinit\fP l'utilisera
+afin d'exécuter les commandes provenant d'\fIinittab\fP. Ce script peut être
+utilisé pour paramétrer des valeurs par défaut telles que \fIulimit\fP et
+\fIumask\fP.
+.SH EXEMPLES
+Voici un exemple de script d'initialisation qui est peut\-être installé sur
+votre système en tant que \fB/etc/initscript.sample\fP.
+.RS
+.sp
+.nf
+.ne 7
+
+#
+# initscript exécuté par init(8) pour tout programme
+#            voulant apparaître ainsi\ :
+#
+#     /bin/sh /etc/initscript <id> <niveau d'exécution> <action> <processus>
+#
+
+  # Paramétrer umask pour le mode sans échec,
+  # et activer les core\-dumps (sauvegardes d'image mémoire).
+  umask 022
+  ulimit \-c 2097151
+  PATH=/bin:/sbin:/usr/bin:/usr/sbin
+  export PATH
+
+  # Augmenter la limite impérative des descripteurs de fichiers à 8192 pour tous les
+  # processus. La limite souple est encore 1024, mais tous les
+  # processus non privilégiés peuvent augmenter leur limite souple
+  # jusqu'à la limite impérative
+  # avec "ulimit \-Sn xxx" (nécessite un noyau Linux 2.2.13 ou plus ).
+  ulimit \-Hn 8192
+
+  # Exécuter le programme.
+  eval exec "$4"
+
+.sp
+.RE
+.SH NOTES
+This script is not meant as startup script for daemons or services.  It has
+nothing to do with a \fIrc.local\fP style script. It's just a handler for
+things executed from \fB/etc/inittab\fP. Experimenting with this can make your
+system un(re)bootable.
+.SH FICHIERS
+/etc/inittab, /etc/initscript.
+.SH AUTEUR
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME
+.SH "VOIR AUSSI"
+\fBinittab\fP(5), \fBinit\fP(8)

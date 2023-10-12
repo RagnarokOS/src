@@ -1,0 +1,50 @@
+.\" -*- nroff -*-
+.\" Copyright 2003 by Theodore Ts'o.  All Rights Reserved.
+.\" This file may be copied under the terms of the GNU Public License.
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH LOGSAVE 8 "" "sysvinit " "Manual de Administrador de Sistema Linux"
+.SH NOME
+logsave \- salva o resultado de um comando num ficheiro de registo
+.SH RESUMO
+\fBlogsave\fP [ \fB\-asv\fP ] \fIlogfile cmd_prog [ ... ]\fP
+.SH DESCRIÇÃO
+O programa \fBlogsave\fP irá executar \fIcmd_prog\fP com os argumentos
+especificados, e guardar uma cópia do seu resultado no \fIlogfile\fP. Se o
+directório para conter o \fIlogfile\fP não existir, o \fBlogsave\fP irá acumular o
+resultado em memória até que possa ser escrito. Uma cópia do resultado
+também será escrita na saída standard.
+.PP
+Se \fIcmd_prog\fP for um único hífen ('\-'), então em vez de executar um
+programa, o \fBlogsave\fP irá tomar a sua entrada a partir da entrada standard
+e guarda\-la no \fIlogfile\fP.
+.PP
+O \fBlogsave\fP é útil para salvar o resultado dos scripts de arranque inicial
+até que a partição \fI/var\fP seja montada, para que o resultado seja gravado
+em \fI/var/log\fP.
+.SH OPÇÕES
+.TP 
+\fB\-a\fP
+Esta opção irá fazer com que o resultado seja acrescentado ao \fIlogfile\fP, em
+vez de substituir o seu conteúdo actual.
+.TP 
+\fB\-s\fP
+Esta opção fará com que o \fBlogsave\fP salte escrever no ficheiro de registo o
+texto que está envolto com um control\-A (ASCII 001 ou Inicio de Cabeçalho) e
+control\-B (ASCII 002 ou Inicio de Texto). Isto permite que a informação da
+barra de progresso esteja visível par ao utilizador, e não ser escrita no
+ficheiro de registo.
+.TP 
+\fB\-v\fP
+Esta opção fará com que o \fBlogsave\fP seja mais detalhado no seu resultado
+para o utilizador.
+.SH AUTOR
+.MT tytso@mit\:.edu
+Theodore Ts'o
+.ME
+.SH "VEJA TAMBÉM"
+\fBfsck\fP(8)

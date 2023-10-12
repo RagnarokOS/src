@@ -1,0 +1,160 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 2018 Jesse Smith
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH INITCTL 5 "13 Abril, 2018" "sysvinit " "Formatos de Ficheiro"
+.SH NOME
+initctl \- /run/initctl é um pipe nomeado que passa comandos ao init do SysV
+.SH RESUMO
+/run/initctl
+.SH DESCRIÇÃO
+
+Este documento descreve o canal de comunicação definido pelo SysV \fBinit\fP em
+\fI/run/initctl\fP. Este pipe nomeado permite a programas com as permissões
+apropriadas (tipicamente os programas corridos pelo root têm acesso de
+leitura\-escrita ao pipe) enviarem sinais ao programa \fBinit\fP (PID 1).
+
+O manual do \fBinit\fP tem, até recentemente, simplesmente dito que as pessoas
+que desejam perceber como enviar mensagens ao \fBinit\fP devem ler o código
+fonte do programa init, mas isso não é geralmente prático.
+
+As mensagens enviadas para o pipe para falar com o \fBinit\fP têm de ter um
+formato especial. Este formato está definido como uma estrutura C e a parte
+técnica é apresentada aqui:
+
+/*
+ *      Because of legacy interfaces, "runlevel" and "sleeptime"
+ *      aren't in a separate struct in the union.
+ *
+ *      The weird sizes are because init expects the whole
+ *      struct to be 384 bytes.
+ */
+
+struct init_request {
+        int     magic;                  /* Magic number                 */
+        int     cmd;                    /* What kind of request         */
+        int     runlevel;               /* Runlevel to change to        */
+        int     sleeptime;              /* Time between TERM and KILL   */
+        union {
+                struct init_request_bsd bsd;
+                char                    data[368];
+        } i;
+};
+
+
+Vamos avançar pela estrutura de init_request uma linha de cada vez. A
+primeira variável, o número "mágico" tem de ser do valor 0x03091969.  O
+program \fBinit\fP então sabe que apenas programas com acesso de root que
+enviam este número mágico estão autorizados a comunicar com o init.
+
+A variável \fIcmd\fP é um valor na gama de 0\-8 (actualmente). Esta variável
+\fIcmd\fP diz ao init o que queremos fazer. Aqui estão as opções possíveis:
+
+1 \- Define o runlevel actual, especificado pela variável runlevel.
+
+2 \- A energia vai falhar em breve (provavelmente bateria fraca), prepara
+para desligar.
+
+3 \- A energia está a falhar, desligar imediatamente.
+
+4 \- A energia está OK, cancelar o desligar.
+
+6 \- Define uma variável de ambiente a um valor a ser especificado na
+    variável \fIdata\fP com esta estrutura.
+
+Podem ser adicionadas outras opções \fIcmd\fP ao \fBinit\fP mais tarde. Por
+exemplo, os valores de comando 0, 5 e 7 estão definidos mas actualmente não
+implementados.
+
+A variável \fIrunlevel\fP irá especificar o runlevel para se mudar para (0\-6).
+
+A variável \fIsleeptime\fP é usada quando queremos dizer ao \fBinit\fP para mudar
+o tempo de espera entre enviar \fBSIGTERM\fP e \fBSIGKILL\fP durante o processo de
+encerramento. Ainda não está implementado alterar isto durante a execução.
+
+A variável \fIdata\fP (na união) pode ser usada para passar dados diversos que
+o init pode precisar para processar o nosso pedido. Por exemplo, quando se
+definem variáveis de ambiente.
+
+Quando se define uma variável de ambiente através do pipe \fI/run/initctl\fP do
+\fBinit\fP, a variável data deve ter o formato \fIVARIÁVEL\fP=\fIVALOR\fP. A string
+deve ser terminada com um caractere NULL.
+
+.SH EXEMPLOS
+
+O seguinte exemplo de código C mostra como enviar um pedido de definição de
+variável de ambiente ao processo \fBinit\fP usando o pipe \fI/run/initctl\fP. Este
+exemplo está simplificado e salta a verificação de erros. Um exemplo mais
+complexo pode ser encontrado na função \fBinit_setnv\fP() do programa
+shutdown.c.
+
+.nf
+struct init_request     request;           /* structure defined above */
+int                     fd;                /* file descriptor for pipe */
+
+memset(&request, 0, sizeof(request));      /* initialize structure */
+request.magic = 0x03091969;                /* magic number required */
+request.cmd = 6;                           /* 6 is to set a variable */
+sprintf(request.data, "VARIABLE=VALUE");   /* set VAR to VALUE in init */
+
+if ((fd = open(INIT_FIFO, O_WRONLY)) >= 0) /* open pipe for writing */
+{
+    size_t s  = sizeof(request);           /* size of structure to write */
+    void *ptr = &request;                  /* temporary pointer */
+    write(fd, ptr, s);                     /* send structure to the pipe */
+    close(fd);                             /* close the pipe when done */
+}
+.fi
+
+.sp
+.SH NOTAS
+Normalmente o pipe \fI/run/initctl\fP seria apenas usado por programas de
+baixo\-nível para pedir um encerramento relacionado com energia ou para mudar
+o runlevel, como o \fBtelinit\fP faria. Na maioria do tempo não há necessidade
+de falar com o \fBinit\fP diretamente, mas isto dá\-nos uma aproximação
+extensiva de que o \fBinit\fP pode ser ensinado a aprender mais comandos.
+.PP
+Os comandos passados pelo canal \fI/run/initctl\fP têm de ser enviados num
+formato binário específico e ter um tamanho específico. Estruturas de dados
+maiores ou que não usem o formato apropriado serão ignoradas. Tipicamente,
+apenas o root tem a habilidade de escrever no pipe initctl por razões de
+segurança.
+.PP
+O canal \fI/run/initctl\fP pode ser fechado ao se enviar ao init (PID 1) o
+sinal \fBSIGUSR2\fP. Isto fecha o pipe e deixa\-o fechado. Isto pode ser útil
+para certificar que o \fBinit\fP não deixa ficheiros abertos. No entanto,
+quando o pipe está fechado, o \fBinit\fP não recebe mais sinais, tais como
+aqueles enviados pelo \fBshutdown\fP(8) ou \fBtelinit\fP(8). Por outras palavras,
+se fecharmos o canal, o \fBinit\fP não pode o seu runlevel diretamente. O canal
+pode ser reaberto ao enviar ao \fBinit\fP (PID 1)  o sinal \fBSIGUSR1\fP.
+.PP
+Se o canal \fI/run/initctl\fP estiver fechado então ainda deve ser possível
+desligar o sistema usando a bandeira \fB\-n\fP do comando \fBshutdown\fP(8), mas
+isto nem sempre é limpo e não é recomendado.
+
+.SH FICHEIROS
+/run/initctl /sbin/init
+
+.SH AUTOR
+.MT jsmith@\:resonatingmedia\:.com
+Jesse Smith
+.ME
+.SH "VEJA TAMBÉM"
+\fBinit\fP(8)

@@ -1,0 +1,77 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2003 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH INITSCRIPT 5 "10 lipca 2003" "sysvinit " "File Formats"
+.SH NAZWA
+initscript \- skrypt wykonujący polecenia zawarte w inittab
+.SH SKŁADNIA
+/bin/sh /etc/initscript id poziom działanie proces
+.SH OPIS
+Jeśli w systemie znajduje się skrypt \fI/etc/initscript\fP, \fBinit\fP spróbuje
+nim wykonać polecenia zawarte w \fIinittab\fP.  Można go wykorzystać np. do
+ustawienia domyślnych wartości \fIulimit\fP i \fIumask\fP dla każdego procesu.
+.SH PRZYKŁADY
+Poniżej znajduje się przykładowy skrypt startowy, który mógł zostać
+zainstalowany w systemie jako \fI/etc/initscript.sample\fP.
+.RS
+.sp
+.nf
+.ne 7
+
+#
+# initscript   Wykonywany przez init(8) dla każdego wywołanego
+#              przez niego programu w ten sposób:
+#
+#	/bin/sh /etc/initscript <id> <poziom> <działanie> <proces>
+#
+
+  # Ustawiamy bezpieczną wartość umask i ustawiamy zrzuty rdzenia:
+  umask 022
+  ulimit \-c 2097151
+  PATH=/bin:/sbin:/usr/bin:/usr/sbin
+  export PATH
+
+  # Zwiększamy twardy limit deskryptora pliku dla wszystkich
+  # procesów do 8192. Miękki limit wciąż wynosi 1024, jednak każdy
+  # nieuprzywilejowany proces może zwiększyć swój miękki limit aż do
+  # wartości twardego limitu za pomocą "ulimit \-Sn xxx"
+  # (niezbędne jest jądro 2.2.13 lub nowsze)
+  ulimit \-Hn 8192
+
+  # Wykonujemy program.
+  eval exec "$4"
+
+.sp
+.RE
+.SH UWAGI
+This script is not meant as startup script for daemons or services.  It has
+nothing to do with a \fIrc.local\fP style script. It's just a handler for
+things executed from \fB/etc/inittab\fP. Experimenting with this can make your
+system un(re)bootable.
+.SH PLIKI
+/etc/inittab, /etc/initscript.
+.SH AUTOR
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME
+.SH "ZOBACZ TAKŻE"
+\fBinittab\fP(5), \fBinit\fP(8)

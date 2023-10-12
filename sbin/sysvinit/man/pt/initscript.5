@@ -1,0 +1,77 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2003 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH INITSCRIPT 5 "10 Julho, 2003" "sysvinit " "Formatos de Ficheiro"
+.SH NOME
+initscript \- script que executa comandos do inittab.
+.SH RESUMO
+/bin/sh /etc/initscript id runlevels action process
+.SH DESCRIÇÃO
+Quando o script de shell \fI/etc/initscript\fP está presente, o \fBinit\fP irá
+usa\-lo para executar os comandos de \fIinittab\fP.  Este script pode ser usado
+para definir coisas como os valores predefinidos de \fIulimit\fP e \fIumask\fP
+para qualquer processo.
+.SH EXEMPLOS
+Este é um initscript exemplo, que pode estar instalado no seu sistema em
+\fI/etc/initscript.sample\fP.
+.RS
+.sp
+.nf
+.ne 7
+
+#
+# initscript   Executed by init(8) for every program it
+#              wants to spawn like this:
+#
+#              /bin/sh /etc/initscript <id> <level> <action> <process>
+#
+
+  # Define umask para nível seguro, e activa despejos do núcleo.
+  umask 022
+  ulimit \-c 2097151
+  PATH=/bin:/sbin:/usr/bin:/usr/sbin
+  export PATH
+
+  # Aumenta o limite rijo de descritor de ficheiro para todos os processos
+  # para 8192.  O limite suave é ainda 1024, mas qualquer processo não
+  # privilegiado pode aumentar o seu limite suave até ao limite rijo
+  # com "ulimit \-Sn xxx" (precisa dum kernel Linux 2.2.13 ou posterior).
+  ulimit \-Hn 8192
+
+  # Executa o programa.
+  eval exec "$4"
+
+.sp
+.RE
+.SH NOTAS
+Este script não se destina a ser script de arranque para daemons ou
+serviços. Não tem nada a ver com um script de estilo \fIrc.local\fP. É apenas
+para manusear coisas executadas a partir de \fB/etc/inittab\fP. Fazer
+experiências com isto pode tornar o seu sistema não (re)inicializável.
+.SH FICHEIROS
+/etc/inittab, /etc/initscript.
+.SH AUTOR
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME
+.SH "VEJA TAMBÉM"
+\fBinittab\fP(5), \fBinit\fP(8)

@@ -1,0 +1,53 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1997 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH RUNLEVEL 8 "27. Mai 1997" "sysvinit " Linux\-Systemverwaltungshandbuch
+.SH BEZEICHNUNG
+runlevel \- den vorhergehenden und aktuellen Runlevel des Systems ausgeben
+.SH ÜBERSICHT
+\fBrunlevel\fP [\fIutmp\fP]
+.SH BESCHREIBUNG
+\fBrunlevel\fP liest die \fIutmp\fP\-Datei des Systems (typischerweise
+\fI/var/run/utmp\fP), um den Runlevel zu ermitteln und dann den vorherigen und
+aktuellen Runlevel, durch ein einzelnes Leerzeichen getrennt, in die
+Standardausgabe zu schreiben. Gibt es keinen vorherigen Runlevel, wird
+stattdessen der Buchstabe \fBN\fP ausgegeben.
+.PP
+Falls keine \fIutmp\fP\-Datei existiert und kein Runlevel in der Datei
+\fI/var/run/runlevel\fP vermerkt ist, gibt \fBrunlevel\fP das Wort \fBunknown\fP aus
+und beendet sich mit einem Fehler.
+.PP
+\fBrunlevel\fP kann in \fIrc\fP\-Skripten als Ersatz für den System\-V\-Befehl \fBwho
+\-r\fP verwendet werden. Allerdings steht diese Information in neueren
+Versionen von \fBinit\fP(8) in den Umgebungsvariablen \fBRUNLEVEL\fP und
+\fBPREVLEVEL\fP zur Verfügung.
+.SH OPTIONEN
+.\"{{{ utmp
+.IP \fIutmp\fP
+.\"}}}
+gibt den Namen der zu lesenden \fIutmp\fP\-Datei an.
+.SH "SIEHE AUCH"
+\fBinit\fP(8), \fButmp\fP(5)
+.SH AUTOR
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME

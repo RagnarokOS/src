@@ -1,0 +1,64 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2004 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"{{{}}}
+.\"{{{  Title
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH READBOOTLOG 1 "12. November 2018" "sysvinit " "Dienstprogramme für Benutzer"
+.\"}}}
+.\"{{{  Name
+.SH BEZEICHNUNG
+.\"}}}
+.\"{{{  Synopsis
+readbootlog \- Inhalt des Bootprotokolls ohne Steuerzeichen anzeigen
+.SH ÜBERSICHT
+\fBreadbootlog\fP [\fB\-h\fP] [\-\fBf\fP \fIDatei\/\fP]
+.br
+.\"}}}
+.\"{{{  Description
+.SH BESCHREIBUNG
+.\"}}}
+.\"{{{  Options
+\fBreadbootlog\fP ist ein Werkzeug zum Lesen des Systemstartprotokolls
+(standardmäßig \fI/var/log/boot\fP). Das Programm entfernt aus der
+Protokolldatei Steuerzeichen und für Menschen nicht lesbare Inhalte. Die
+Ausgabe wird auf das Terminal ausgegeben, wo es in eine Pipe oder eine Datei
+umgeleitet werden kann.
+.SH OPTIONEN
+.IP "\fB\-f\fP \fIDatei\fP"
+weist \fBreadbootlog\fP an, eine bestimmte Datei anstelle von \fI/var/log/boot\fP
+zu verwenden.
+.IP \fB\-h\fP
+.\"{{{  Files
+zeigt eine kurze Hilfemeldung an.
+.SH DATEIEN
+.\"}}}
+.\"{{{  Author
+/var/log/boot
+.SH AUTOR
+.\"}}}
+.\"{{{  See also
+.MT jsmith@\:resonatingmedia\:.com
+Jesse Smith
+.ME
+.SH "SIEHE AUCH"
+\fBbootlogd\fP(8)
+.\"}}}

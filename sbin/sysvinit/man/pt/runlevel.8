@@ -1,0 +1,53 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1997 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH RUNLEVEL 8 "27 Maio, 1997" "sysvinit " "Manual de Administrador de Sistema Linux"
+.SH NOME
+runlevel \- encontra o runlevel anterior e actual do sistema
+.SH RESUMO
+\fBrunlevel\fP [\fIutmp\fP]
+.SH DESCRIÇÃO
+O \fBrunlevel\fP lê o ficheiro \fIutmp\fP do sistema (tipicamente
+\fI/var/run/utmp\fP) para localizar o registo do runlevel, e depois escreve o
+runlevel anterior e actual do sistema na sua saída standard, separados por
+um espaço único. Se não existir um runlevel de sistema anterior, então é
+escrita a letra \fBN\fP.
+.PP
+Se nenhum ficheiro \fIutmp\fP existir, e se nenhum registo de runlevel puder
+ser encontrado no ficheiro \fI/var/run/runlevel\fP, o \fBrunlevel\fP escreve a
+palavra \fBunknown\fP e termina com erro.
+.PP
+O \fBrunlevel\fP pode ser usado em scripts \fIrc\fP como substituto do comando
+\fBwho \-r\fP do System\-V. No entanto, em versões mais recentes do \fBinit\fP(8)
+esta informação está também disponível nas variáveis de ambiente \fBRUNLEVEL\fP
+e \fBPREVLEVEL\fP.
+.SH OPÇÕES
+.\"{{{ utmp
+.IP \fIutmp\fP
+.\"}}}
+O nome do ficheiro \fIutmp\fP a ler.
+.SH "VEJA TAMBÉM"
+\fBinit\fP(8), \fButmp\fP(5)
+.SH AUTOR
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME

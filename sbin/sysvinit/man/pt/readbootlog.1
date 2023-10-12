@@ -1,0 +1,65 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2004 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"{{{}}}
+.\"{{{  Title
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH READBOOTLOG 1 "12 Novembro, 2018" "sysvinit " "Comandos de Utilizador"
+.\"}}}
+.\"{{{  Name
+.SH NOME
+.\"}}}
+.\"{{{  Synopsis
+readbootlog \- mostra o conteúdo do registo de arranque, retirando os
+caracteres de controlo.
+.SH RESUMO
+\fBreadbootlog\fP [\fB\-h\fP] [\-\fBf\fP \fIficheiro\/\fP]
+.br
+.\"}}}
+.\"{{{  Description
+.SH DESCRIÇÃO
+.\"}}}
+.\"{{{  Options
+\fBreadbootlog\fP é uma ferramenta para ler o registo de arranque (por
+predefinição \fI/var/log/boot\fP). Este programa retira os caracteres de
+controlo e conteúdos não legíveis por humanos do ficheiro de registo. O
+resultado é despejado para o terminal onde pode ser canalizado ou
+redirecionado para um ficheiro.
+.SH OPÇÕES
+.IP "\fB\-f\fP \fIficheiro\fP"
+Diz ao \fBreadbootlog\fP para usar um ficheiro especifico em vez de
+\fI/var/log/boot\fP.
+.IP \fB\-h\fP
+.\"{{{  Files
+Mostra uma mensagem de ajuda breve.
+.SH FICHEIROS
+.\"}}}
+.\"{{{  Author
+/var/log/boot
+.SH AUTOR
+.\"}}}
+.\"{{{  See also
+.MT jsmith@\:resonatingmedia\:.com
+Jesse Smith
+.ME
+.SH "VEJA TAMBÉM"
+\fBbootlogd\fP(8)
+.\"}}}

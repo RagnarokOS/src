@@ -1,0 +1,76 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2004 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH "PONTO DE MONTA" 1 "15 Março, 2004" "sysvinit " "Comandos de Utilizador"
+.SH NOME
+mountpoint \- vê se um directório é um ponto de montagem
+.SH RESUMO
+\fBmountpoint\fP [\fB\-q\fP] [\fB\-d\fP] \fI/caminho/para/directório\fP
+.br
+\fBmountpoint\fP \fB\-x\fP \fI/dev/dispositivo\fP
+.SH DESCRIÇÃO
+\fBmountpoint\fP verifica se um directório é um ponto de montagem.
+
+.SH OPÇÕES
+.IP \fB\-q\fP
+Fica calado \- não escreve nada.
+.IP \fB\-d\fP
+Escreve o número de dispositivo maior/menor do sistema de ficheiros no
+stdout.
+.IP \fB\-p\fP
+Verifica o ficheiro \fI/proc/mounts\fP do Linux para tentar detectar pontos de
+montagem circulares.
+.IP \fB\-x\fP
+Escreve o número de dispositivo maior/menor do dispositivo de bloco no
+stdout.
+.SH "ESTADO DE SAÍDA"
+Zero se o directório for um ponto de montagem, não\-zero se não for.
+.SH NOTAS
+Os links simbólicos não são seguidos, excepto quando a opção \fB\-x\fP é
+usada. Para forçar o seguimento dos links simbólicos, adicione uma barra "/"
+no final do caminho do directório.
+.PP
+O nome do comando é enganoso quando a opção \fB\-x\fP é usada, mas a opção é
+útil para comparar se um directório e um dispositivo correspondem, e não há
+mais nenhum outro comando que consiga escrever a informação com facilidade.
+.PP
+O comando mountpoint falha quando um directório é cego por um dos seus
+avôs. Por exemplo, se /a/b/c/d for um ponto de montagem para /a/b então o
+mountpoint irá reportar que /a/b/c/d não é um ponto de montagem válido. Isto
+deve\-se a que ambos o directório original e o seu novo ponto de montagem
+partilham o mesmo inode e número de dispositivo.
+.PP
+O problema de montagem circular pode ser contornado em sistemas Linux ao
+usar a bandeira \fB\-p\fP para verificar no ficheiro \fI/proc/mounts\fP por
+referências a vínculo de montagem circular. Quando se usar a bandeira \fB\-p\fP,
+certifique de especificar o caminho completo (isto é, \fI/home/user/mp\fP e não
+apenas \fImp\fP). Também, o \fBmountpoint\fP pode ainda falhar se existirem
+espaços no caminho dos pontos de montagem, mesmo usando a bandeira \fB\-p\fP
+devido ao modo que o \fB/proc/mounts\fP lida com os espaços no nome do
+caminho. Claro que, se o administrador está a usar pontos de montagem
+circulares com espaços no nome, existem grandes preocupações.
+.SH AUTOR
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME
+.SH "VEJA TAMBÉM"
+\fBstat\fP(1)

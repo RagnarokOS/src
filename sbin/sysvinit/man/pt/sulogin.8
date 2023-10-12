@@ -1,0 +1,87 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2006 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH SULOGIN 8 "17 Janeiro 2006" "sysvinit " "Manual de Administrador de Sistema Linux"
+.SH NOME
+sulogin \- login de único utilizador
+.SH RESUMO
+\fBsulogin\fP [ \fB\-e\fP ] [ \fB\-p\fP ] [ \fB\-t\fP \fISEGUNDOS\fP ] [ \fITTY\fP ]
+.SH DESCRIÇÃO
+O \fIsulogin\fP é invocado pelo \fBinit\fP(8) quando o sistema vai para modo de
+único utilizador. (Isto é feito através duma entrada em \fBinittab\fP(5).) O
+\fBinit\fP(8) também tenta executar o \fBsulogin\fP quando o boot loader
+(ex. \fBgrub\fP(8))  passa a opção \fB\-b\fP.
+.PP
+O utilizador é incitado:
+.IP "" .5i
+Give root password for system maintenance
+.br
+(or type Control\-D for normal startup):
+.PP
+O \fBsulogin\fP irá estar ligado ao terminal actual, ou ao dispositivo opcional
+que pode ser especificado na linha de comandos (tipicamente
+\fI/dev/console\fP).
+.PP
+Se a opção \fB\-t\fP for usada então o programa apenas espera o número de
+segundos dado por uma entrada de utilizador.
+.PP
+Se a opção \fB\-p\fP for usada então a shell de único utilizador é invocada com
+uma \fIbarra\fP como primeiro caractere em \fIargv[0]\fP.  Isto faz com que o
+processo de shell de comporte como uma shell de login. A predefinição é
+\fBnão\fP fazer isto, para que a shell \fBnão\fP leia \fI/etc/profile\fP ou
+\fI$HOME/.profile\fP no arranque.
+.PP
+Após o utilizador sair da shell de único utilizador, ou pressionar control\-D
+no aviso, o sistema irá (continuar) arrancar para o runlevel predefinido.
+.SH "VARIÁVEIS DE AMBIENTE"
+O \fBsulogin\fP procura a variável de ambiente \fBSUSHELL\fP ou \fBsushell\fP para
+determinar qual shell arrancar. Se a variável de ambiente não estiver
+definida, irá tentar executar a shell do root a partir de \fI/etc/passwd\fP. Se
+isso falhar irá cair para \fI/bin/sh\fP como recurso.
+.PP
+Isto é de grande valor juntamente com a opção \fB\-b\fP para o \fBinit\fP(8). Para
+arrancar o sistema em modo de único utilizador, com o sistema de ficheiros
+raiz montado em leitura/escrita, usando uma shell "fail safe" especial que
+está estatisticamente vinculada (este exemplo é válido para o bootprompt do
+LILO)
+.PP
+boot: linux \-b rw sushell=/sbin/sash
+.SH "MÉTODOS DE RECURSO (FALLBACK)"
+O \fBsulogin\fP verifica a palavra passe do root usando primeiro o método
+standard (\fBgetpwnam\fP(3)) . Depois, se a opção \fB\-e\fP for especificada, o
+\fBsulogin\fP examina estes ficheiro directamente para encontrar a palavra
+passe do root:
+.PP
+/etc/passwd,
+.br
+/etc/shadow (se presente)
+.PP
+Se estiverem danificados ou não existirem, o \fBsulogin\fP irá iniciar uma
+shell de root sem perguntar por uma palavra passe. Use apenas a opção \fB\-e\fP
+se tiver a certeza que a consola está fisicamente protegida contra acesso
+não autorizado.
+.SH AUTOR
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME
+.SH "VEJA TAMBÉM"
+\fBinit\fP(8), \fBinittab\fP(5)

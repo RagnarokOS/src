@@ -1,0 +1,119 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2001 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"{{{}}}
+.\"{{{  Title
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH HALT 8 "6. November 2001" "sysvinit " Linux\-Systemverwaltungshandbuch
+.\"}}}
+.\"{{{  Name
+.SH BEZEICHNUNG
+.\"}}}
+.\"{{{  Synopsis
+halt, poweroff, reboot \- das System anhalten
+.SH ÜBERSICHT
+\fB/sbin/halt\fP [\fB\-d\fP] [\fB\-f\fP] [\fB\-h\fP] [\fB\-i\fP] [\fB\-n\fP] [\fB\-p\fP] [\fB\-w\fP]
+.br
+\fB/sbin/reboot\fP [\fB\-d\fP] [\fB\-f\fP] [\fB\-i\fP] [\fB\-k\fP] [\fB\-n\fP] [\fB\-w\fP]
+.br
+.\"}}}
+.\"{{{  Description
+\fB/sbin/poweroff\fP [\fB\-d\fP] [\fB\-f\fP] [\fB\-h\fP] [\fB\-i\fP] [\fB\-n\fP] [\fB\-w\fP]
+.SH BESCHREIBUNG
+\fBhalt\fP vermerkt in der Datei \fI/var/log/wtmp\fP, dass das System
+heruntergefahren wird und weist den Kernel dann an, das System entweder
+anzuhalten, neuzustarten oder auszuschalten.
+.PP
+Wenn \fBhalt\fP oder \fBreboot\fP aufgerufen wird, wenn das System sich \fInicht\fP
+im Runlevel \fB0\fP oder \fB6\fP befindet (mit anderen Worten: es läuft normal),
+dann wird stattdessen \fBshutdown\fP aufgerufen (mit dem Schalter \fB\-h\fP oder
+\fB\-r\fP). Siehe die Handbuchseite \fBshutdown\fP(8) für weitere Informationen.
+.PP
+.\"}}}
+.\"{{{  Options
+Der Rest dieser Handbuchseite beschreibt das Verhalten in den Runleveln 0
+und 6, also wenn die Herunterfahr\-Skripte des Systems laufen.
+.SH OPTIONEN
+.IP \fB\-d\fP
+schreibt keinen Wtmp\-Herunterfahreintrag.
+.IP \fB\-f\fP
+erzwingt Systemhalt oder Neustart und ruft \fBshutdown\fP(8) nicht auf.
+.IP \fB\-h\fP
+versetzt alle Festplattenlaufwerke im System direkt vor Systemhalt oder
+Ausschalten in den Standby\-Modus.
+.IP \fB\-i\fP
+fährt alle Netzwerkschnittstellen kurz vor \fBhalt\fP oder \fBreboot\fP
+herunter. Warnung: Dies könnte auf Schnittstellen, die keine IP\-Adresse
+haben, nicht funktionieren und sollte idealerweise vom
+Netzwerkverwaltungsdienst gehandhabt werden.
+.IP \fB\-k\fP
+Try to reboot using \fBkexec\fP, if kernel supports it.
+.IP \fB\-n\fP
+synchronisiert vor dem Neustarten oder Anhalten nicht. Beachten Sie, dass
+der Kernel und die Speichertreiber weiterhin synchronisieren könnten. Dies
+impliziert \fB\-d\fP.
+.IP \fB\-p\fP
+schaltet beim Anhalten des Systems die Energieversorgung ab. Dies ist die
+Vorgabe, wenn \fBhalt\fP als \fBpoweroff\fP aufgerufen wird.
+.IP \fB\-w\fP
+.\"}}}
+.\"{{{  Diagnostics
+führt keinen Systemhalt oder Neustart tatsächlich aus, sondern schreibt nur
+den Wtmp\-Herunterfahreintrag (in die Datei \fI/var/log/wtmp\fP).
+.SH DIAGNOSE
+.\"}}}
+.\"{{{  Notes
+Falls Sie nicht der Superuser sind, erhalten Sie die Meldung »must be
+superuser«.
+.SH ANMERKUNGEN
+Unter älteren Versionen von \fBsysvinit\fP sollten \fBreboot\fP und \fBhalt\fP
+niemals direkt aufgerufen werden. Ab der Version 2.74 rufen \fBhalt\fP und
+\fBreboot\fP den Befehl \fBshutdown\fP(8) auf, falls sich das System nicht im
+Runlevel 0 oder 6 befindet. Falls \fBhalt\fP oder \fBreboot\fP den aktuellen
+Runlevel nicht ermitteln können (beispielsweise wenn \fI/var/run/utmp\fP nicht
+korrekt initialisiert wurde und \fI/var/run/runlevel\fP nicht existiert),
+bedeutet das, dass \fBshutdown\fP aufgerufen wird, was möglicherweise nicht das
+ist, was Sie wollen. Verwenden Sie den Schalter \fB\-f\fP, wenn Sie einen harten
+Systemhalt oder Neustart ausführen wollen.
+.PP
+Der Schalter \fB\-h\fP versetzt alle Festplatten direkt vor dem Systemhalt oder
+Ausschalten in den Standby\-Modus. Bislang ist das nur für IDE\-Laufwerke
+implemetiert. Ein Nebeneffekt des Versetzens in den Standby\-Modus ist, dass
+der Schreib\-Cache des Laufwerks geleert wird. Das ist für IDE\-Laufwerke
+wichtig, da der Kernel selbst den Schreib\-Cache vor dem Ausschalten nicht
+leert.
+.PP
+Das Programm \fBhalt\fP findet alle IDE\-Laufwerke mit Hilfe von
+\fI/proc/ide/hd*\fP, was bedeutet, dass \fI/proc\fP beim Aufruf von \fBhalt\fP oder
+\fBpoweroff\fP eingehängt sein muss. Anderenfalls wird der Schalter \fB\-h\fP
+nichts bewirken.
+.PP
+.\"}}}
+.\"{{{  Author
+.SH AUTOR
+.\"}}}
+.\"{{{  See also
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME
+.SH "SIEHE AUCH"
+\fBshutdown\fP(8), \fBinit\fP(8)
+.\"}}}

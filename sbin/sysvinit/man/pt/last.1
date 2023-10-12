@@ -1,0 +1,120 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2004 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"{{{}}}
+.\"{{{  Title
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH LAST, LASTB 1 "31 Julho, 2004" "sysvinit "
+.\"}}}
+.\"{{{  Name
+.SH NOME
+.\"}}}
+.\"{{{  Synopsis
+last, lastb \- mostra listagem dos últimos utilizadores que fizeram login
+.SH RESUMO
+\fBlast\fP [\fB\-R\fP] [\fB\-\fP\fInum\fP] [\-\fBn\fP \fInum\/\fP] [\fB\-adFiowx\fP] [\-\fBf\fP
+\fIficheiro\/\fP] [\-\fBt\fP \fIYYYYMMDDHHMMSS\/\fP] [\fInome...\fP] [\fItty...\fP]
+.br
+.\"}}}
+.\"{{{  Description
+\fBlastb\fP [\fB\-R\fP] [\fB\-\fP\fInum\fP] [\-\fBn\fP \fInum\/\fP] [\-\fBf\fP \fIficheiro\/\fP]
+[\fB\-adFiowx\fP] [\fInome...\fP] [\fItty...\fP]
+.SH DESCRIÇÃO
+\fBLast\fP procura para trás no ficheiro \fB/var/log/wtmp\fP (ou no ficheiro
+designado pela bandeira \fB\-f\fP) e mostra uma lista de todos os utilizadores
+que fizeram login (e logout) desde que esse ficheiro foi criado. Podem ser
+dados nomes de utilizadores e tty's, que neste caso o \fBlast\fP irá apenas
+mostrar aquelas entradas que correspondem aos argumentos. Os nomes dos ttys
+podem ser abreviados, assim \fBlast 0\fP é o mesmo que \fBlast tty0\fP.
+.PP
+Quando o \fBlast\fP apanha um sinal \fBSIGINT\fP (gerado pela tecla de
+interrupção, normalmente control\-C) ou um sinal \fBSIGQUIT\fP (gerado pela
+tecla de desistir, geralmente control\-\e), o \fBlast\fP irá mostrar até onde
+pesquisou no ficheiro; no caso do sinal \fBSIGINT\fP o \fBlast\fP irá depois
+terminar.
+.PP
+O pseudo utilizador \fBreboot\fP faz login cada vez que o sistema é
+reiniciado. Assim \fBlast reboot\fP irá mostrar um registo de todas as vezes
+que o sistema reiniciou desde que o ficheiro de registo foi criado.
+.PP
+.\"}}}
+.\"{{{  Options
+\fBlastb\fP é o mesmo que \fBlast\fP, excepto que por predefinição mostra um
+registo do ficheiro \fB/var/log/btmp\fP, que contém todas as tentativas
+falhadas de login.
+.SH OPÇÕES
+.IP "\fB\-f\fP \fIficheiro\fP"
+Diz ao \fBlast\fP para usar um ficheiro especifico em vez de \fI/var/log/wtmp\fP.
+.IP \fB\-\fP\fInum\fP
+Isto é uma contagem que diz ao \fBlast\fP quantas linhas deve mostrar.
+.IP "\fB\-n\fP \fInum\fP"
+O mesmo.
+.IP "\fB\-t\fP \fIYYYYMMDDHHMMSS\fP"
+Mostra o estados dos logins da hora especificada. Isto é útil, ex. para
+determinar facilmente quem tinha login aberto numa hora particular \-\-
+especifique essa hora com \fB\-t\fP e procura por "ainda com login aberto".
+.IP \fB\-R\fP
+Suprime o amostrar do campo hostname.
+.IP \fB\-a\fP
+Mostra o hostname na última coluna. Útil em combinação com a próxima
+bandeira.
+.IP \fB\-d\fP
+Para os logins não locais, o Linux guarda não apenas o nome da máquina da
+máquina remota mas também o seu número IP. Esta opção traduz o número IP de
+volta para um hostname.
+.IP \fB\-F\fP
+Escreve as horas e datas de todos os login e logout.
+.IP \fB\-i\fP
+Esta opção é como \fB\-d\fP em que mostra o número IP da máquina remota, mas
+mostra o número IP em notação de números e pontos.
+.IP \fB\-l\fP
+Esta opção permite a mostragem de nomes de utilizadores maiores que 8
+caracteres. Isto pode estragar a formatação em alguns programas e tornar os
+resultados mais largos que o standard de 80 caracteres.
+.IP \fB\-o\fP
+Lê um ficheiro wtmp de tipo antigo (escrito por aplicações de linux\-libc5).
+.IP \fB\-w\fP
+Mostra nomes completos de utilizador e domínio no resultado.
+.IP \fB\-x\fP
+.\"}}}
+Mostra entradas de encerramento do sistema e mudanças de nível de execução.
+.SH NOTAS
+.\"{{{  Files
+Os ficheiros \fIwtmp\fP e \fIbtmp\fP podem não existir. O sistema apenas regista
+informação nestes ficheiros se eles estiverem presentes. Isto é um problema
+de configuração local. Se você deseja que estes ficheiros sejam usados, eles
+podem ser criados com um simples comando \fBtouch\fP(1) (por exemplo, \fBtouch
+/var/log/wtmp\fP).
+.SH FICHEIROS
+/var/log/wtmp
+.br
+.\"}}}
+.\"{{{  Author
+/var/log/btmp
+.SH AUTOR
+.\"}}}
+.\"{{{  See also
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME
+.SH "VEJA TAMBÉM"
+\fBshutdown\fP(8), \fBlogin\fP(1), \fBinit\fP(8)
+.\"}}}

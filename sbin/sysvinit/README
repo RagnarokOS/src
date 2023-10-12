@@ -1,0 +1,39 @@
+README for SysV init
+====================
+
+SysV init is a classic initialization program (PID 1) for GNU/Linux and
+other UNIX/POSIX systems. It is designed to be small, simple and to
+stay out of the way.
+
+Init is the parent (or grandparent) of all other processes on the
+system. It kicks off the starting of other system services and
+can act as a parent process to services which no longer have an
+active parent process.
+
+SysV init uses the concept of runlevels. A runlevel is a configuration of the 
+system which allows only a selected group of processes to exist. 
+The processes spawned by init for each of these runlevels are defined in the 
+/etc/inittab file. Init can be in one of eight runlevels. The runlevel is
+changed by the administrator running the telinit command which selects
+which runlevel we want to use.
+       
+More information on init, runlevels and switching between them can be found
+in the init manual page. (See "man init".)
+
+contrib		Unofficial stuff, add-on programs
+doc		Documentation
+man		Manual pages
+src		Source code
+
+For instructions on building and installing SysV init, please
+see the "doc/Install" file.
+
+SysV init releases are signed with one of two keys, depending on the build machine.
+These keys are public keys A573ED5E687A40F89D30E6BE2A72EB41906F8E49 
+and 5A2DC686CDC5D6087D88C198351F75FA45D53656. 
+Both of these keys can be fetched from the Savannah mirror at:
+
+https://download.savannah.nongnu.org/releases/sysvinit/
+
+The keys are also available on the public key server https://keys.openpgp.org/
+

@@ -1,0 +1,291 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2001 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"{{{}}}
+.\"{{{  Title
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH INITTAB 5 "4. Dezember 2001" "sysvinit " Dateiformate
+.\"}}}
+.\"{{{  Name
+.SH BEZEICHNUNG
+.\"}}}
+.\"{{{  Description
+inittab \- Format der Datei inittab für den SysV\-kompatiblen Init\-Prozess
+.SH BESCHREIBUNG
+Die Datei \fBinittab\fP beschreibt, welche Prozesse beim Booten und während des
+normalen Betriebs gestartet werden (z. B. \& /etc/init.d/boot,
+/etc/init.d/rc, gettys …). \fBinit\fP(8) unterscheidet mehrere \fIRunlevel\fP, von
+denen jeder einen eigenen Satz von Prozessen umfasst, die gestartet
+werden. Gültige Runlevel sind \fB0\fP\-\fB6\fP plus \fBA\fP, \fBB\fP und \fBC\fP für
+\fBondemand\fP\-Einträge. Ein Eintrag in der Datei \fBinittab\fP hat folgendes
+Format:
+.RS
+.sp
+\fIID\fP:\fIRunlevel\fP:\fIAktion\fP:\fIProzess\fP
+.sp
+.RE
+.\"{{{  id
+Zeilen mit einer Raute »#« am Anfang werden ignoriert.
+.IP \fIID\fP
+ist eine eindeutige Folge von 1\-4 Zeichen zur Identifikation eines Eintrags
+in \fBinittab\fP. (Für Versionen von SysVinit, die mit der \fIalten\fP Libc5
+(< 5.2.18) oder a.out\-Bibliotheken kompiliert wurden, ist das Limit 2
+Zeichen).
+.sp
+.\"}}}
+.\"{{{  runlevels
+Hinweis: Traditionell ist für Getty und andere Anmeldeverfahren der Wert des
+\fIID\fP\-Felds der gleiche wie die Endung des entsprechenden ttys gehalten,
+z.B. \& \fB1\fP für \fBtty1\fP. Einige alte Anmeldeabrechnungsprogramme könnten
+das voraussetzen, obwohl der Verfasser sich keines vorstellen kann.
+.IP \fIRunlevel\fP
+.\"}}}
+.\"{{{  action
+listet die Runlevel, für die die angegebene Aktion durchgeführt werden soll.
+.IP \fIAktion\fP
+.\"}}}
+.\"{{{  process
+beschreibt, was getan werden soll.
+.IP \fIProzess\fP
+gibt an, welcher Prozess ausgeführt werden soll. Wenn das Prozess\-Feld mit
+einem »+«\-Zeichen beginnt, führt \fBInit\fP(8) keine utmp\- und wtmp\-Abrechnung
+(accounting) für diesen Prozess. Dies ist für Gettys erforderlich, die
+darauf bestehen, das selber zu erledigen. Dies ist auch ein historischer
+Fehler. Die Länge dieses Feldes ist auf 127 Zeichen begrenzt.
+
+.\"'<>?
+Please note that including certain characters in the process field will
+result in \fBinit\fP attempting to launch a shell to interpret the command
+contained in the process field.  The characters which will trigger a shell
+are: \fB~`!$^&*()=|\{}[];\fP
+
+On systems which do not have a shell to be launched or which do not wish to
+use a shell to interpret the process field, the process field can be
+prefixed with the @ symbol. The @ will be ignored and everything followed
+will be treated as a command to be launched, literally, by the \fBinit\fP
+service.
+
+In cases where both a + and @ sign are to be used (to turn off logging and
+shell interpretation), place the + sign before the @ symbol. Both flags will
+be handled and then everything following the @ will be handled by \fBinit\fP
+
+.\"}}}
+.PP
+Das Feld \fIRunlevel\fP kann mehrere Zeichen für verschiedene Runlevel
+enthalten. Beispielsweise legt \fB123\fP fest, dass der Prozess in den
+Runleveln 1, 2 und 3 gestartet werden soll. Die Runlevel für
+\fBondemand\fP\-Einträge können \fBA\fP, \fBB\fP oder \fBC\fP enthalten. Das Feld
+\fIRunlevel\fP der Einträge \fBsysinit\fP, \fBboot\fP und \fBbootwait\fP wird ignoriert.
+.PP
+Bei einem Wechsel des Runlevels des Systems werden alle laufenden Prozesse,
+die nicht im neuen Runlevel laufen sollen, beendet; zuerst mit
+\s-2SIGTERM\s0, dann mit \s-2SIGKILL\s0.
+.PP
+.\"{{{  respawn
+Gültige Einträge für das \fIAktion\fP\-Feld sind:
+.IP \fBrespawn\fP
+.\"}}}
+.\"{{{  wait
+Der Prozess wird jedesmal, wenn er sich beendet, neu gestartet (z.B. \&
+getty).
+.IP \fBwait\fP
+.\"}}}
+.\"{{{  once
+Der Prozess wird einmal beim Eintritt in den Runlevel gestartet und
+\fBinit\fP(8) wartet auf den Abschluss des Prozesses.
+.IP \fBonce\fP
+.\"}}}
+.\"{{{  boot
+Der Prozess wird einmal während der Initialisierung des Runlevels
+ausgeführt.
+.IP \fBboot\fP
+.\"}}}
+.\"{{{  bootwait
+Der Prozess wird ausgeführt, während das System hochfährt. Das Feld
+\fIRunlevel\fP wird ignoriert.
+.IP \fBbootwait\fP
+.\"}}}
+.\"{{{  off
+Der Prozess läuft während des Systemstarts und \fBinit\fP(8) wartet auf seinen
+Abschluss (z. B.\& /etc/rc). Das Feld \fIRunlevel\fP wird ignoriert.
+.IP \fBoff\fP
+.\"}}}
+.\"{{{  ondemand
+Es wird keine Aktion durchgeführt.
+.IP \fBondemand\fP
+.\"}}}
+.\"{{{  initdefault
+Ein mit \fBondemand\fP gekennzeichneter Prozess wird jedesmal ausgeführt, wenn
+der angegebene \fBondemand\fP\-Runlevel aufgerufen wird. Es erfolgt aber kein
+Wechsel des Runlevels. (Die \fBondemand\fP\-Runlevel sind »a«, »b« und »c«.)
+.IP \fBinitdefault\fP
+.\"}}}
+.\"{{{  sysinit
+Ein \fBinitdefault\fP\-Eintrag legt den Runlevel nach dem Systemstart
+fest. Fehlt dieser Eintrag, wird \fBinit\fP(8) auf der Konsole nach dem
+Runlevel fragen. Das \fIProzess\fP\-Feld wird ignoriert.
+.IP \fBsysinit\fP
+.\"}}}
+.\"{{{  powerwait
+Dieser Prozess läuft beim Systemstart vor den \fBboot\fP\- und
+\fBbootwait\fP\-Einträgen. Das Feld \fIRunlevel\fP wird ignoriert.
+.IP \fBpowerwait\fP
+.\"}}}
+.\"{{{  powerfail
+Dieser Prozess wird ausgeführt, wenn die Spannung der Stromversorgung
+sinkt. \fBinit\fP(8) wird üblicherweise von einem Prozess informiert, der mit
+der USV kommuniziert. \fBinit\fP(8) wartet das Ende dieses Prozesses ab, bevor
+es weiter macht.
+.IP \fBpowerfail\fP
+.\"}}}
+.\"{{{  powerokwait
+Wie \fBpowerwait\fP; \fBinit\fP(8) wartet aber nicht auf den Abschluss dieses
+Prozesses.
+.IP \fBpowerokwait\fP
+.\"}}}
+.\"{{{  powerfailnow
+Dieser Prozess wird ausgeführt, sobald \fBinit\fP(8) erfährt, dass die
+Spannungsversorgung wieder normal funktioniert.
+.IP \fBpowerfailnow\fP
+.\"}}}
+.\"{{{  ctrlaltdel
+Dieser Prozess wird ausgeführt, wenn \fBinit\fP(8) erfährt, dass die Batterie
+der externen USV fast leer ist und ein Stromausfall droht. Voraussetzung ist
+natürlich, dass USV und Überwachungsprozess diesen Zustand erkennen können.
+.IP \fBctrlaltdel\fP
+.\"}}}
+.\"{{{  kbrequest
+Der Prozess wird ausgeführt, wenn \fBinit\fP(8) das Signal \fBSIGINT\fP
+erhält. Dies bedeutet, dass jemand auf der System\-Konsole die
+Tastenkombination \fBSTRG\-ALT\-ENTF\fP eingegeben hat. Normalerweise will man
+eine Art von \fBshutdown\fP ausführen; entweder in den Single\-User\-Runlevel
+wechseln oder den Rechner neu starten.
+.IP \fBkbrequest\fP
+Der Prozess wird ausgeführt, wenn der Tastatur\-Handler \fBinit\fP(8)
+signalisiert, dass auf der Tastatur der Konsole eine bestimmte
+Tastenkombination eingegeben wurde.
+.sp
+Die Dokumentation für diese Funktion ist noch nicht vollständig. Zusätzliche
+Dokumentation finden Sie in den kbd\-x.xx\-Paketen (das aktuellste war beim
+Schreiben dieser Handbuchseite kbd\-0.94). Wahrscheinlich möchten Sie der
+»KeyboardSignal«\-Aktion eine Tastenkombinationen zuordnen. Um beispielsweise
+die Kombination »Alt Aufwärtspfeil« zu verwenden, tragen Sie in Ihre
+keymaps\-Datei ein:
+.RS
+.sp
+alt keycode 103 = KeyboardSignal
+.sp
+.RE
+.\"}}}
+.\"}}}
+.\"{{{  Examples
+.SH BEISPIELE
+Dies ist ein Beispiel für eine inittab, die der alten Linux\-inittab ähnelt:
+.RS
+.sp
+.nf
+.ne 7
+# inittab für Linux
+id:1:initdefault:
+rc::bootwait:/etc/rc
+1:1:respawn:/etc/getty 9600 tty1
+2:1:respawn:/etc/getty 9600 tty2
+3:1:respawn:/etc/getty 9600 tty3
+4:1:respawn:/etc/getty 9600 tty4
+.fi
+.sp
+.RE
+Diese inittab\-Datei führt beim Systemstart \fI/etc/rc\fP aus und startet Gettys
+auf tty1 bis tty4.
+.PP
+Eine ausgefeiltere \fBinittab\fP mit verschiedenen Runleveln (siehe die
+innenstehenden Kommentare):
+.RS
+.sp
+.nf
+.ne 19
+# Standard\-Runlevel
+id:2:initdefault:
+
+# Skript für Konfiguration/Initialisierung während
+# des Systemstarts
+si::sysinit:/etc/init.d/rcS
+
+# Das läuft im Single\-User\-Modus.
+~:S:wait:/sbin/sulogin
+
+# /etc/init.d führt beim Wechsel des Runlevel die
+# S\- und K\-Skripte aus.
+#
+# Runlevel 0 ist Halt.
+# Runlevel 1 ist der Single\-User\-Betrieb.
+# Runlevel 2\-5 sind Mehrbenutzer\-Modi.
+# Runlevel 6 ist der Neustart (Reboot).
+
+l0:0:wait:/etc/init.d/rc 0
+l1:1:wait:/etc/init.d/rc 1
+l2:2:wait:/etc/init.d/rc 2
+l3:3:wait:/etc/init.d/rc 3
+l4:4:wait:/etc/init.d/rc 4
+l5:5:wait:/etc/init.d/rc 5
+l6:6:wait:/etc/init.d/rc 6
+
+# Was wird beim »Affengriff« getan?
+ca::ctrlaltdel:/sbin/shutdown \-t1 \-h now
+
+# Runlevel 2,3: Getty auf virtuellen Konsolen
+# Runlevel   3: Getty auf Terminal (ttyS0) und Modem (ttyS1)
+1:23:respawn:/sbin/getty tty1 VC linux
+2:23:respawn:/sbin/getty tty2 VC linux
+3:23:respawn:/sbin/getty tty3 VC linux
+4:23:respawn:/sbin/getty tty4 VC linux
+S0:3:respawn:/sbin/getty \-L 9600 ttyS0 vt320
+S1:3:respawn:/sbin/mgetty \-x0 \-D ttyS1
+
+.fi
+.sp
+.RE
+.\"}}}
+.\"{{{  Files
+.SH DATEIEN
+.\"}}}
+.\"{{{  Author
+/etc/inittab
+.SH AUTOR
+.\"}}}
+.\"{{{  See also
+Der Autor von \fBinit\fP(8) ist
+.MT miquels@\:cistron\:.nl
+Miquel van
+Smoorenburg
+.ME .
+Diese Handbuchseite wurde von
+.MT lederer@\:francium\:.informatik\:.uni\-bonn\:.de
+Sebastian Lederer
+.ME
+geschrieben und von
+.MT u31b3hs@\:pool\:.informatik\:.rwth\-aachen\:.de
+Michael Haardt
+.ME
+überarbeitet.
+.SH "SIEHE AUCH"
+\fBinit\fP(8), \fBtelinit\fP(8)
+.\"}}}

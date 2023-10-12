@@ -1,0 +1,59 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2003 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH WALL 1 "15 Abril 2003" "sysvinit " "Comandos de Utilizador"
+
+.SH NOME
+wall \- envia uma mensagem para o terminal de toda a gente.
+
+.SH RESUMO
+\fBwall\fP [\fB\-n\fP] [\fImensagem\fP]
+
+.SH DESCRIÇÃO
+O \fBWall\fP envia uma mensagem para toda a gente com sessão aberta com a sua
+permissão \fBmesg\fP(1) definida para \fByes\fP. A mensagem pode ser dada como um
+argumento ao \fBwall\fP, ou pode ser enviar para a entrada standard do
+\fBwall\fP. Quando se usa a entrada standard a partir dum terminal, a mensagem
+deve ser terminada coma tecla \fBEOF\fP (geralmente Control\-D).
+.PP
+O comprimento da mensagem está limitado a 20 linhas. Para cada invocação do
+\fBwall\fP será escrita uma notificação no syslog, com facilidade \fBLOG_USER\fP e
+nível \fBLOG_INFO\fP.
+
+.SH OPÇÕES
+.IP \fB\-n\fP
+Suprime o cabeçalho normal escrito pelo \fBwall\fP, mudando\-o para "Remote
+broadcast message". Esta opção só está disponível para o root se \fBwall\fP for
+instalado com set\-group\-id, e for usado pelo \fBrpc.walld\fP(8).
+.PP
+
+.SH AMBIENTE
+O \fBwall\fP ignora a variável \fBTZ\fP \- a hora escrita no cabeçalho é baseada na
+hora local do sistema.
+
+.SH "VEJA TAMBÉM"
+\fBmesg\fP(1), \fBrpc.rwalld\fP(8)
+
+.SH AUTOR
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME

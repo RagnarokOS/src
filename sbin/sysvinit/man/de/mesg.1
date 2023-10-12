@@ -1,0 +1,65 @@
+'\" -*- coding: UTF-8 -*-
+.\" Copyright (C) 1998-2001 Miquel van Smoorenburg.
+.\"
+.\" This program is free software; you can redistribute it and/or modify
+.\" it under the terms of the GNU General Public License as published by
+.\" the Free Software Foundation; either version 2 of the License, or
+.\" (at your option) any later version.
+.\"
+.\" This program is distributed in the hope that it will be useful,
+.\" but WITHOUT ANY WARRANTY; without even the implied warranty of
+.\" MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+.\" GNU General Public License for more details.
+.\"
+.\" You should have received a copy of the GNU General Public License
+.\" along with this program; if not, write to the Free Software
+.\" Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
+.\"
+.\"{{{}}}
+.\"{{{  Title
+.\"*******************************************************************
+.\"
+.\" This file was generated with po4a. Translate the source file.
+.\"
+.\"*******************************************************************
+.TH MESG 1 "26. Februar 2001" "sysvinit " "Dienstprogramme für Benutzer"
+.\"}}}
+.\"{{{  Name
+.SH BEZEICHNUNG
+.\"}}}
+.\"{{{  Synopsis
+mesg \- den Schreibzugriff auf Ihr Terminal steuern
+.SH ÜBERSICHT
+.\"}}}
+.\"{{{  Description
+\fBmesg\fP [\fBy\fP|\fBn\fP]
+.SH BESCHREIBUNG
+.\"}}}
+.\"{{{  Options
+\fBmesg\fP steuert den Zugriff auf Ihr Terminal durch andere. Es wird
+üblicherweise dazu verwendet, anderen Benutzern entweder zu gestatten oder
+zu verbieten, auf Ihr Terminal zu schreiben (siehe \fBwrite\fP(1)).
+.SH OPTIONEN
+.IP \fBy\fP
+erlaubt den Schreibzugriff auf Ihr Terminal.
+.IP \fBn\fP
+verbietet den Schreibzugriff auf Ihr Terminal.
+.PP
+.\"}}}
+.\"{{{  Notes
+Falls keine Argumente angegeben sind, zeigt \fBmesg\fP den aktuellen Status des
+Zugriffs auf Ihr Terminal an.
+.SH ANMERKUNGEN
+\fBmesg\fP geht davon aus, dass seine Standardeingabe mit Ihrem Terminal
+verbunden ist. Das bedeutet auch, falls Sie mehrfach angemeldet sind, dass
+Sie den \fBmesg\fP\-Status anderer Sitzungen durch Umleitung abfragen oder
+setzen können. Zum Beispiel »mesg n < /dev/pts/46«.
+.SH AUTOR
+.\"}}}
+.\"{{{  See also
+.MT miquels@\:cistron\:.nl
+Miquel van Smoorenburg
+.ME
+.SH "SIEHE AUCH"
+\fBtalk\fP(1), \fBwrite\fP(1), \fBwall\fP(1)
+.\"}}}
