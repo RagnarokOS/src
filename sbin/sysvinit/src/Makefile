@@ -23,19 +23,19 @@ MNTPOINT=
 
 # For some known distributions we do not build all programs, otherwise we do.
 BIN	=
-SBIN	= init halt shutdown runlevel killall5 fstab-decode logsave
-USRBIN	= last mesg readbootlog
+SBIN	= init halt shutdown runlevel killall5 fstab-decode
+#USRBIN	= last mesg readbootlog
 
-MAN1	= last.1 lastb.1 mesg.1 readbootlog.1
+#MAN1	= last.1 lastb.1 mesg.1 readbootlog.1
 MAN5	= initscript.5 inittab.5 initctl.5
 MAN8	= halt.8 init.8 killall5.8 pidof.8 poweroff.8 reboot.8 runlevel.8
 MAN8	+= shutdown.8 telinit.8 fstab-decode.8 logsave.8
 
 ifeq ($(DISTRO),)
-SBIN	+= sulogin bootlogd
-USRBIN	+= utmpdump wall
-MAN1	+= utmpdump.1 wall.1
-MAN8	+= sulogin.8 bootlogd.8
+SBIN	+= bootlogd
+#USRBIN	+= utmpdump wall
+#MAN1	+= utmpdump.1 wall.1
+MAN8	+= bootlogd.8
 endif
 
 ifeq ($(DISTRO),Debian)
@@ -213,10 +213,10 @@ install:	all
 		ln -sf halt $(ROOT)/sbin/reboot
 		ln -sf halt $(ROOT)/sbin/poweroff
 		ln -sf init $(ROOT)/sbin/telinit
-		ln -sf ../sbin/killall5 $(ROOT)/bin/pidof
-		if [ ! -f $(ROOT)/usr/bin/lastb ]; then \
-			ln -sf last $(ROOT)/usr/bin/lastb; \
-		fi
+		#ln -sf ../sbin/killall5 $(ROOT)/bin/pidof
+		#if [ ! -f $(ROOT)/usr/bin/lastb ]; then \
+		#	ln -sf last $(ROOT)/usr/bin/lastb; \
+		#fi
 		$(INSTALL_DIR) $(ROOT)/usr/include/
 		$(INSTALL_DATA) initreq.h $(ROOT)/usr/include/
 		for man in $(MANPAGES) ; do \
@@ -229,8 +229,8 @@ ifeq ($(ROOT),)
 		#
 		# This part is skipped on Debian systems, the
 		# debian.preinst script takes care of it.
-		@if [ ! -p /run/initctl ]; then \
-		 echo "Creating /run/initctl"; \
-		 rm -f /run/initctl; \
-		 mknod -m 600 /run/initctl p; fi
+		#@if [ ! -p /run/initctl ]; then \
+		# echo "Creating /run/initctl"; \
+		# rm -f /run/initctl; \
+		# mknod -m 600 /run/initctl p; fi
 endif

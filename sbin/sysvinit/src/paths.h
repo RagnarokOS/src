@@ -35,7 +35,7 @@
 #define SDPID		"/var/run/shutdown.pid"	/* PID of shutdown program */
 #define SHELL		"/bin/sh"		/* Default shell */
 #define SULOGIN		"/sbin/sulogin"		/* Sulogin */
-#define INITSCRIPT	"/etc/initscript"	/* Initscript. */
+#define INITSCRIPT	"/run/initscript"	/* Initscript. */
 #define PWRSTAT_OLD	"/etc/powerstatus"	/* COMPAT: SIGPWR reason (OK/BAD) */
 #define PWRSTAT		"/var/run/powerstatus"	/* COMPAT: SIGPWR reason (OK/BAD) */
 #define RUNLEVEL_LOG    "/var/run/runlevel"     /* neutral place to store run level */
