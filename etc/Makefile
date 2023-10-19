@@ -1,5 +1,5 @@
 # Makefile for /etc
-# Ragnarok: Makefile,v 1.4 2023/09/28 15:15:10 lecorbeau Exp i $
+# $Ragnarok: Makefile,v 1.14 2023/10/19 17:49:47 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/ragnarok-config.mk
 
@@ -39,7 +39,7 @@ install:
 	# Create dirs that don't already exist
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/preferences.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/sources.list.d
-	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/trusted.gpg.d
+	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/trusted.gpg.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/default/grub.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/dpkg/origins
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/signify
