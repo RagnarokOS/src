@@ -1,8 +1,8 @@
 # Ragnarok-specific Makefile for coreutils
-# $Ragnarok: Makefile,v 1.3 2023/10/23 18:56:57 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.4 2023/10/23 19:15:29 lecorbeau Exp $
 
 MAKE	= make -C
-VERSION	= 3.9
+VERSION	= 9.3
 
 BIN_PROGS = cat chgrp chmod chown cp date dd df dir echo false ln ls \
 	    mkdir mknod mv pwd readlink rm rmdir vdir sleep stty sync \
