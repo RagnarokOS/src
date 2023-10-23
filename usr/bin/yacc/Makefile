@@ -1,5 +1,5 @@
 # Makefile for OpenBSD's yacc.
-# $Id: Makefile,v 1.1 2023/09/23 19:25:14 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.2 2023/10/23 18:32:43 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/progs.mk
 
@@ -23,8 +23,8 @@ install: all
 	install -d ${DESTDIR}${MANDIR}
 	install -m 555 ${PROG} ${DESTDIR}${BINDIR}
 	install -m 555 yyfix.sh ${DESTDIR}${BINDIR}/yyfix
-	install -m 444 yacc.1 ${DESTDIR}${MANDIR}/${PROG}.1
-	install -m 444 yyfix.1 ${DESTDIR}${MANDIR}/yyfix.1
+	install -m 444 yacc.1 ${DESTDIR}${MANDIR}/man1/${PROG}.1
+	install -m 444 yyfix.1 ${DESTDIR}${MANDIR}/man1/yyfix.1
 
 test:
 	@echo "No tests"
