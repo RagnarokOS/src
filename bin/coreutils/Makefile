@@ -1,5 +1,5 @@
 # Ragnarok-specific Makefile for coreutils
-# $Ragnarok: Makefile,v 1.4 2023/10/23 19:15:29 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.5 2023/10/23 20:17:41 lecorbeau Exp $
 
 MAKE	= make -C
 VERSION	= 9.3
@@ -12,6 +12,8 @@ all:
 	cd coreutils-${VERSION}; \
 		./configure CC=clang YACC="/usr/bin/yacc -o y.tab.c" --prefix=/usr \
 		--enable-no-install-program=kill,hostname,uptime
+	cd coreutils-${VERSION}; \
+		patch -p1 Makefile < ../patches/make.diff
 	${MAKE} coreutils-${VERSION}
 
 install:
