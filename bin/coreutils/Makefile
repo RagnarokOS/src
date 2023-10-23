@@ -1,5 +1,5 @@
 # Ragnarok-specific Makefile for coreutils
-# $Ragnarok: Makefile,v 1.1 2023/10/23 17:12:41 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.2 2023/10/23 18:40:16 lecorbeau Exp $
 
 MAKE	= make -C
 VERSION	= 3.9
@@ -10,7 +10,7 @@ BIN_PROGS = cat chgrp chmod chown cp date dd df dir echo false ln ls \
 
 all:
 	cd coreutils-${VERSION}; \
-		./configure --prefix=/usr --enable-no-install-program=kill,hostname,uptime
+		./configure CC=clang --prefix=/usr --enable-no-install-program=kill,hostname,uptime
 	${MAKE} coreutils-${VERSION}
 
 install:
