@@ -1,5 +1,5 @@
 # Ragnarok-specific Makefile for coreutils
-# $Ragnarok: Makefile,v 1.7 2023/10/24 16:52:27 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.8 2023/10/24 18:49:45 lecorbeau Exp $
 
 MAKE	= make -C
 VERSION	= 9.3
@@ -10,10 +10,12 @@ BIN_PROGS = cat chgrp chmod chown cp date dd df dir echo false ln ls \
 
 all:
 	cd coreutils-${VERSION}; \
-		./configure CC=clang YACC="/usr/bin/yacc -o y.tab.c" --prefix=/usr \
+		./configure CC=clang \
+		CFLAGS="-g -O2 -fstack-clash-protection -fstack-clash-protector-strong --param=ssp-buffer-size=4 -fcf-protection" \
+		CPPFLAGS="-D_FORTIFY_SOURCE=2" \
+		LDFLAGS="-Wl,-z,relro,-z,now -Wl,-zdefs" \
+		YACC="/usr/bin/yacc -o y.tab.c" --prefix=/usr \
 		--enable-no-install-program=kill,hostname,uptime
-	cd coreutils-${VERSION}; \
-		patch -p1 Makefile < ../patches/make.diff
 	${MAKE} coreutils-${VERSION}
 
 install:

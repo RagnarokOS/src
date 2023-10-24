@@ -1,6 +1,6 @@
 # Coreutils
 
-Note: finish make.diff before including in the build. Will need to
-hardcode the compile flags rather than use usr/share/mk... due to
-the fact this also builds a shared library.
+TODO:
 
+* Figure out why `-D_FORTIFY_SOURCE=2` does not get enabled despite
+  the fact that the Debian-compiled version does use it.
