@@ -1,5 +1,5 @@
 # Ragnarok-specific Makefile for coreutils
-# $Ragnarok: Makefile,v 1.6 2023/10/24 16:41:09 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.7 2023/10/24 16:52:27 lecorbeau Exp $
 
 MAKE	= make -C
 VERSION	= 9.3
@@ -14,7 +14,7 @@ all:
 		--enable-no-install-program=kill,hostname,uptime
 	cd coreutils-${VERSION}; \
 		patch -p1 Makefile < ../patches/make.diff
-	${MAKE} coreutils-${VERSION} -j$(nproc)
+	${MAKE} coreutils-${VERSION}
 
 install:
 	${MAKE} coreutils-${VERSION} DESTDIR=${DESTDIR} install
@@ -36,7 +36,7 @@ cross:
 		--build=$(build-aux/config.guess) \
 		--enbale-no-install-program=kill,hostname,uptime \
 		gl_cv_macro_MB_CUR_MAX_good=y
-	${MAKE} coreutils-${VERSION} -j$(nproc)
+	${MAKE} coreutils-${VERSION}
 
 cross-install:
 	${MAKE} coreutils-${VERSION} DESTDIR=${DESTDIR} install
