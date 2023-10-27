@@ -1,5 +1,5 @@
 # Global Makefile for rsyslog
-# $Ragnarok$
+# $Ragnarok: Makefile,v 1.1 2023/10/27 15:58:32 lecorbeau Exp $
 
 MAKE	= make -C
 VERSION = 8.2310.0
