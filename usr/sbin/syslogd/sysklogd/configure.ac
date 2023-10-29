@@ -41,8 +41,7 @@ AC_CONFIG_FILES([Makefile
 		 man/Makefile
 		 src/Makefile
 		 src/libsyslog.pc
-		 test/Makefile
-		 syslogd.service])
+		 test/Makefile])
 
 AC_PROG_CC
 AC_PROG_INSTALL
