@@ -26,8 +26,8 @@
 # SUCH DAMAGE.
 
 SUBDIRS        = example man src test
-doc_DATA       = README.md LICENSE ChangeLog.md syslog.conf
-EXTRA_DIST     = README.md LICENSE ChangeLog.md syslog.conf
+doc_DATA       = README.md LICENSE ChangeLog.md
+EXTRA_DIST     = README.md LICENSE ChangeLog.md
 
 #
 # Check if tagged in git
