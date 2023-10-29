@@ -72,10 +72,6 @@ AC_ARG_WITH(suspend-time,
         AS_HELP_STRING([--with-suspend-time=SEC], [Retry delay for sending to remote, default: 180]),
 	[suspend_time=$withval], [suspend_time='no'])
 
-AC_ARG_WITH(systemd,
-     [AS_HELP_STRING([--with-systemd=DIR], [Directory for systemd service files])],,
-     [with_systemd=auto])
-
 AC_ARG_WITH(logger,
      AS_HELP_STRING([--without-logger], [Build without extended logger tool, default: enabled]),
      [logger=$withval], [logger='yes'])
@@ -89,17 +85,6 @@ AS_IF([test "x$suspend_time" != "xno"],[
 	]
 	AC_DEFINE_UNQUOTED(INET_SUSPEND_TIME, $suspend_time, [Retry delay for sending to remote syslog servers, default: 180]),
 	suspend_time=180)
-
-# Check where to install the systemd .service file
-AS_IF([test "x$with_systemd" = "xyes" -o "x$with_systemd" = "xauto"], [
-     def_systemd=$($PKG_CONFIG --variable=systemdsystemunitdir systemd)
-     AS_IF([test "x$def_systemd" = "x"],
-         [AS_IF([test "x$with_systemd" = "xyes"],
-	     [AC_MSG_ERROR([systemd support requested but pkg-config unable to query systemd package])])
-	     with_systemd=no], [with_systemd="$def_systemd"])])
-AS_IF([test "x$with_systemd" != "xno"],
-     [AC_SUBST([systemddir], [$with_systemd])])
-AM_CONDITIONAL([HAVE_SYSTEMD], [test "x$with_systemd" != "xno"])
 
 # Expand $sbindir and @$sysconfdir early, for systemd unit file
 # NOTE: This does *not* take prefix/exec_prefix override at "make
@@ -136,7 +121,6 @@ cat <<EOF
  Optional features:
   logger.........: $with_logger
   suspend time...: $suspend_time sec
-  systemd........: $with_systemd
 
 ------------- Compiler version --------------
 $($CC --version || true)

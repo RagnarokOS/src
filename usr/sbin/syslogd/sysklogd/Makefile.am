@@ -29,10 +29,6 @@ SUBDIRS        = example man src test
 doc_DATA       = README.md LICENSE ChangeLog.md syslog.conf
 EXTRA_DIST     = README.md LICENSE ChangeLog.md syslog.conf
 
-if HAVE_SYSTEMD
-systemd_DATA   = syslogd.service
-endif
-
 #
 # Check if tagged in git
 #
@@ -70,6 +66,4 @@ release: release-hook distcheck
 		printf "%-30s " $$file.sha256; cat ../$$file.sha256 | cut -f1 -d' ';	\
 	done
 
-# Workaround for systemd unit file duing distcheck
-DISTCHECK_CONFIGURE_FLAGS = --with-systemd=$$dc_install_base/$(systemd)
 DISTCLEANFILES = lib/.libs/*
