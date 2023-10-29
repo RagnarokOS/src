@@ -2,6 +2,7 @@
 .config
 .deps
 .unpacked
+RCS/
 m4/
 ID
 GTAGS
