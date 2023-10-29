@@ -1,0 +1,49 @@
+#! /bin/sh
+### BEGIN INIT INFO
+# Provides:          syslogd
+# Required-Start:    $remote_fs $time
+# Required-Stop:     umountnfs $time
+# X-Stop-After:      sendsigs
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: syslogd
+# Description:       The syslog daemon.
+### END INIT INFO
+
+. /etc/rc.d/rc.subr
+
+CONFIG=$(get_val DAEMON_OPTS /etc/default/syslogd)
+PROG="syslogd"
+
+do_start() {
+	# if /run/syslogd.cache was not removed for whatever reason,
+	# remove it now.
+	if [ -f /run/syslogd.cache ]; then
+		rm -f /run/syslogd.cache
+	fi
+
+	/usr/sbin/"${PROG}" -F "${CONFIG}" &
+}
+
+do_stop() {
+	/usr/bin/pkill -F /run/"${PROG}".pid
+
+	if [ -f /run/syslogd.cache ]; then
+		rm -f /run/syslogd.cache
+	fi
+}
+
+do_restart() {
+	/usr/bin/pkill -HUP "${PROG}"
+}
+
+case "$1" in
+	start)		do_start
+			;;
+	stop)		do_stop
+			;;
+	restart)	do_restart
+		 	;;
+	*)		echo "Error: needs argument ('start', 'restart', 'stop'"
+			;;
+esac
