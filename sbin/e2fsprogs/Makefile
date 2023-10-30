@@ -1,5 +1,5 @@
 # Global Makefile for e2fsprogs
-# $Ragnarok: Makefile,v 1.1 2023/10/30 16:49:54 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.2 2023/10/30 18:22:19 lecorbeau Exp $
 
 MAKE	= make -C
 VERSION	= 1.47.0
@@ -18,3 +18,5 @@ all:
 
 install:
 	${MAKE} e2fsprogs-${VERSION} DESTDIR=${DESTDIR} install
+	gunzip ${DESTDIR}/usr/share/info/libext2fs.info.gz
+	install-info --dir-file=${DESTDIR}/usr/share/info/dir ${DESTDIR}/usr/share/info/libext2fs.info
