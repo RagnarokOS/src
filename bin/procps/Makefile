@@ -1,5 +1,5 @@
 # Global Makefile for procps-ng
-# $Ragnarok: Makefile,v 1.1 2023/10/30 17:00:00 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.2 2023/10/30 18:05:43 lecorbeau Exp $
 
 MAKE	= make -C
 VERSION	= 4.0.3
@@ -13,7 +13,7 @@ all:
 		--prefix=/usr --exec-prefix=/ \
 		--disable-static --disable-modern-top \
 		--disable-kill \
-		--enable-harden-flags
+		--disable-pidof
 	${MAKE} procps-ng-${VERSION}
 
 install:
