@@ -1,5 +1,5 @@
 # Makefile for usr/bin
-# $Ragnarok: Makefile,v 1.9 2023/10/10 18:44:54 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.10 2023/10/31 20:10:52 lecorbeau Exp $
 
 MAKE	= make -C
 
@@ -8,6 +8,7 @@ MAKE	= make -C
 CONFIGURE = mandoc
 
 SUBDIRS	= yacc apply banner bsd-mailx doas mandoc rcs signify sysupdate
+STANDALONE = checkhash
 
 # miniroot.tgz requires less stuff
 MINIROOTDIRS	= signify sysupdate
@@ -32,6 +33,7 @@ install:
 	for _dir in ${SUBDIRS}; do \
 		${MAKE} $$_dir install; \
 		done
+	install -m 755 -g 0 -o root ${STANDALONE} ${DESTDIR}/usr/bin
 
 clean:
 	for _dir in ${SUBDIRS}; do \

@@ -1,0 +1,24 @@
+#!/bin/ksh
+
+# Ragnarok$
+# Check the hash of tarball and report if it doesn't match.
+# Used by the ports system, but occasionally for the source
+# tree if the source isn't kept in it (e.g. I ain't maintaining
+# the whole systemd source just for udev).
+
+check_hash() {
+	local _t=$1 _alg=$2 _hash=$3 _ret=0
+
+	echo "${_hash} ${_t}" | /usr/bin/"${_alg}sum" --status -c - || _ret=$?
+
+	if ((_ret != 0)); then
+		echo "sum doesn't match... exiting."
+		exit 1
+	fi
+}
+
+if [[ $# -lt 3 ]] || [[ $# -gt 3 ]]; then
+	echo "Usage: checkhash <tarball> <hash type> <hash>"
+	exit 1
+fi
+check_hash "$1" "$2" "$3"
