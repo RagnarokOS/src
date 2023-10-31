@@ -1,5 +1,5 @@
 # Global Makefile for udev
-# $Ragnarok: Makefile,v 1.1 2023/10/31 16:40:05 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.2 2023/10/31 22:49:51 lecorbeau Exp $
 
 MAKE	= make -C
 VERSION	= 254
@@ -7,14 +7,15 @@ SRC	= https://github.com/systemd/systemd/archive/v${VERSION}/systemd-${VERSION}.
 HASH	= 0d266e5361dc72097b6c18cfde1c0001
 
 get-src:
-	${TOPDIR}/usr/bin/getsrc ${SRC} md5 ${HASH}
+	/usr/bin/wget -q --show-progress ${SRC}
+	${TOPDIR}/usr/bin/checkhash systemd-${VERSION}.tar.gz md5 ${HASH}
 	tar xzvf systemd-${VERSION}.tar.gz
 
 all: get-src
 	./do_build
 
 install:
-	# TODO: make this POSIX compliant since make doesn't do brace expantion.
+	# TODO: make this POSIX compliant since make doesn't do brace expansion.
 	install -vm755 -d {/usr/lib,/etc}/udev/{hwdb,rules}.d
 	install -vm755 -d /usr/{lib,share}/pkgconfig
 	install -vm755 udevadm                     /usr/bin/
