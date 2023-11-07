@@ -545,9 +545,6 @@ clean_benchmarks:
 
 clean_config: clean clean_benchmarks
 	@printf 'Cleaning config...\n'
-	@$(RM) -f Makefile
-	@$(RM) -f $(BC_MD) $(BC_MANPAGE)
-	@$(RM) -f $(DC_MD) $(DC_MANPAGE)
 	@$(RM) -f compile_commands.json
 	@$(RM) -f $(BCL_PC)
 
