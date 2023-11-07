@@ -1,5 +1,5 @@
 # Global Makefile for flex
-# $Ragnarok: Makefile,v 1.1 2023/11/02 17:21:37 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.2 2023/11/07 20:51:41 lecorbeau Exp $
 
 MAKE	= make -C
 VERSION	= 2.6.4
@@ -7,9 +7,9 @@ VERSION	= 2.6.4
 all:
 	cd flex-${VERSION}; \
 		./configure CC=clang \
-		CFLAGS="-g -O2 -fstack-clash-protection -fstack-protector-strong --param=ssp-buffer-size=4 -fcf-protection" \
 		CPPFLAGS="-D_FORTIFY_SOURCE=2" \
-		LDFLAGS="-Wl,-z,relro,-z,now -Wl,-zdefs" \
+		CFLAGS="-g -O2 -fstack-clash-protection -fstack-protector-strong --param=ssp-buffer-size=4 -fcf-protection" \
+		LDFLAGS="-Wl,-z,relro,-z,now" \
 		--prefix=/usr --disable-static
 	${MAKE} flex-${VERSION}
 
