@@ -1,5 +1,5 @@
 # Global Makefile for readline
-# $Ragnarok: Makefile,v 1.2 2023/11/08 17:53:34 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.3 2023/11/08 18:05:54 lecorbeau Exp $
 
 MAKE	= make -C
 VERSION	= 8.2
@@ -11,7 +11,7 @@ all:
 		CFLAGS="-g -O2 -fstack-clash-protection -fstack-protector-strong --param=ssp-buffer-size=4 -fcf-protection" \
 		LDFLAGS="-Wl,-z,relro,-z,now" \
 		--prefix=/usr --docdir=/usr/share/doc/readline-${VERSION} \
-		--with-curses --disable-static \
+		--with-curses --disable-static
 	${MAKE} readline-${VERSION} SH_LIBS="-lncursesw"
 
 install:
