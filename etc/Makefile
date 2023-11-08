@@ -1,9 +1,10 @@
 # Makefile for /etc
-# $Ragnarok: Makefile,v 1.14 2023/10/19 17:49:47 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.15 2023/11/08 16:31:31 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/ragnarok-config.mk
 
 644FILES	= debian_version host.conf issue issue.net lsb-release motd sysctl.conf
+NETBASE		= ethertypes protocols rpc services
 
 # Nothing to be done for 'all' target, but do something to prevent
 # make from doing anything when it's being run without 'miniroot'
@@ -65,3 +66,4 @@ install:
 	install -m 755 -o root -g 0 update-motd.d/10-uname ${DESTDIR}/etc/update-motd.d
 	install -m 700 -o root -g 0 nftables.conf ${DESTDIR}/etc
 	install -m 644 -o root -g 0 ${644FILES} ${DESTDIR}/etc
+	install -m 644 -o root -g 0 ${NETBASE} ${DESTDIR}/etc
