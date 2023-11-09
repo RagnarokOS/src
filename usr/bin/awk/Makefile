@@ -99,6 +99,10 @@ names:
 test check:
 	./REGRESS
 
+install:
+	install -m 755 a.out ${DESTDIR}/usr/bin/awk
+	install -m 644 awk.1 ${DESTDIR}/usr/share/man/man1
+
 clean: testclean
 	rm -f a.out *.o *.obj maketab maketab.exe *.bb *.bbg *.da *.gcov *.gcno *.gcda # proctab.c
 
