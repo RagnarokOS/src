@@ -22,10 +22,13 @@
 # THIS SOFTWARE.
 # ****************************************************************/
 
+include ${TOPDIR}/usr/share/mk/progs.mk
+
 CFLAGS = -fsanitize=address -O1 -g -fno-omit-frame-pointer -fno-optimize-sibling-calls
 CFLAGS = -g
 CFLAGS =
-CFLAGS = -O2
+CFLAGS = ${O_FLAG} ${HARDENING_CPPFLAGS} ${HARDENING_CFLAGS}
+LDFLAGS = ${HARDENING_LDFLAGS}
 
 # compiler options
 #CC = gcc -Wall -g -Wwrite-strings
@@ -51,7 +54,7 @@ SHIP = README LICENSE FIXES $(SOURCE) awkgram.tab.[ch].bak makefile  \
 	 awk.1
 
 a.out:	awkgram.tab.o $(OFILES)
-	$(CC) $(CFLAGS) awkgram.tab.o $(OFILES) $(ALLOC)  -lm
+	$(CC) $(CFLAGS) awkgram.tab.o $(OFILES) $(ALLOC) ${LDFLAGS} -lm
 
 $(OFILES):	awk.h awkgram.tab.h proto.h
 
