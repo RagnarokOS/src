@@ -27,8 +27,8 @@ include ${TOPDIR}/usr/share/mk/progs.mk
 CFLAGS = -fsanitize=address -O1 -g -fno-omit-frame-pointer -fno-optimize-sibling-calls
 CFLAGS = -g
 CFLAGS =
-CFLAGS = ${O_FLAG} ${HARDENING_CPPFLAGS} ${HARDENING_CFLAGS}
-LDFLAGS = ${HARDENING_LDFLAGS}
+CFLAGS = ${O_FLAG} ${CFLAGS_CFI} ${HARDENING_CPPFLAGS} ${HARDENING_CFLAGS}
+LDFLAGS = ${LDFLAGS_LTO} ${HARDENING_LDFLAGS}
 
 # compiler options
 #CC = gcc -Wall -g -Wwrite-strings
