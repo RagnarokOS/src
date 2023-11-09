@@ -8,7 +8,7 @@ LDFLAGS =	${HARDENING_LDFLAGS}
 LIBS	=	${OBSD_LIB}
 
 PROG =	sed
-OBJS =	compile.o main.o misc.o process.o strlcat.o strlcpy.o strtonum.o
+OBJS =	compile.o main.o misc.o process.o
 
 all: ${OBJS}
 	${CC} ${LDFLAGS} -o ${PROG} ${OBJS} ${LIBS}
