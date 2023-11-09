@@ -1,5 +1,5 @@
 # Global Makefile for readline
-# $Ragnarok: Makefile,v 1.3 2023/11/08 18:05:54 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.4 2023/11/09 16:56:11 lecorbeau Exp $
 
 MAKE	= make -C
 VERSION	= 8.2
@@ -16,8 +16,3 @@ all:
 
 install:
 	${MAKE} readline-${VERSION} DESTDIR=${DESTDIR} SH_LIBS="-lncursesw" install
-	# Not yet
-	#install -m 644 doc/*.ps ${DESTDIR}/usr/share/doc/readline-8.2
-	#install -m 644 doc/*.pdf ${DESTDIR}/usr/share/doc/readline-8.2
-	#install -m 644 doc/*.html ${DESTDIR}/usr/share/doc/readline-8.2
-	#install -m 644 doc/*.dvi ${DESTDIR}/usr/share/doc/readline-8.2
