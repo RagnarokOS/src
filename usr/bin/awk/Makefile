@@ -34,7 +34,7 @@ LDFLAGS = ${HARDENING_LDFLAGS}
 #CC = gcc -Wall -g -Wwrite-strings
 #CC = gcc -O4 -Wall -pedantic -fno-strict-aliasing
 #CC = gcc -fprofile-arcs -ftest-coverage # then gcov f1.c; cat f1.c.gcov
-HOSTCC = gcc -g -Wall -pedantic -Wcast-qual
+HOSTCC = clang -g -Wall -pedantic -Wcast-qual
 CC = $(HOSTCC)  # change this is cross-compiling.
 
 # By fiat, to make our lives easier, yacc is now defined to be bison.
