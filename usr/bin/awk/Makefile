@@ -100,6 +100,7 @@ test check:
 	./REGRESS
 
 install:
+	install -d ${DESTDIR}/usr/bin/ ${DESTDIR}/usr/share/man/man1
 	install -m 755 a.out ${DESTDIR}/usr/bin/awk
 	install -m 644 awk.1 ${DESTDIR}/usr/share/man/man1
 
