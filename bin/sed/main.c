@@ -455,7 +455,7 @@ add_file(char *s)
 
 
 static int
-next_files_have_lines()
+next_files_have_lines(void)
 {
 	struct s_flist *file;
 	FILE *file_fd;
