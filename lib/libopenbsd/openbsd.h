@@ -1,4 +1,4 @@
-/* $Id$
+/* $Ragnarok: openbsd.h,v 1.1 2023/11/10 16:46:14 lecorbeau Exp $
  *
  * header for libopenbsd
  */
@@ -15,6 +15,18 @@
 
 #ifndef __dead
 #define __dead		__attribute__((__noreturn__))
+#endif
+
+#ifndef howmany
+#define howmany(x, y)	(((x)+((y)-1))/(y))
+#endif
+
+#ifndef major
+#define major(x)	(((unsigned)(x) >> 8) & 0xff)
+#endif
+
+#ifndef minor
+#define minor(x)	((unsigned)((x) & 0xff) | (((x) & 0xffff0000) >> 8))
 #endif
 
 #ifndef st_atimespec
@@ -56,18 +68,36 @@
 	} while (0)
 #endif
 
+#ifndef FMT_SCALED_STRSIZE
+#define FMT_SCALED_STRSIZE 7	/* minus sign, 4 digits, suffix, null byte */
+#endif
+
+#ifndef MAXBSIZE
+#define MAXBSIZE 65536
+#endif
+
 #ifndef _PW_NAME_LEN
 #define _PW_NAME_LEN	31
 #endif
 
+#ifndef S_ISTXT
+#define S_ISTXT 0
+#endif
 
+extern void	 errc(int, int, const char *, ...);
 extern char	*fgetln(FILE *, size_t *);
+extern int	 fmt_scaled(long long, char *);
+extern char	*getbsize(int *, long *);
 extern int	 getopt(int, char * const *, const char *);
 extern size_t	 strlcat(char *, const char *, size_t);
 extern size_t	 strlcpy(char *, const char *, size_t);
+extern void	 strmode(int, char *);
 extern void	*reallocarray(void *, size_t, size_t);
 extern void	*recallocarray(void *, size_t, size_t, size_t);
 extern long long strtonum(const char *, long long, long long, const char **);
+extern void	 verrc(int, int, const char *, va_list);
+extern void	 vwarnc(int, const char *, va_list);
+extern void	 warnc(int, const char *, ...);
 
 extern int	 opterr;
 extern int	 optind;
