@@ -1,4 +1,5 @@
-# baseutils cat Makefile
+# Makefile for OpenBSD's lex/flex
+# $Ragnarok: Makefile,v 1.1 2023/11/12 16:07:50 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/progs.mk
 

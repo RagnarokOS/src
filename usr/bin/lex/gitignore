@@ -1,0 +1,4 @@
+RCS/
+*.o
+parse.c
+parse.h
