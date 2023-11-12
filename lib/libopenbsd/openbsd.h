@@ -1,4 +1,4 @@
-/* $Ragnarok: openbsd.h,v 1.1 2023/11/10 16:46:14 lecorbeau Exp $
+/* $Ragnarok: openbsd.h,v 1.2 2023/11/12 15:24:56 lecorbeau Exp $
  *
  * header for libopenbsd
  */
@@ -89,6 +89,8 @@ extern char	*fgetln(FILE *, size_t *);
 extern int	 fmt_scaled(long long, char *);
 extern char	*getbsize(int *, long *);
 extern int	 getopt(int, char * const *, const char *);
+extern double	 log(double);
+extern double	 log10(double);
 extern size_t	 strlcat(char *, const char *, size_t);
 extern size_t	 strlcpy(char *, const char *, size_t);
 extern void	 strmode(int, char *);
