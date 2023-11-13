@@ -1,12 +1,19 @@
 # Ragnarok-specific Makefile for coreutils
-# $Ragnarok: Makefile,v 1.10 2023/10/25 18:16:19 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.11 2023/11/13 19:42:56 lecorbeau Exp $
 
 MAKE	= make -C
+SRC	= https://ftp.gnu.org/gnu/coreutils/coreutils-9.3.tar.xz
 VERSION	= 9.3
+HASH	= 040b4b7acaf89499834bfc79609af29f
 
 BIN_PROGS = cat chgrp chmod chown cp date dd df dir echo false ln ls \
 	    mkdir mknod mv pwd readlink rm rmdir vdir sleep stty sync \
 	    touch true uname mktemp
+
+get-src:
+	/usr/bin/wget -q --show-progress ${SRC}
+	${TOPDIR}/usr/bin/checkhash coreutils-${VERSION}.tar.xz md5 ${HASH}
+	tar xzvf coreutils-${VERSION}.tar.xz
 
 all:
 	cd coreutils-${VERSION}; \
