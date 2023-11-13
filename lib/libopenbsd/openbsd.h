@@ -1,4 +1,4 @@
-/* $Ragnarok: openbsd.h,v 1.2 2023/11/12 15:24:56 lecorbeau Exp $
+/* $Ragnarok: openbsd.h,v 1.3 2023/11/13 20:46:58 lecorbeau Exp $
  *
  * header for libopenbsd
  */
@@ -85,17 +85,22 @@
 #endif
 
 extern void	 errc(int, int, const char *, ...);
+extern double	 fabs(double);
 extern char	*fgetln(FILE *, size_t *);
 extern int	 fmt_scaled(long long, char *);
 extern char	*getbsize(int *, long *);
 extern int	 getopt(int, char * const *, const char *);
+extern double	 ldexp(double, int);
 extern double	 log(double);
 extern double	 log10(double);
+extern double	 pow(double, double);
 extern size_t	 strlcat(char *, const char *, size_t);
 extern size_t	 strlcpy(char *, const char *, size_t);
 extern void	 strmode(int, char *);
 extern void	*reallocarray(void *, size_t, size_t);
 extern void	*recallocarray(void *, size_t, size_t, size_t);
+extern double	 scalbn(double, int);
+extern double	 sqrt(double);
 extern long long strtonum(const char *, long long, long long, const char **);
 extern void	 verrc(int, int, const char *, va_list);
 extern void	 vwarnc(int, const char *, va_list);
