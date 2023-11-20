@@ -1,10 +1,10 @@
 # Makefile for /bin dir
-# $Id: Makefile,v 1.4 2023/11/18 17:29:45 lecorbeau Exp $
+# $Id: Makefile,v 1.5 2023/11/20 18:09:06 lecorbeau Exp $
 
 MAKE	= make -C
 
 # There will be many directories
-SUBDIRS	= cat cp date echo ls mv oksh ed rm rmdir sed
+SUBDIRS	= cat date echo ls mv oksh ed rm rmdir sed
 
 all:
 	for _dir in ${SUBDIRS}; do \
