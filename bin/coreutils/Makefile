@@ -1,28 +1,26 @@
 # Ragnarok-specific Makefile for coreutils
-# $Ragnarok: Makefile,v 1.14 2023/11/20 18:09:48 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.15 2023/11/23 21:22:39 lecorbeau Exp $
 
 MAKE	= make -C
-SRC	= https://ftp.gnu.org/gnu/coreutils/coreutils-9.3.tar.xz
-VERSION	= 9.3
-HASH	= 040b4b7acaf89499834bfc79609af29f
+VERSION	= 9.1
 
-BIN_PROGS = chgrp chmod chown cp dd df dir false ln mkdir mknod pwd \
-	    readlink vdir sleep stty sync touch true uname mktemp
+BIN_PROGS = cat chgrp chmod chown cp date dd df dir echo false ln ls \
+	    mkdir mknod mv rm rmdir pwd readlink vdir sleep stty sync \
+	    touch true uname mktemp
+FILES	= AUTHORS NEWS README THANKS TODO
 
-get-src:
-	/usr/bin/wget -q --show-progress ${SRC}
-	${TOPDIR}/usr/bin/checkhash coreutils-${VERSION}.tar.xz md5 ${HASH}
-	tar xvf coreutils-${VERSION}.tar.xz
-
-all:
+all: src
 	cd coreutils-${VERSION}; \
 		./configure CC=gcc \
 		CFLAGS="-g -O2 -fstack-clash-protection -fstack-protector-strong --param=ssp-buffer-size=4 -fcf-protection" \
 		CPPFLAGS="-D_FORTIFY_SOURCE=2" \
 		LDFLAGS="-Wl,-z,relro,-z,now -Wl,-zdefs" \
 		YACC="/usr/bin/yacc -o y.tab.c" --prefix=/usr \
-		--enable-no-install-program=kill,hostname,uptime,cut,who,cat,date,echo,ls,rm,rmdir,mv
+		--enable-no-install-program=kill,hostname,uptime,who
 	${MAKE} coreutils-${VERSION}
+
+src:
+	/usr/bin/apt-get source coreutils
 
 install:
 	${MAKE} coreutils-${VERSION} DESTDIR=${DESTDIR} install
@@ -35,6 +33,15 @@ install:
 	sed s/\"1\"/\"8\"/1 ${DESTDIR}/usr/share/man/man1/chroot.1 \
 		> ${DESTDIR}/usr/share/man/man8/chroot.8
 	rm ${DESTDIR}/usr/share/man/man1/chroot.1
+	ln -sf /usr/bin/md5sum \
+		${DESTDIR}/usr/bin/md5sum.textutils
+	ln -sf /usr/share/man/man1/md5sum.1 \
+		${DESTDIR}/usr/share/man/man1/md5sum.textutils.1
+	ln -sf test.1 ${DESTDIR}/usr/share/man/man1/[.1
+	rm -f ${DESTDIR}/usr/share/info/dir
+	install -d ${DESTDIR}/usr/share/doc/coreutils
+	cd coreutils-${VERSION}; \
+		install -m 644 ${FILES} ${DESTDIR}/usr/share/doc/coreutils
 
 # When cross-compiling the toolchain.
 cross:
