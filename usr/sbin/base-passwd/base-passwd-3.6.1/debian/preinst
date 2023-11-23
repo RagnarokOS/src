@@ -1,0 +1,20 @@
+#! /bin/sh
+set -e
+
+if [ "$1" = install ]; then
+	if [ ! -e "$DPKG_ROOT/etc/passwd" ]; then
+		cat > "$DPKG_ROOT/etc/passwd" <<'EOF'
+@PASSWD@
+EOF
+	fi
+
+	if [ ! -e "$DPKG_ROOT/etc/group" ]; then
+		cat > "$DPKG_ROOT/etc/group" <<'EOF'
+@GROUP@
+EOF
+	fi
+fi
+
+#DEBHELPER#
+
+exit 0
