@@ -1,10 +1,10 @@
 # Global Makefile for dpkg
-# $Ragnarok: Makefile,v 1.1 2023/11/24 17:38:55 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.2 2023/11/24 17:43:06 lecorbeau Exp $
 
 MAKE	= make -C
 VERSION	= 1.21.22
 
-all:
+all: src
 	cd dpkg-${VERSION}; \
 		./configure CC=clang \
 		# Try dpkg-buildflags
