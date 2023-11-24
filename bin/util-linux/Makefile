@@ -1,10 +1,10 @@
 # Global Makefile for util-linux
-# $Ragnarok: Makefile,v 1.5 2023/10/25 18:31:59 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.7 2023/11/24 16:25:01 lecorbeau Exp $
 
 MAKE	= make -C
-VERSION	= 2.39.1
+VERSION	= 2.38.1
 
-all:
+all: src
 	cd util-linux-${VERSION}; \
 		./configure \
 		CC=clang \
@@ -16,6 +16,9 @@ all:
 		--disable-pylibmount --disable-static --without-python \
 		--without-systemd --without-systemdsystemunitdir
 	${MAKE} util-linux-${VERSION}
+
+src:
+	/usr/bin/apt-get source util-linux
 
 install:
 	${MAKE} util-linux-${VERSION} DESTDIR=${DESTDIR} install
