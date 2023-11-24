@@ -1,5 +1,5 @@
 # Global Makefile for dpkg
-# $Ragnarok: Makefile,v 1.3 2023/11/24 18:40:18 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.4 2023/11/24 19:26:33 lecorbeau Exp $
 
 MAKE	= make -C
 VERSION	= 1.21.22
@@ -7,7 +7,6 @@ VERSION	= 1.21.22
 all: src
 	cd dpkg-${VERSION}; \
 		./configure CC=clang \
-		# Try dpkg-buildflags
 		$(shell dpkg-buildflags --export=configure) \
 		--prefix=/usr --sbindir=/sbin --libexecdir=/usr/lib \
 		--with-devlibdir=/usr/lib/x86_64-linux-gnu \
