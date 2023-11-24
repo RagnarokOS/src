@@ -1,5 +1,5 @@
 # Global Makefile for dpkg
-# $Ragnarok: Makefile,v 1.6 2023/11/24 21:00:08 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.7 2023/11/24 21:03:11 lecorbeau Exp $
 
 MAKE	= make -C
 VERSION	= 1.21.22
@@ -39,4 +39,4 @@ install:
 	cp files/dpkg.lintian-profile \
 	   ${DESTDIR}/usr/share/lintian/profiles/dpkg/main.profile
 	cp files/dpkg.lintian-overrides \
-	   ${DESTDIR}/usr/share/lintian/overrides/
+	   ${DESTDIR}/usr/share/lintian/overrides/dpkg
