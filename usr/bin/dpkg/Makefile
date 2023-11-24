@@ -1,5 +1,5 @@
 # Global Makefile for dpkg
-# $Ragnarok: Makefile,v 1.4 2023/11/24 19:26:33 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.5 2023/11/24 20:15:22 lecorbeau Exp $
 
 MAKE	= make -C
 VERSION	= 1.21.22
@@ -9,7 +9,11 @@ all: src
 		./configure CC=clang \
 		$(shell dpkg-buildflags --export=configure) \
 		--prefix=/usr --sbindir=/sbin --libexecdir=/usr/lib \
-		--with-devlibdir=/usr/lib/x86_64-linux-gnu \
+		--sysconfdir=/etc --localstatedir=/var --runstatedir=/run \
+		--libdir=/usr/lib/x86_64-linux-gnu --includedir=/usr/include \
+		--oldincludedir=/usr/include --datarootdir=/usr/share \
+		--infodir=/usr/share/info --mandir=/usr/share/man \
+		--docdir=/usr/share/doc/dpkg --with-devlibdir=/usr/lib/x86_64-linux-gnu \
 		--disable-dselect --with-libselinux \
 		--with-libz --with-liblzma --with-libzstd \
 		--with-libbz2
