@@ -1,5 +1,5 @@
 # Global Makefile for dpkg
-# $Ragnarok: Makefile,v 1.5 2023/11/24 20:15:22 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.6 2023/11/24 21:00:08 lecorbeau Exp $
 
 MAKE	= make -C
 VERSION	= 1.21.22
@@ -24,6 +24,19 @@ src:
 
 install:
 	${MAKE} dpkg-${VERSION} DESTDIR=${DESTDIR} install
+	mkdir -p ${DESTDIR}/etc/cron.daily
+	mkdir -p ${DESTDIR}/etc/logrotate.d
 	mkdir -p ${DESTDIR}/usr/share/lintian/profiles/dpkg
+	mkdir -p ${DESTDIR}/usr/share/lintian/overrides
+	install -m 755 -g 0 -o root files/dpkg.cron.daily \
+		${DESTDIR}/etc/cron.daily/dpkg
+	install -m 644 -g 0 -o root files/dpkg.logrotate \
+		${DESTDIR}/etc/logrotate.d/dpkg
+	install -m 644 -g 0 -o root files/dpkg.alternatives.logrotate \
+		${DESTDIR}/etc/logrotate.d/alternatives
+	install -m 644 -g 0 -o root files/dpkg.cfg \
+		${DESTDIR}/etc/dpkg
 	cp files/dpkg.lintian-profile \
 	   ${DESTDIR}/usr/share/lintian/profiles/dpkg/main.profile
+	cp files/dpkg.lintian-overrides \
+	   ${DESTDIR}/usr/share/lintian/overrides/
