@@ -1,34 +1,35 @@
-CFLAGS+=-O2 -Wall -D_GNU_SOURCE
+# Ragnarok's Makefile for hostname(1)
+# $Ragnarok: Makefile,v 1.1 2023/11/25 16:50:19 lecorbeau Exp $
 
-# uncomment the following line if you want to install to a different base dir.
-#BASEDIR=/mnt/test
+include ${TOPDIR}/usr/share/mk/progs.mk
 
-BINDIR:=/bin
-MANDIR:=/usr/share/man
+CPPFLAGS	= -D_GNU_SOURCE -Wdate-time ${HARDENING_CPPFLAGS}
+CFLAGS		= ${O_FLAG} -Wall ${CPPFLAGS} ${HARDENING_CFLAGS}
+LDFLAGS		= ${HARDENING_LDFLAGS}
 
-OBJS=hostname.o
+BINDIR		= /bin
+MANDIR		= /usr/share/man
+
+OBJS		= hostname.o
 
 hostname: $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $(OBJS) $(LDFLAGS)
-	ln -fs hostname dnsdomainname
-	ln -fs hostname domainname
-	ln -fs hostname ypdomainname
-	ln -fs hostname nisdomainname
 
 install: hostname
-	install -d ${BASEDIR}$(MANDIR)/man1
-	install -o root -g root -m 0644 hostname.1 ${BASEDIR}$(MANDIR)/man1
-	ln -fs hostname.1 ${BASEDIR}$(MANDIR)/man1/dnsdomainname.1
-	ln -fs hostname.1 ${BASEDIR}$(MANDIR)/man1/domainname.1
-	ln -fs hostname.1 ${BASEDIR}$(MANDIR)/man1/ypdomainname.1
-	ln -fs hostname.1 ${BASEDIR}$(MANDIR)/man1/nisdomainname.1
-
-	install -d ${BASEDIR}$(BINDIR)
-	install -o root -g root -m 0755 hostname ${BASEDIR}$(BINDIR)
-	ln -fs hostname ${BASEDIR}$(BINDIR)/dnsdomainname
-	ln -fs hostname ${BASEDIR}$(BINDIR)/domainname
-	ln -fs hostname ${BASEDIR}$(BINDIR)/nisdomainname
-	ln -fs hostname ${BASEDIR}$(BINDIR)/ypdomainname
+	install -d ${DESTDIR}/${BINDIR}
+	install -d ${DESTDIR}/${MANDIR}/man1
+	install -o root -g 0 -m 0644 hostname.1 ${DESTDIR}/${MANDIR}/man1
+	cd ${DESTDIR}/${MANDIR}/man1; \
+		ln -fs hostname.1 dnsdomainname.1; \
+		ln -fs hostname.1 domainname.1; \
+		ln -fs hostname.1 ypdomainname.1; \
+		ln -fs hostname.1 nisdomainname.1
+	install -o root -g 0 -m 0755 hostname ${DESTDIR}${BINDIR}
+	cd ${DESTDIR}/${BINDIR}; \
+		ln -fs hostname dnsdomainname; \
+		ln -fs hostname domainname; \
+		ln -fs hostname nisdomainname; \
+		ln -fs hostname ypdomainname
 
 clean:
 	-rm -f $(OBJS) hostname dnsdomainname domainname nisdomainname ypdomainname
