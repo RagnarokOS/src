@@ -1,19 +1,17 @@
 # Global Makefile for util-linux
-# $Ragnarok: Makefile,v 1.14 2023/11/27 18:19:52 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.15 2023/11/27 19:11:31 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/progs.mk
 
 MAKE		= make -C
 VERSION		= 2.38.1
 
-PAMFILES	= files/runuser files/runuser-l files/su.pam files/su-l.pam
-
 all: src
 	cd util-linux-${VERSION}; \
 		./configure \
 		CC=clang CXX=clang++ YACC=/usr/bin/yacc \
 		CFLAGS="-g ${O_FLAG} ${HARDENING_CFLAGS}" \
-		CPPFLAGS="-Wdate-time ${HARENING_CPPFLAGS}" \
+		CPPFLAGS="-Wdate-time ${HARDENING_CPPFLAGS}" \
 		CXXFLAGS="-g ${O_FLAG} ${HARDENING_CFLAGS}" \
 		LDFLAGS="${HARDENING_LDFLAGS}" \
 		--bindir=/bin --prefix=/usr --datarootdir=/usr \
@@ -27,7 +25,7 @@ all: src
 		--without-systemd --without-systemdsystemunitdir \
 		--enable-write --with-selinux --with-smack \
 		--with-cryptsetup=dlopen --enable-partx \
-		--enable-asan --enbale-ubsan
+		--enable-asan --enable-ubsan
 	${MAKE} util-linux-${VERSION}
 
 src:
@@ -35,3 +33,5 @@ src:
 
 install:
 	${MAKE} util-linux-${VERSION} DESTDIR=${DESTDIR} install
+	rm -f ${DESTDIR}/usr/lib/*/*.la
+	find ${DESTDIR}/usr/lib -name 'lib*.a' \! -name 'libuuid.a' \! -name 'libblkid.a' -delete
