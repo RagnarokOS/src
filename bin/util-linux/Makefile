@@ -1,5 +1,5 @@
 # Global Makefile for util-linux
-# $Ragnarok: Makefile,v 1.11 2023/11/27 00:35:49 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.12 2023/11/27 16:53:08 lecorbeau Exp $
 
 MAKE		= make -C
 VERSION		= 2.38.1
@@ -31,15 +31,3 @@ src:
 
 install:
 	${MAKE} util-linux-${VERSION} DESTDIR=${DESTDIR} install
-	install -m 644 -g 0 -o root file/hwclock.rules \
-		${DESTDIR}/usr/lib/udev/rules.d/85-hwclock-rules
-	install -m 755 -g 0 -o root files/hwclock-set \
-		${DESTDIR}/usr/lib/udev/hwclock-set
-	install -m 755 -g 0 -o root files/hwclock.sh.init \
-		${DESTDIR}/etc/init.d/hwclock.sh
-	install -m 644 -g 0 -o root files/hwclock.default \
-		${DESTDIR}/etc/default/hwclock
-	install -m 644 -g 0 -o root ${PAMFILES} \
-		${DESTDIR}/etc/pam.d
-	install -m 644 -g 0 -o root files/hwclock.5 \
-		${DESTDIR}/usr/share/man/man5

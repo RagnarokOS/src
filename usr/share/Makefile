@@ -1,9 +1,9 @@
 # Makefile for /usr/share
-# $Ragnarok: Makefile,v 1.3 2023/10/09 16:41:29 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.4 2023/11/27 16:55:23 lecorbeau Exp $
 
 MAKE = make -C
 
-SUBDIRS	= mk
+SUBDIRS	= man mk
 
 all: 
 	@# Nothing to do here, but do something to avoid make from running
