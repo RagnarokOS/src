@@ -1,5 +1,5 @@
 # Global Makefile for util-linux
-# $Ragnarok: Makefile,v 1.13 2023/11/27 18:12:42 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.14 2023/11/27 18:19:52 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/progs.mk
 
@@ -13,7 +13,8 @@ all: src
 		./configure \
 		CC=clang CXX=clang++ YACC=/usr/bin/yacc \
 		CFLAGS="-g ${O_FLAG} ${HARDENING_CFLAGS}" \
-		CPPFLAGS="${HARENING_CPPFLAGS}" \
+		CPPFLAGS="-Wdate-time ${HARENING_CPPFLAGS}" \
+		CXXFLAGS="-g ${O_FLAG} ${HARDENING_CFLAGS}" \
 		LDFLAGS="${HARDENING_LDFLAGS}" \
 		--bindir=/bin --prefix=/usr --datarootdir=/usr \
 		--includedir=/usr/include --infodir=/usr/share/info \
