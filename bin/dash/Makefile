@@ -1,5 +1,5 @@
 # Global Makefile for dash shell
-# $Ragnarok: Makefile,v 1.2 2023/11/29 19:38:33 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.3 2023/11/29 19:47:12 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/progs.mk
 
@@ -26,6 +26,9 @@ src:
 
 install:
 	${MAKE} dash-${VERSION} DESTDIR=${DESTDIR} install
+	install -d ${DESTDIR}/usr/share/debianutils/shells.d
+	install -m 644 -g 0 -o root dash-${VERSION}/debian/shells.d/dash \
+		${DESTDIR}/usr/share/debianutils/shells.d
 	cd ${DESTDIR}/bin; \
 		ln -sf dash sh
 	cd ${DESTDIR}/usr/share/man/man1; \
