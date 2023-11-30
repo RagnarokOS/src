@@ -1,10 +1,10 @@
 # Makefile for /bin dir
-# $Id: Makefile,v 1.6 2023/11/23 16:27:33 lecorbeau Exp $
+# $Id: Makefile,v 1.7 2023/11/30 19:05:52 lecorbeau Exp $
 
 MAKE	= make -C
 
 # There will be many directories
-SUBDIRS	= oksh ed sed
+SUBDIRS	= oksh ed
 
 all:
 	for _dir in ${SUBDIRS}; do \
