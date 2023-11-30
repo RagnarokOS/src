@@ -1,5 +1,5 @@
 # Makefile for OpenBSD's m4
-# $Ragnarok: Makefile,v 1.1 2023/11/13 20:53:18 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.2 2023/11/30 18:51:37 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/progs.mk
 
@@ -8,7 +8,7 @@ CFLAGS ?=	${O_FLAG} -pipe ${HARDENING_CPPFLAGS} ${HARDENING_CFLAGS}
 CFLAGS +=	${OBSD_INC} -DEXTENDED -I.
 LDFLAGS =	${HARDENING_LDFLAGS}
 
-YACC =	yacc
+YACC =	${TOPDIR}/usr/bin/yacc
 
 LIBS =	${OBSD_LIB}
 
