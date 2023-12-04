@@ -3,6 +3,10 @@ Ragnarok source repository
 
 This contains sources for Ragnarok's base system.
 
+Only the source for packages native to Ragnarok (e.g. not from the Debian repo)
+is hosted here. For most packages coming from Debian, only the files that differ
+are kept (usually, the changelog, control and rules files).
+
 See ISOs and releases here [https://github.com/RagnarokOS/iso](https://github.com/RagnarokOS/iso).  
 Binary updates to the base system (sysupdates) are here [https://github.com/RagnarokOS/packages/releases/](https://github.com/RagnarokOS/packages/releases/).
 
