@@ -1,7 +1,8 @@
 # Ragnarok-specific Makefile for coreutils
-# $Ragnarok: Makefile,v 1.15 2023/11/23 21:22:39 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.16 2023/12/04 15:35:11 lecorbeau Exp $
 
 MAKE	= make -C
+PKG	= coreutils
 VERSION	= 9.1
 
 BIN_PROGS = cat chgrp chmod chown cp date dd df dir echo false ln ls \
@@ -9,6 +10,11 @@ BIN_PROGS = cat chgrp chmod chown cp date dd df dir echo false ln ls \
 	    touch true uname mktemp
 FILES	= AUTHORS NEWS README THANKS TODO
 
+DEBIAN	= changelog control rules
+
+#
+# If we're not building a deb package
+#
 all: src
 	cd coreutils-${VERSION}; \
 		./configure CC=gcc \
@@ -65,4 +71,9 @@ cross-install:
 		> ${DESTDIR}/usr/share/man/man8/chroot.8
 	rm ${DESTDIR}/usr/share/man/man1/chroot.1
 
-
+# Building a deb package
+deb: src
+	cp ${DEBIAN} ${PKG}-${VERSION}/debian/
+	cd ${PKG}-${VERSION}; \
+		dch -n -p; \
+		/usr/bin/debuild -i -us -uc -b
