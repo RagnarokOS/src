@@ -1,9 +1,13 @@
 # Global Makefile for procps-ng
-# $Ragnarok: Makefile,v 1.3 2023/11/25 18:21:00 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.4 2023/12/04 16:31:24 lecorbeau Exp $
 
 MAKE	= make -C
+PKG	= procps
 VERSION	= 4.0.2
 
+DEBIAN	= changelog control rules
+
+# If we're not building a deb package.
 all: src
 	cd procps-${VERSION}; \
 		./configure CC=clang \
@@ -23,3 +27,10 @@ src:
 
 install:
 	${MAKE} procps-${VERSION} DESTDIR=${DESTDIR} install
+
+# Building a deb package
+deb: src
+	cp ${DEBIAN} ${PKG}-${VERSION}/debian/
+	cd ${PKG}-${VERSION}; \
+		dch -n -p; \
+		/usr/bin/debuild -i -us -uc -b

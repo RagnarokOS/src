@@ -1,0 +1,92 @@
+#!/usr/bin/dh-exec --with=install
+debian/logcheck/ignore.d.server/util-linux => /usr/share/util-linux/logcheck/ignore.d.server/util-linux
+# perl gets to do rename, not us.
+debian/tmp/usr/bin/rename => /usr/bin/rename.ul
+# Rename mkswap to mkswap.linux on non-linux.
+[linux-any] sbin/mkswap
+[!linux-any] debian/tmp/sbin/mkswap => /sbin/mkswap.linux
+bin/findmnt
+bin/more                                                        [linux-any]
+bin/mountpoint
+bin/su
+sbin/agetty
+sbin/blkid
+sbin/findfs
+sbin/fsck
+sbin/fsck.cramfs
+sbin/fsck.minix
+sbin/mkfs
+sbin/mkfs.bfs
+sbin/mkfs.cramfs
+sbin/mkfs.minix
+sbin/runuser
+sbin/sulogin
+sbin/swaplabel
+sbin/wipefs
+sbin/zramctl                                                    [linux-any]
+usr/bin/choom                                                   [linux-any]
+usr/bin/chrt                                                    [!hurd-any]
+usr/bin/flock
+usr/bin/getopt
+usr/bin/hardlink
+usr/bin/i386                                                    [amd64 i386]
+usr/bin/ipcmk
+usr/bin/ipcrm
+usr/bin/ipcs
+usr/bin/isosize sbin/
+usr/bin/last
+usr/bin/lastb
+usr/bin/lsns                                                    [linux-any]
+usr/bin/mcookie
+usr/bin/mesg
+usr/bin/mips                                                    [mips mipsel]
+usr/bin/mips32                                                  [mips mipsel]
+usr/bin/mips64                                                  [mips mipsel]
+usr/bin/namei
+usr/bin/ppc                                                     [powerpc ppc64 ppc64el]
+usr/bin/ppc32                                                   [powerpc ppc64 ppc64el]
+usr/bin/ppc64                                                   [powerpc ppc64 ppc64el]
+usr/bin/rev
+usr/bin/s390                                                    [s390x]
+usr/bin/s390x                                                   [s390x]
+usr/bin/setpriv                                                 [linux-any]
+usr/bin/setsid
+usr/bin/utmpdump
+usr/bin/whereis
+usr/bin/x86_64                                                  [amd64]
+bin/dmesg                                                       [linux-any]
+bin/lsblk                                                       [linux-any]
+bin/wdctl                                                       [linux-any]
+sbin/blkdiscard                                                 [linux-any]
+sbin/blockdev                                                   [linux-any]
+sbin/chcpu                                                      [linux-any]
+sbin/ctrlaltdel                                                 [linux-any]
+sbin/fsfreeze                                                   [linux-any]
+sbin/fstrim                                                     [linux-any]
+sbin/pivot_root                                                 [linux-any]
+sbin/switch_root                                                [linux-any]
+usr/sbin/addpart usr/bin/                                       [linux-any]
+usr/sbin/delpart usr/bin/                                       [linux-any]
+usr/bin/fallocate                                               [linux-any]
+usr/bin/ionice                                                  [linux-any]
+usr/bin/linux32                                                 [linux-any]
+usr/bin/linux64                                                 [linux-any]
+usr/bin/lscpu                                                   [linux-any]
+usr/bin/lsipc                                                   [linux-any]
+usr/bin/lslocks                                                 [linux-any]
+usr/bin/lslogins
+usr/bin/nsenter                                                 [linux-any]
+usr/sbin/partx usr/bin/                                         [linux-any]
+usr/bin/prlimit                                                 [linux-any]
+usr/sbin/resizepart usr/bin/                                    [linux-any]
+usr/bin/setarch                                                 [linux-any]
+usr/bin/setterm                                                 [linux-any]
+usr/bin/taskset                                                 [linux-any]
+usr/bin/uclampset                                               [linux-any]
+usr/bin/unshare                                                 [linux-any]
+usr/sbin/ldattach                                               [linux-any]
+usr/sbin/readprofile                                            [linux-any]
+usr/sbin/rtcwake                                                [linux-any]
+usr/bin/lsmem                                                   [linux-any]
+usr/bin/chmem usr/sbin/                                         [linux-any]
+sbin/blkzone                                                    [linux-any]

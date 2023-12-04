@@ -1,10 +1,13 @@
 # Global Makefile for util-linux
-# $Ragnarok: Makefile,v 1.15 2023/11/27 19:11:31 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.16 2023/12/04 16:35:55 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/progs.mk
 
 MAKE		= make -C
+PKG		= util-linux
 VERSION		= 2.38.1
+
+DEBIAN		= changelog control rules util-linux.install
 
 all: src
 	cd util-linux-${VERSION}; \
@@ -35,3 +38,10 @@ install:
 	${MAKE} util-linux-${VERSION} DESTDIR=${DESTDIR} install
 	rm -f ${DESTDIR}/usr/lib/*/*.la
 	find ${DESTDIR}/usr/lib -name 'lib*.a' \! -name 'libuuid.a' \! -name 'libblkid.a' -delete
+
+# Building a deb package
+deb: src
+	cp ${DEBIAN} ${PKG}-${VERSION}/debian/
+	cd ${PKG}-${VERSION}; \
+		dch -n -p; \
+		/usr/bin/debuild -i -us -uc -b
