@@ -49,7 +49,7 @@ CONFOPTS += --disable-cal
 CONFOPTS += --disable-hwclock-gplv3
 
 # Ragnarok: enable asan and ubsan
-CONFOPTS += --enable-asan --enable-ubsan
+#CONFOPTS += --enable-asan --enable-ubsan
 
 # Get the list of binary package, except lib* and *-udeb, from
 # debian/control instead of hardcoding the list when installing

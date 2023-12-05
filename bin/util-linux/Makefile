@@ -1,5 +1,5 @@
 # Global Makefile for util-linux
-# $Ragnarok: Makefile,v 1.16 2023/12/04 16:35:55 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.18 2023/12/05 20:35:46 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/progs.mk
 
@@ -7,7 +7,7 @@ MAKE		= make -C
 PKG		= util-linux
 VERSION		= 2.38.1
 
-DEBIAN		= changelog control rules util-linux.install
+DEBIAN		= changelog control rules util-linux.install uuid-runtime.install
 
 all: src
 	cd util-linux-${VERSION}; \
@@ -41,7 +41,7 @@ install:
 
 # Building a deb package
 deb: src
-	cp ${DEBIAN} ${PKG}-${VERSION}/debian/
+	cp ${DEBIAN} ${PKG}-${VERSION}/
 	cd ${PKG}-${VERSION}; \
 		dch -n -p; \
 		/usr/bin/debuild -i -us -uc -b
