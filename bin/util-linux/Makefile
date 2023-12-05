@@ -1,5 +1,5 @@
 # Global Makefile for util-linux
-# $Ragnarok: Makefile,v 1.18 2023/12/05 20:35:46 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.19 2023/12/05 20:39:26 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/progs.mk
 
@@ -41,7 +41,7 @@ install:
 
 # Building a deb package
 deb: src
-	cp ${DEBIAN} ${PKG}-${VERSION}/
+	cp ${DEBIAN} ${PKG}-${VERSION}/debian/
 	cd ${PKG}-${VERSION}; \
 		dch -n -p; \
 		/usr/bin/debuild -i -us -uc -b
