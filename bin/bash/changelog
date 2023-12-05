@@ -1,3 +1,13 @@
+bash (5.2.15-99ragnarok01) unstable; urgency=medium
+
+  * Initial build of bash for Ragnarok.
+  * Differences with Debian:
+    - Built using LLVM/Clang
+    - Adds extra hardening flags (see etc/dpkg/buildflags.conf)
+    - Uses ThinLTO
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Mon, 04 Dec 2023 14:00:31 -0500
+
 bash (5.2.15-2) unstable; urgency=medium
 
   * Remove one more pdf file without source. Closes: #1024598.
