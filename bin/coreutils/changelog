@@ -1,3 +1,13 @@
+coreutils (9.1-999ragnarok01) unstable; urgency=medium
+
+  * Initial build of GNU coreutils for Ragnarok.
+  * Differences with Debian:
+    - Built using LLVM/Clang
+    - Adds extra hardening flags (see etc/dpkg/buildflags.conf)
+    - Uses ThinLTO
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Mon, 04 Dec 2023 13:50:57 -0500
+
 coreutils (9.1-1) unstable; urgency=low
 
   * New upstream version (Closes: #1017354)

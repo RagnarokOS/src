@@ -1,0 +1,17 @@
+When compiled with clang, hardening-check reports that libstdbuf.so
+does not use -D_FORTIFY_SOURCE. Adding the flag directly in configure.ac
+during the stdbuf check phase fixes the issue, somehow.
+
+This is really stupid, but until I can figure out why this behavior
+occurs, this patch will have to do.
+--- configure.ac.orig	2022-04-08 07:22:17.000000000 -0400
++++ configure.ac	2023-12-04 15:24:18.458685344 -0500
+@@ -519,7 +519,7 @@
+ gl_WARN_ADD([-errwarn], [CFLAGS])
+ # Put this message here, after gl_WARN_ADD's chatter.
+ AC_MSG_CHECKING([whether this system supports stdbuf])
+-CFLAGS="-fPIC $CFLAGS"
++CFLAGS="-D_FORTIFY_SOURCE=2 -fPIC $CFLAGS"
+ LDFLAGS="-shared $LDFLAGS"
+ stdbuf_supported=no
+ # Note we only LINK here rather than RUN to support cross compilation

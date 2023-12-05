@@ -1,5 +1,5 @@
 # Ragnarok-specific Makefile for coreutils
-# $Ragnarok: Makefile,v 1.16 2023/12/04 15:35:11 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.17 2023/12/05 16:21:01 lecorbeau Exp $
 
 MAKE	= make -C
 PKG	= coreutils
@@ -74,6 +74,7 @@ cross-install:
 # Building a deb package
 deb: src
 	cp ${DEBIAN} ${PKG}-${VERSION}/debian/
+	patch -d ${PKG}-${VERSION} < patches/libstdbuf-fortify-source-FIX.diff
 	cd ${PKG}-${VERSION}; \
 		dch -n -p; \
 		/usr/bin/debuild -i -us -uc -b
