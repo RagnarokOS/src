@@ -1,0 +1,24 @@
+#!/usr/bin/make -f
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+%:
+	dh $@
+
+package = diffutils
+
+# override_dh_autoreconf:
+
+override_dh_auto_clean:
+	[ ! -f Makefile ] || $(MAKE) distclean
+	rm -rf doc/$(package)
+
+override_dh_auto_configure:
+	dh_auto_configure -- CC=clang --disable-silent-rules
+
+override_dh_installdocs-indep:
+	cd doc && makeinfo --html --split=chapter --output=$(package) $(package).texi
+	dh_installdocs -i doc/$(package)/*.html
+
+override_dh_installdocs-arch:
+	dh_installdocs -a NEWS
