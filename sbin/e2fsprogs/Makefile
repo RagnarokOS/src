@@ -1,8 +1,11 @@
 # Global Makefile for e2fsprogs
-# $Ragnarok: Makefile,v 1.2 2023/10/30 18:22:19 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.3 2023/12/05 16:44:20 lecorbeau Exp $
 
 MAKE	= make -C
+PKG	= e2fsprogs
 VERSION	= 1.47.0
+
+DEBIAN	= changelog control rules
 
 all:
 	cd e2fsprogs-${VERSION}; \
@@ -16,7 +19,17 @@ all:
 		--sysconfdir=/etc
 	${MAKE} e2fsprogs-${VERSION}
 
+src:
+	/usr/bin/apt-get source e2fsprogs
+
 install:
 	${MAKE} e2fsprogs-${VERSION} DESTDIR=${DESTDIR} install
 	gunzip ${DESTDIR}/usr/share/info/libext2fs.info.gz
 	install-info --dir-file=${DESTDIR}/usr/share/info/dir ${DESTDIR}/usr/share/info/libext2fs.info
+
+# Building a deb package
+deb: src
+	cp ${DEBIAN} ${PKG}-${VERSION}/debian/
+	cd ${PKG}-${VERSION}; \
+		dch -n -p; \
+		/usr/bin/debuild -i -us -uc -b
