@@ -1,4 +1,4 @@
-coreutils (9.1-999ragnarok01) unstable; urgency=medium
+coreutils (9.1-99ragnarok01) unstable; urgency=medium
 
   * Initial build of GNU coreutils for Ragnarok.
   * Differences with Debian:
