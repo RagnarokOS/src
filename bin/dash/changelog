@@ -1,3 +1,13 @@
+dash (0.5.12-99ragnarok01) unstable; urgency=medium
+
+  * Initial build of Dash for Ragnarok
+  * Differences from Debian's build:
+    - built with LLVM/Clang
+    - adds extra hardening flags (see etc/dpkg/buildflags.conf)
+    - uses ThinLTO
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Thu, 07 Dec 2023 12:27:06 -0500
+
 dash (0.5.12-2) unstable; urgency=medium
 
   * Fix the changelog entry.

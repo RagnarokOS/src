@@ -1,3 +1,13 @@
+diffutils (1:3.8-99ragnarok01) unstable; urgency=medium
+
+  * Initial build of Diffutils for Ragnarok
+  * Differences from Debian's build:
+    - built with LLVM/Clang
+    - adds extra hardening flags (see etc/dpkg/buildflags.conf)
+    - uses ThinLTO
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Thu, 07 Dec 2023 12:39:26 -0500
+
 diffutils (1:3.8-4) unstable; urgency=medium
 
   * Update patch for loong64 support. Closes: #1029275.
