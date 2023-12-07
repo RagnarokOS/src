@@ -1,0 +1,42 @@
+Source: dash
+Section: shells
+Priority: optional
+Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
+XSBC-Original-Maintainer: Andrej Shadura <andrewsh@debian.org>
+XSBC-Original-Uploaders: Gerrit Pape <pape@smarden.org>
+Build-Depends:
+ debhelper-compat (= 12),
+ dpkg-dev (>= 1.16.1),
+ po-debconf
+Standards-Version: 4.2.1
+Homepage: http://gondor.apana.org.au/~herbert/dash/
+Vcs-Git: https://salsa.debian.org/debian/dash.git
+Vcs-Browser: https://salsa.debian.org/debian/dash
+
+Package: dash
+Architecture: any
+Multi-Arch: foreign
+Essential: yes
+Priority: required
+Pre-Depends: ${shlibs:Depends}
+Depends:
+ debianutils (>= 5.6-0.1),
+ dpkg (>= 1.19.1),
+ ${misc:Depends},
+Description: POSIX-compliant shell
+ The Debian Almquist Shell (dash) is a POSIX-compliant shell derived
+ from ash.
+ .
+ Since it executes scripts faster than bash, and has fewer library
+ dependencies (making it more robust against software or hardware
+ failures), it is used as the default system shell on Debian systems.
+
+Package: ash
+Architecture: all
+Pre-Depends: dash
+Depends:
+ ${misc:Depends},
+Description: compatibility package for dash
+ This package allows upgrading ash to its replacement,
+ dash. It includes the /bin/ash symlink.
+ It can be removed as soon as /bin/ash is no longer used.

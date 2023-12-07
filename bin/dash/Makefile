@@ -1,10 +1,12 @@
 # Global Makefile for dash shell
-# $Ragnarok: Makefile,v 1.3 2023/11/29 19:47:12 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.3 2023/11/29 19:47:12 lecorbeau Exp i $
 
 include ${TOPDIR}/usr/share/mk/progs.mk
 
 MAKE	= make -C
 VERSION	= 0.5.12
+
+DEBIAN	= changelog control rules
 
 all: src
 	cd dash-${VERSION}; \
@@ -33,3 +35,10 @@ install:
 		ln -sf dash sh
 	cd ${DESTDIR}/usr/share/man/man1; \
 		ln -sf dash.1 sh.1
+
+# Building a deb package
+deb: src
+	cp ${DEBIAN} ${PKG}-${VERSION}/debian/
+	cd ${PKG}-${VERSION}; \
+		dch -n -p; \
+		/usr/bin/debuild -i -us -uc -b
