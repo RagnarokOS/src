@@ -3,8 +3,8 @@
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
 # Ragnarok: enable ThinLTO.
-DEB_CFLAGS_MAINT_APPEND = -flto=thin
-DEB_LDFLAGS_MAINT_APPEND = -flto=thin -Wl,-O2
+export DEB_CFLAGS_MAINT_APPEND = -flto=thin
+export DEB_LDFLAGS_MAINT_APPEND = -flto=thin -Wl,-O2
 
 %:
 	dh $@
