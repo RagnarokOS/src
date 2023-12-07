@@ -16,6 +16,10 @@ endif
 
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
+# Ragnarok: enable ThinLTO.
+DEB_CFLAGS_MAINT_APPEND = -flto=thin
+DEB_LDFLAGS_MAINT_APPEND = -flto=thin -Wl,-O2
+
 ifeq ($(DEB_HOST_ARCH_OS),linux)
 LINUX_CONFIGURE_EXTRA_FLAGS = --with-elogind --enable-libselinux
 endif

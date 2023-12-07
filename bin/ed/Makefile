@@ -2,8 +2,8 @@ include ../../usr/share/mk/progs.mk
 
 
 CC =		cc
-CFLAGS +=	-g ${O_FLAG} -I. -D_GNU_SOURCE ${HARDENING_CPPFLAGS} ${HARDENING_CFLAGS}
-LDFLAGS +=	${HARDENING_LDFLAGS}
+CFLAGS +=	-g ${O_FLAG} -I. -D_GNU_SOURCE -flto=thin ${HARDENING_CPPFLAGS} ${HARDENING_CFLAGS}
+LDFLAGS +=	${HARDENING_LDFLAGS} -flto=thin -Wl,-O2
 
 PROG =	ed
 OBJS =	buf.o glbl.o io.o main.o re.o sub.o undo.o \
