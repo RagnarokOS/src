@@ -1,9 +1,10 @@
 # Global Makefile for dash shell
-# $Ragnarok: Makefile,v 1.3 2023/11/29 19:47:12 lecorbeau Exp i $
+# $Ragnarok: Makefile,v 1.4 2023/12/07 17:35:51 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/progs.mk
 
 MAKE	= make -C
+PKG	= dash
 VERSION	= 0.5.12
 
 DEBIAN	= changelog control rules
