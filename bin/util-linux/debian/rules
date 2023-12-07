@@ -27,8 +27,9 @@ endif
 
 CONFOPTS += --enable-write
 
-# build static versions of programs used in fdisk-udeb and util-linux-udeb
-CONFOPTS += --enable-static-programs=fdisk,sfdisk,blkid
+# Ragnarok: disable static. They're only needed for the udeb packages
+# but we don't build them (and it causes a build failure anyway).
+##CONFOPTS += --disable-static
 
 # Help welcome packaging the (libmount) python bindings.
 # See http://bugs.debian.org/811361
@@ -92,12 +93,6 @@ override_dh_install:
 		debian/uuid-runtime.install > \
 		debian/uuid-runtime.install.$(DEB_HOST_ARCH)
 	#
-	install -D -p -m644 debian/fdisk-udeb.lintian-overrides \
-		debian/fdisk-udeb/usr/share/lintian/overrides/fdisk-udeb
-	dh_install \
-		-Nfdisk-udeb -Nlibblkid1-udeb \
-		-Nlibfdisk1-udeb -Nlibsmartcols1-udeb -Nlibuuid1-udeb \
-		-Nutil-linux-udeb
 	dh_install --remaining-packages
 	#
 	# Install bash-completions only for binaries we ship
@@ -118,8 +113,6 @@ override_dh_install:
 		fi; \
 	done; \
 	done
-	#
-	rm -rf debian/*-udeb/usr/share/doc
 
 override_dh_installman:
 	dh_installman --language=C

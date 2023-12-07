@@ -1,0 +1,33 @@
+#
+#    Translators, if you are not familiar with the PO format, gettext
+#    documentation is worth reading, especially sections dedicated to
+#    this format, e.g. by running:
+#         info -n '(gettext)PO Files'
+#         info -n '(gettext)Header Entry'
+#
+#    Some information specific to po-debconf are available at
+#            /usr/share/doc/po-debconf/README-trans
+#         or http://www.debian.org/intl/l10n/po-debconf/README-trans
+#
+#    Developers do not need to manually edit POT or PO files.
+#
+# Praveen|പ്രവീണ്‍ A|എ <pravi.a@gmail.com>, 2006, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: eject 15122007\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-04-11 23:40+0200\n"
+"PO-Revision-Date: 2007-12-15 18:36-0800\n"
+"Last-Translator: Praveen|പ്രവീണ്‍ A|എ <pravi.a@gmail.com>\n"
+"Language-Team: Swathanthra|സ്വതന്ത്ര Malayalam|മലയാളം Computing|കമ്പ്യൂട്ടിങ്ങ് <smc-discuss@googlegroups.com>\n"
+"Language: ml\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: text
+#. description
+#: ../eject-udeb.templates:3
+msgid "Eject a CD from the drive"
+msgstr "ഡ്രൈവില്‍ നിന്നും സിഡി പുറത്തെടുക്കുക"
+

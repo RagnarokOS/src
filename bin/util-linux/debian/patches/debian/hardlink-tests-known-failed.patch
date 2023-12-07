@@ -1,0 +1,23 @@
+From: Chris Hofstaedtler <zeha@debian.org>
+Date: Tue, 12 Apr 2022 20:35:57 +0000
+Subject: hardlink tests: set known failed
+
+sha256 cannot be initialized on some archs / buildds.
+---
+ tests/ts/hardlink/options | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/tests/ts/hardlink/options b/tests/ts/hardlink/options
+index fc1a0d6..6c452c3 100755
+--- a/tests/ts/hardlink/options
++++ b/tests/ts/hardlink/options
+@@ -27,6 +27,9 @@ ts_check_prog xz
+ ts_check_prog tar
+ ts_check_prog wc
+ 
++# on some archs sha256 cannot be used
++TS_KNOWN_FAIL="yes"
++
+ SRCDIR="$TS_OUTDIR/testdir1"
+ 
+ create_srcdir()

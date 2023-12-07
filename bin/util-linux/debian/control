@@ -141,17 +141,6 @@ Description: collection of partitioning utilities
  The cfdisk utilitity gives a more userfriendly curses based interface.
  The sfdisk utility is mostly for automation and scripting uses.
 
-Package: fdisk-udeb
-Architecture: hurd-any linux-any
-Build-Profiles: <!stage1 !noudeb>
-Priority: optional
-Section: debian-installer
-Depends: ${misc:Depends},
-         ${shlibs:Depends}
-Package-Type: udeb
-XB-Installer-Menu-Item: 99999
-Description: Manually partition a hard drive (fdisk)
-
 Package: libblkid1
 Architecture: any
 Section: libs
@@ -165,22 +154,6 @@ Description: block device ID library
  quickly and easily find block devices by filesystem UUID or label.
  This allows system administrators to avoid specifying filesystems by
  hard-coded device names and use a logical naming system instead.
-
-Package: libblkid1-udeb
-Architecture: any
-Section: debian-installer
-Priority: optional
-Depends: ${misc:Depends},
-         ${shlibs:Depends}
-Package-Type: udeb
-Build-Profiles: <!noudeb>
-Description: stripped down block device ID library, for debian-installer
- The blkid library allows system programs such as fsck and mount to
- quickly and easily find block devices by filesystem UUID or label.
- This allows system administrators to avoid specifying filesystems by
- hard-coded device names and use a logical naming system instead.
- .
- This is a minimal package for debian-installer.
 
 Package: libblkid-dev
 Architecture: any
@@ -212,20 +185,6 @@ Description: fdisk partitioning library
  The libfdisk library is used for manipulating partition tables. It is
  the core of the fdisk, cfdisk, and sfdisk tools.
 
-Package: libfdisk1-udeb
-Architecture: any
-Section: debian-installer
-Priority: optional
-Depends: ${misc:Depends},
-         ${shlibs:Depends}
-Package-Type: udeb
-Build-Profiles: <!noudeb>
-Description: stripped down fdisk partitioning library, for debian-installer
- The libfdisk library is used for manipulating partition tables. It is
- the core of the fdisk, cfdisk, and sfdisk tools.
- .
- This is a minimal package for debian-installer.
-
 Package: libfdisk-dev
 Architecture: any
 Section: libdevel
@@ -255,19 +214,6 @@ Multi-Arch: same
 Description: device mounting library
  This device mounting library is used by mount and umount helpers.
 
-Package: libmount1-udeb
-Package-Type: udeb
-Build-Profiles: <!noudeb>
-Section: debian-installer
-Priority: optional
-Depends: ${misc:Depends},
-         ${shlibs:Depends}
-Architecture: linux-any
-Description: stripped down device mounting library, for debian-installer
- The device mounting library, used by mount and umount helpers.
- .
- This is a minimal package for debian-installer.
-
 Package: libmount-dev
 Architecture: linux-any
 Section: libdevel
@@ -293,19 +239,6 @@ Depends: ${misc:Depends},
 Multi-Arch: same
 Description: smart column output alignment library
  This smart column output alignment library is used by fdisk utilities.
-
-Package: libsmartcols1-udeb
-Architecture: any
-Section: debian-installer
-Priority: optional
-Depends: ${misc:Depends},
-         ${shlibs:Depends}
-Package-Type: udeb
-Build-Profiles: <!noudeb>
-Description: stripped down smart column output aligment library, for debian-installer
- This smart column output alignment library is used by fdisk utilities.
- .
- This is a minimal package for debian-installer.
 
 Package: libsmartcols-dev
 Architecture: any
@@ -365,20 +298,6 @@ Description: runtime components for the Universally Unique ID library
  large numbers of threads trying to grab UUIDs running on different CPUs.
  It is used by libuuid as well as the uuidgen program.
 
-Package: libuuid1-udeb
-Architecture: any
-Section: debian-installer
-Priority: optional
-Depends: ${misc:Depends},
-         ${shlibs:Depends}
-Package-Type: udeb
-Build-Profiles: <!noudeb>
-Description: stripped down Universally Unique ID library, for debian-installer
- The libuuid library generates and parses 128-bit Universally Unique IDs
- (UUIDs). See RFC 4122 for more information.
- .
- This is a minimal package for debian-installer.
-
 Package: uuid-dev
 Architecture: any
 Section: libdevel
@@ -392,18 +311,6 @@ Description: Universally Unique ID library - headers and static libraries
  (UUIDs). See RFC 4122 for more information.
  .
  This package contains the development environment for the uuid library.
-
-Package: util-linux-udeb
-Architecture: any
-Build-Profiles: <!stage1 !noudeb>
-Priority: optional
-Section: debian-installer
-Depends: ${misc:Depends},
-         ${shlibs:Depends}
-Package-Type: udeb
-Description: stripped down miscellaneous system utilities, for debian-installer
- This is a minimal version of util-linux for debian-installer. It only
- contains the blkid binary at the moment.
 
 Package: rfkill
 Architecture: linux-any
@@ -435,17 +342,6 @@ Description: ejects CDs and operates CD-Changers under Linux
  .
  You can also use eject to properly disconnect external mass-storage
  devices like digital cameras or portable music players.
-
-Package: eject-udeb
-Architecture: linux-any
-Section: debian-installer
-Depends: ${misc:Depends},
-         ${shlibs:Depends}
-Priority: optional
-Package-Type: udeb
-Build-Profiles: <!noudeb>
-XB-Installer-Menu-Item: 96000
-Description: ejects CDs from d-i menu
 
 Package: util-linux-extra
 Architecture: any

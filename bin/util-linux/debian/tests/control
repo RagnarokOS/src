@@ -1,0 +1,34 @@
+Tests: oversized-chunks
+Depends: bash,
+         bc,
+         bsdextrautils,
+         bsdutils,
+         dpkg,
+         grep,
+         mount,
+         util-linux
+Restrictions: allow-stderr
+
+Tests: libblkid-dev
+Depends: build-essential,
+         libblkid-dev,
+         pkg-config
+Restrictions: allow-stderr, superficial
+
+Tests: libmount-dev
+Depends: build-essential,
+         libmount-dev,
+         pkg-config
+Restrictions: allow-stderr, superficial
+
+Tests: libsmartcols-dev
+Depends: build-essential,
+         libsmartcols-dev,
+         pkg-config
+Restrictions: allow-stderr, superficial
+
+Tests: uuid-dev
+Depends: build-essential,
+         pkg-config,
+         uuid-dev
+Restrictions: allow-stderr, superficial

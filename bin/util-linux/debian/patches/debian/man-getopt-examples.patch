@@ -1,0 +1,23 @@
+From: Matthew Vernon <matthew@debian.org>
+Date: Tue, 6 Nov 2018 11:49:21 +0000
+Subject: util-linux: getopt(1) should point to where examples are on a Debian
+ system
+
+Debian BTS #913049
+---
+ misc-utils/getopt.1 | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/misc-utils/getopt.1 b/misc-utils/getopt.1
+index 54a5d85..9bb66b7 100644
+--- a/misc-utils/getopt.1
++++ b/misc-utils/getopt.1
+@@ -155,7 +155,7 @@ In compatibility mode, leading \(aq\fB\-\fP\(aq and \(aq\fB+\fP\(aq characters i
+ \fBgetopt\fP returns error code \fB0\fP for successful parsing, \fB1\fP if \fBgetopt\fP(3) returns errors, \fB2\fP if it does not understand its own parameters, \fB3\fP if an internal error occurs like out\-of\-memory, and \fB4\fP if it is called with \fB\-T\fP.
+ .SH "EXAMPLES"
+ .sp
+-Example scripts for (ba)sh and (t)csh are provided with the \fBgetopt\fP(1) distribution, and are installed in \fI/usr/share/doc/util\-linux\fP directory.
++Example scripts for (ba)sh and (t)csh are provided with the \fBgetopt\fP(1) distribution, and are installed in \fI/usr/share/doc/util\-linux/examples/\fP directory.
+ .SH "ENVIRONMENT"
+ .sp
+ \fBPOSIXLY_CORRECT\fP

@@ -1,0 +1,19 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: eject 2.1.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-04-11 23:40+0200\n"
+"PO-Revision-Date: 2008-02-09 21:23+0800\n"
+"Last-Translator: Tetralet <tetralet@gmail.com>\n"
+"Language-Team: Debian-user in Chinese [Big5] <debian-chinese-big5@lists."
+"debian.org>\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: text
+#. description
+#: ../eject-udeb.templates:3
+msgid "Eject a CD from the drive"
+msgstr "將 CD 由裝置中退出來"

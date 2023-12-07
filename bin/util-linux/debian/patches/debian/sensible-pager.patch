@@ -1,0 +1,22 @@
+From: Chris Hofstaedtler <zeha@debian.org>
+Date: Thu, 14 Jul 2022 09:54:01 +0000
+Subject: Use sensible-pager
+
+Closes: #1014368
+---
+ lib/pager.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lib/pager.c b/lib/pager.c
+index 747521e..5f53cd0 100644
+--- a/lib/pager.c
++++ b/lib/pager.c
+@@ -216,7 +216,7 @@ static void __setup_pager(void)
+ 		return;
+ 
+ 	if (!pager)
+-		pager = "less";
++		pager = "sensible-pager";
+ 	else if (!*pager || !strcmp(pager, "cat"))
+ 		return;
+ 

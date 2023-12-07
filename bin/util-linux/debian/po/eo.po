@@ -1,0 +1,23 @@
+# Translation of `eject' messages to Esperanto.
+# Copyright (C) 2008 Free Software Foundation, Inc.
+# This file is distributed under the same license as the `eject' package.
+# Luiz Portella <lfpor@lujz.org>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: eject 2.1.5-7\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-04-20 04:30+0200\n"
+"PO-Revision-Date: 2008-05-01 18:40-0300\n"
+"Last-Translator: Luiz Portella <lfpor@lujz.org>\n"
+"Language-Team: esperanto\n"
+"Language: eo\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Type: text
+#. Description
+#: ../eject-udeb.templates:1001
+msgid "Eject a CD from the drive"
+msgstr "Eĵetu KD-on el la lumdiskingo"

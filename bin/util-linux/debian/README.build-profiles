@@ -1,0 +1,34 @@
+Build profiles for src:util-linux
+---------------------------------
+
+A full build of src:util-linux produces a large number of binary packages,
+while depending on a large number of shared libraries.
+
+To ease bootstrapping of a Debian system, src:util-linux supports a number
+of build profiles. These build profiles avoid depending on some shared
+libraries at the expense of providing a limited feature set or binary package
+set. To learn more about build profiles in general, please refer to
+  https://wiki.debian.org/BuildProfileSpec
+
+Profile "noudeb"
+----------------
+
+Standardized profile: "Inhibit building udebs"
+
+Profile "stage1"
+----------------
+
+Avoids most shared library dependencies AND builds only lib* packages.
+Intended to break bootstrapping cycles. Will be renamed at a later time,
+as its name has been deprecated by the BuildProfileSpec.
+
+Profile "pkg.util-linux.noverity"
+---------------------------------
+
+Avoids the libcryptsetup-dev build dependency, at the cost of disabling
+dm-verity support. Does not change the binary package set. If this profile
+is used in a bootstrap build, src:util-linux should be rebuilt once
+libcryptsetup-dev is available without this profile, as the binary packages
+are not "fully functional" (= lack dm-verity support).
+
+ -- Chris Hofstaedtler <zeha@debian.org>  Sun, 05 Sep 2021 15:11:59 +0000

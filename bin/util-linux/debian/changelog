@@ -1,3 +1,14 @@
+util-linux (2.38.1-99ragnarok01) unstable; urgency=medium
+
+  * Initial build of util-linux for Ragnarok.
+  * Differences with Debian's build:
+    - Compiled with clang
+    - adds extra hardening flags (see etc/dpkg/buildflags.conf)
+    - Built without systemd support
+    - Does not build the udeb packages
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Wed, 06 Dec 2023 12:43:08 -0500
+
 util-linux (2.38.1-5) unstable; urgency=medium
 
   * Apply upstream patch to fix logger timestamp for stdin (Closes: #1030285)

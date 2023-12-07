@@ -1,0 +1,3 @@
+# For LIBUUID_CLOCK_FILE, defined in libuuid but should be
+# reachable only from uuidd code paths.
+var/lib/libuuid

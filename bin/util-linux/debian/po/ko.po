@@ -1,0 +1,21 @@
+# Sunjae Park <darehanl@gmail.com>. 2007
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: eject\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-04-11 23:40+0200\n"
+"PO-Revision-Date: 2007-10-10 20:28-0400\n"
+"Last-Translator: Sunjae Park <darehanl@gmail.com>\n"
+"Language-Team: Korean <debian-l10n-korean@lists.debian.org>\n"
+"Language: ko\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. Type: text
+#. description
+#: ../eject-udeb.templates:3
+msgid "Eject a CD from the drive"
+msgstr "드라이브에서 CD 꺼내기"

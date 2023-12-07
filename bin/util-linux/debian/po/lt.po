@@ -1,0 +1,24 @@
+# Lithuanian messages for eject package.
+# Copyright (C) 2003 Software in the Public Interest, Inc.
+# This file is distributed under the same license as package eject.
+# Kęstutis Biliūnas <kebil@kaunas.init.lt> 2008.
+
+msgid ""
+msgstr ""
+"Project-Id-Version: eject\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2004-04-11 23:40+0200\n"
+"PO-Revision-Date: 2008-07-14 12:20+0300\n"
+"Last-Translator: Kęstutis Biliūnas <kebil@kaunas.init.lt>\n"
+"Language-Team: Lithuanian <komp_lt@konferencijos.lt>\n"
+"Language: lt\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#. Type: text
+#. description
+#: ../eject-udeb.templates:3
+msgid "Eject a CD from the drive"
+msgstr "Išimti diską iš CD įrenginio"
+
