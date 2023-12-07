@@ -1,10 +1,12 @@
 # Global Makefile for base-passwd
-# $Ragnarok: Makefile,v 1.1 2023/11/23 21:14:55 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.2 2023/12/07 18:57:27 lecorbeau Exp $
 
 MAKE	= make -c
+PKG	= base-passwd
 VERSION	= 3.6.1
 
-DOCS	= doc/README doc/users-and-groups.html doc/users-and-groups.txt
+DEBIAN	= changelog control rules
+FILES	= group.master passwd.master
 
 all:
 	cd base-passwd-${VERSION}; \
@@ -16,8 +18,19 @@ all:
 		--disable-debconf --disable-docs
 	${MAKE} base-passwd-${VERSION}
 
+src:
+	/usr/bin/apt-get source base-passwd
+
 install:
 	${MAKE} base-passwd-${VERSION} DESTDIR=${DESTDIR} install
 	install -d ${DESTDIR}/usr/share/doc/base-passwd
 	install -m 644 ${DOCS} \
 		${DESTDIR}/usr/share/doc/base-passwd
+
+# Building a deb package
+deb: src
+	cp ${DEBIAN} ${PKG}-${VERSION}/debian/
+	cp ${FILES} ${PKG}-${VERSION}/
+	cd ${PKG}-${VERSION}; \
+		dch -n -p; \
+		/usr/bin/debuild -i -us -uc -b

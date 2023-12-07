@@ -6,7 +6,8 @@ export CC=clang
 	dh $@
 
 export DEB_BUILD_MAINT_OPTIONS := hardening=+all
-export DEB_CFLAGS_MAINT_APPEND := -Wall
+export DEB_CFLAGS_MAINT_APPEND := -Wall -flto=thin
+export DEB_LDFLAGS_MAINT_APPEND := -flto=thin -Wl,-O2
 
 execute_before_dh_installdebconf:
 	touch debian/base-passwd.substvars
