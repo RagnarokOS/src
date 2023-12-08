@@ -4,10 +4,6 @@
 
 export DEB_BUILD_MAINT_OPTIONS ?= hardening=+all
 
-# Ragnarok: Try enabling LTO.
-export DEB_CFLAGS_MAINT_APPEND = -flto=thin
-export DEB_LDFLAGS_MAINT_APPEND = -flto=thin -Wl,-O2
-
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/default.mk
 
@@ -39,9 +35,9 @@ endif
 
 CFLAGS_SHLIB = $(CFLAGS)
 # Ragnarok: filter-out the LTO flags. Will this work?
-CFLAGS_STLIB = $(filter-out -flto=thin,$(CFLAGS))
+CFLAGS_STLIB = $(CFLAGS)
 LDFLAGS_SHLIB = $(LDFLAGS)
-LDFLAGS_STATIC = $(filter-out -fPIE -fpie -pie -ftlo=thin,$(LDFLAGS))
+LDFLAGS_STATIC = $(filter-out -fPIE -fpie -pie,$(LDFLAGS))
 
 BACKTRACE_CONF_FLAGS ?= $(shell if debian/scripts/test-backtrace ; then echo --disable-backtrace ; fi)
 
