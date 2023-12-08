@@ -1,6 +1,6 @@
 base-passwd (3.6.1-99ragnarok01) unstable; urgency=medium
 
-  * Initial build of GNU coreutils for Ragnarok.
+  * Initial build of base-passwd for Ragnarok.
   * Differences with Debian:
     - Built using LLVM/Clang
     - Adds extra hardening flags (see etc/dpkg/buildflags.conf)
