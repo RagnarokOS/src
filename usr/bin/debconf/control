@@ -1,0 +1,91 @@
+Source: debconf
+Section: admin
+Priority: optional
+Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
+XSBC-Original-Maintainer: Debconf Developers <debconf-devel@lists.alioth.debian.org>
+XSBC-Original-Uploaders: Colin Watson <cjwatson@debian.org>,
+Standards-Version: 4.0.0
+Build-Depends-Indep: gettext,
+                     libintl-perl,
+                     perl,
+                     python3,
+Build-Depends: debhelper-compat (= 13),
+               dh-exec,
+               dh-python,
+               po-debconf,
+               po4a,
+Vcs-Git: https://salsa.debian.org/pkg-debconf/debconf.git
+Vcs-Browser: https://salsa.debian.org/pkg-debconf/debconf
+
+Package: debconf
+Priority: important
+Conflicts: debconf-tiny,
+           whiptail-utf8 (<= 0.50.17-13),
+Provides: debconf-2.0,
+Replaces: debconf-tiny,
+Depends: ${misc:Depends},
+Recommends: apt-utils,
+            debconf-i18n,
+Suggests: debconf-doc,
+          debconf-kde-helper,
+          debconf-utils,
+          libgtk3-perl,
+          libnet-ldap-perl,
+          libterm-readline-gnu-perl,
+          perl,
+          whiptail | dialog,
+Architecture: all
+Multi-Arch: foreign
+Description: Debian configuration management system
+ Debconf is a configuration management system for debian packages. Packages
+ use Debconf to ask questions when they are installed.
+
+Package: debconf-i18n
+Section: localization
+Priority: important
+Conflicts: debconf-english,
+Architecture: all
+Depends: debconf (= ${source:Version}),
+         liblocale-gettext-perl,
+         libtext-charwidth-perl,
+         libtext-iconv-perl,
+         libtext-wrapi18n-perl,
+         ${misc:Depends},
+Description: full internationalization support for debconf
+ This package provides full internationalization for debconf, including
+ translations into all available languages, support for using translated
+ debconf templates, and support for proper display of multibyte character
+ sets.
+
+Package: debconf-doc
+Suggests: debian-policy,
+Depends: ${misc:Depends},
+Section: doc
+Architecture: all
+Multi-Arch: foreign
+Description: debconf documentation
+ This package contains lots of additional documentation for Debconf,
+ including the debconf user's guide, documentation about using different
+ backend databases via the /etc/debconf.conf file, and a developer's guide
+ to debconf.
+
+Package: debconf-utils
+Section: devel
+Depends: debconf (= ${source:Version}),
+         ${misc:Depends},
+Architecture: all
+Description: debconf utilities
+ This package contains some small utilities for debconf developers.
+
+Package: python3-debconf
+Section: python
+Depends: debconf (= ${binary:Version}),
+         ${misc:Depends},
+         ${python3:Depends},
+Architecture: all
+Description: interact with debconf from Python 3
+ Debconf is a configuration management system for debian packages. Packages
+ use Debconf to ask questions when they are installed.
+ .
+ This package provides a debconf module to allow Python 3 programs to
+ interact with a debconf frontend.
