@@ -1,8 +1,11 @@
 # Global Makefile for dpkg
-# $Ragnarok: Makefile,v 1.7 2023/11/24 21:03:11 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.9 2023/12/08 17:06:43 lecorbeau Exp $
 
 MAKE	= make -C
+PKG	= dpkg
 VERSION	= 1.21.22
+
+DEBIAN	= changelog control rules
 
 all: src
 	cd dpkg-${VERSION}; \
@@ -40,3 +43,10 @@ install:
 	   ${DESTDIR}/usr/share/lintian/profiles/dpkg/main.profile
 	cp files/dpkg.lintian-overrides \
 	   ${DESTDIR}/usr/share/lintian/overrides/dpkg
+
+# Building a deb package
+deb: src
+	cp ${DEBIAN} ${PKG}-${VERSION}/debian/
+	cd ${PKG}-${VERSION}; \
+		dch -n -p; \
+		/usr/bin/debuild -i -us -uc -b

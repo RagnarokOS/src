@@ -1,2 +1,5 @@
 RCS/
 dpkg-*
+*.buildinfo
+*.changes
+*.deb
