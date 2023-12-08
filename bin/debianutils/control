@@ -1,0 +1,27 @@
+Source: debianutils
+Section: utils
+Priority: required
+Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
+XSBC-Original-Maintainer: Clint Adams <clint@debian.org>
+XSBC-Original-Uploaders: Manoj Srivastava <srivasta@debian.org>
+Standards-Version: 4.6.0
+Build-Depends: dpkg (>= 1.19.0.3~)
+Rules-Requires-Root: no
+Vcs-Git: https://salsa.debian.org/debian/debianutils.git
+Vcs-Browser: https://salsa.debian.org/debian/debianutils
+
+Package: debianutils
+Architecture: any
+Pre-Depends: ${shlibs:Depends}
+Essential: yes
+Multi-Arch: foreign
+Breaks: printer-driver-pnm2ppa (<< 1.13-12), x11-common (<< 1:7.7+23~), ifupdown (<< 0.8.36+nmu1)
+Description: Miscellaneous utilities specific to Debian/Ragnarok
+ This package provides a number of small utilities which are used
+ primarily by the installation scripts of Debian packages, although
+ you may use them directly.
+ .
+ The specific utilities included are:
+ add-shell installkernel ischroot remove-shell run-parts savelog
+ update-shells which
+
