@@ -1,11 +1,11 @@
 # Global Makefile for e2fsprogs
-# $Ragnarok: Makefile,v 1.3 2023/12/05 16:44:20 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.4 2023/12/08 17:51:03 lecorbeau Exp $
 
 MAKE	= make -C
 PKG	= e2fsprogs
 VERSION	= 1.47.0
 
-DEBIAN	= changelog control rules
+DEBIAN	= changelog control rules e2fsprogs.install
 
 all:
 	cd e2fsprogs-${VERSION}; \
