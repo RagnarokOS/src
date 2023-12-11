@@ -1,3 +1,12 @@
 #!/bin/sh
 
-ln -sf /usr/lib/hardened_malloc/libhardened_malloc-light.so /usr/lib/libhardened_malloc.so
+DIR="/usr/lib/hardened_malloc"
+
+# hardened_malloc is built at install time in order to take advantage of
+# --march=native.
+/usr/bin/printf '%s\n' "Building hardened_malloc..."
+
+# Build all 3 variants
+make -C "$DIR" VARIANT=light -j"$(nproc)" >> /var/messages/hardened_malloc.log
+make -C "$DIR" VARIANT=medium -j"$(nproc)" >> /var/messages/hardened_malloc.log
+make -C "$DIR" VARIANT=strong -j"$(nproc)" >> /var/messages/hardened_malloc.log
