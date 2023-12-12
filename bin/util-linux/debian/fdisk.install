@@ -1,6 +1,0 @@
-sbin/cfdisk
-sbin/fdisk
-sbin/sfdisk
-usr/share/man/man8/cfdisk.8
-usr/share/man/man8/fdisk.8
-usr/share/man/man8/sfdisk.8
