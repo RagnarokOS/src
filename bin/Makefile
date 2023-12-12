@@ -1,11 +1,10 @@
 # Makefile for /bin dir
-# $Id: Makefile,v 1.8 2023/12/06 16:35:26 lecorbeau Exp $
+# $Id: Makefile,v 1.9 2023/12/12 19:35:13 lecorbeau Exp $
 
 MAKE	= make -C
 
 # There will be many directories
 SUBDIRS	= oksh ed
-DEBS	= bash coreutils dash diffutils ed hostname oksh procps util-linux
 
 all:
 	for _dir in ${SUBDIRS}; do \
@@ -24,6 +23,6 @@ clean:
 
 # If we're building deb packages
 deb:
-	for _dir in ${DEBS}; do \
+	for _dir in ${SUBDIRS}; do \
 		${MAKE} $$_dir deb; \
 		done
