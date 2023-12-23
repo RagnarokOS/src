@@ -1,9 +1,9 @@
 # Makefile for /etc
-# $Ragnarok: Makefile,v 1.16 2023/11/27 16:49:13 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.17 2023/12/23 15:25:08 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/ragnarok-config.mk
 
-644FILES	= debian_version host.conf issue issue.net lsb-release motd sysctl.conf
+644FILES	= sysctl.conf
 NETBASE		= ethertypes protocols rpc services
 INIT		= hardened_malloc hwclock.sh rm-machineid
 PAMFILES	= runuser.pam runuser-l.pam su.pam su-l.pam
