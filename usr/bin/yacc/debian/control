@@ -1,0 +1,16 @@
+Source: yacc
+Section: devel
+Priority: optional
+Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
+Build-Depends: debhelper-compat (= 13)
+Homepage: https://github.com/openbsd/src/tree/master/usr.bin/yacc
+Vcs-Git: https://github.com/RagnarokOS/src.git
+Vcs-Browser: https://github.com/openbsd/src/tree/master/usr/bin/yacc
+Standards-Version: 4.6.0
+Rules-Requires-Root: no
+
+Package: yacc
+Architecture: amd64
+Description: OpenBSD's yacc
+ Portable version of OpenBSD's yacc. This is the default yacc
+ implementation used in Ragnarok.
