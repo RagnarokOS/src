@@ -12,8 +12,6 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
 # Ragnarok: CC is clang & use ThinLTO + CFI
 export CC=clang
-export DEB_CFLAGS_MAINT_APPEND = -flto=thin -fsanitize=cfi -fno-sanitize-trap=all -fvisibility=hidden
-export DEB_LDFLAGS_MAINT_APPEND = -flto=thin -Wl,-O2
 
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/buildflags.mk
@@ -58,7 +56,7 @@ override_dh_auto_configure:
 		touch scan.c;						   \
 	   fi;								   \
 	fi
-	dh_auto_configure -- --prefix=$(PREFIX) $(confflags)
+	dh_auto_configure -- YACC=/usr/bin/yacc --prefix=$(PREFIX) $(confflags)
 	sed -i -e 's/^dist_doc_DATA[[:space:]]*=.*/dist_doc_DATA=/' doc/Makefile
 
 override_dh_install:
