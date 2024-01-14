@@ -1,3 +1,13 @@
+flex (2.6.4-99ragnarok01) unstable; urgency=medium
+
+  * Initial build of flex for Ragnarok.
+  * Differences with Debian's build:
+    - Built with Clang.
+    - Adds extra hardening flags (see etc/dpkg/buildflags.conf)
+    - Enables ThinLTO and Control Flow Integrity.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Sun, 14 Jan 2024 12:42:51 -0500
+
 flex (2.6.4-8.2) unstable; urgency=medium
 
   * Non-maintainer upload.
