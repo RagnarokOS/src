@@ -1,7 +1,7 @@
 # Global Makefile for flex
-# $Ragnarok: Makefile,v 1.4 2024/01/14 16:38:15 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.5 2024/01/14 18:32:16 lecorbeau Exp $
 
-PKF	= flex
+PKG	= flex
 VERSION	= 2.6.4
 
 DEBIAN	= changelog control rules
