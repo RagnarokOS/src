@@ -3,3 +3,10 @@
 set -e
 
 add-shell /bin/ksh
+
+# Making sure roots interactive shell is ksh
+# Temporary, until base-passwd is rebuilt with ksh
+# set as default.
+set_shell() {
+	sed -i 's/bash/ksh/g' /etc/passwd
+}

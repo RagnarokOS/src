@@ -1,5 +1,5 @@
-oksh (7.3-1-ragnarok01) stable; urgency=medium
+oksh (7.4-ragnarok01) stable; urgency=medium
 
   * ragnarok01 build.
 
- -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Thu, 20 Jul 2023 14:48:19 -0400
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Thu, 25 Jan 2024 12:25:09 -0500
