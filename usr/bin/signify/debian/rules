@@ -1,0 +1,26 @@
+#!/usr/bin/make -f
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/default.mk
+-include /usr/share/dpkg/buildtools.mk
+export PKG_CONFIG ?= pkg-config
+
+export CC=clang
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+%:
+	dh $@
+
+override_dh_installman:
+	mv signify.1 signify-openbsd.1
+	dh_installman
+
+override_dh_auto_install:
+	dh_auto_install
+	# remove the openbsd manpage dir
+	rm -r debian/signify-openbsd/share
+	# move signify to signify-openbsd
+	mv debian/signify-openbsd/bin/signify debian/signify-openbsd/bin/signify-openbsd
+
+override_dh_clean:
+	if [ -f signify-openbsd.1 ]; then mv signify-openbsd.1 signify.1; fi
+	dh_clean

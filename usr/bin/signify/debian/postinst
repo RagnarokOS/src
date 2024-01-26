@@ -1,0 +1,5 @@
+#!/bin/sh
+
+# symlink signify-openbsd to signify
+ln -sf /usr/bin/signify-openbsd /usr/bin/signify
+ln -sf /usr/share/man/man1/signify-openbsd.1.gz /usr/share/man/man1/signify.1.gz

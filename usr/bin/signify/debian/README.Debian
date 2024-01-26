@@ -1,0 +1,9 @@
+signify-openbsd for Debian
+--------------------------
+
+Due to Debian already carrying a package named "signify", this package
+has been named "signify-openbsd", due to its origin. Hence, the binary
+and the manpage have been renamed to /usr/bin/signify-openbsd and
+signify-openbsd.1 respectively.
+
+ -- Riley Baird <BM-2cVqnDuYbAU5do2DfJTrN7ZbAJ246S4XiX@bitmessage.ch>  Tue, 23 Dec 2014 18:07:46 +1100
