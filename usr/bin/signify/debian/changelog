@@ -1,8 +1,12 @@
 signify-openbsd (31-99ragnarok01) unstable; urgency=medium
 
-  * Initial build of signify for Ragnarok.
+  * Initial build of signify package for Ragnarok.
+  * Differences with Debian's build:
+    - Built with Clang.
+    - Adds extra hardening options (see etc/dpkg/buildflags.conf).
+    - Symlinks the signify-openbsd binary to signify.
 
- -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Fri, 26 Jan 2024 11:13:54 -0500
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Tue, 30 Jan 2024 12:30:09 -0500
 
 signify-openbsd (31-3) unstable; urgency=medium
 

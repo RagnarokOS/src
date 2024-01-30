@@ -5,10 +5,6 @@ BZERO          ?=
 MUSL           ?= 0
 BUNDLED_LIBBSD ?= 0
 PLEDGE         ?= noop
-PKG_CONFIG     ?= pkg-config
-WGET           ?= wget
-libbsd_VERSION ?= 0.10.0
-libbsd_BASEURL ?= http://libbsd.freedesktop.org/releases/
 #                                                                #
 ##################################################################
 
@@ -95,13 +91,13 @@ LIBBSD_LDFLAGS :=
 else
 
 LIBBSD_PKG_VERSION := 0.7
-LIBBSD_PKG_CHECK   := $(shell $(PKG_CONFIG) libbsd --atleast-version=$(LIBBSD_PKG_VERSION) && echo ok)
+LIBBSD_PKG_CHECK   := $(shell pkg-config libbsd --atleast-version=$(LIBBSD_PKG_VERSION) && echo ok)
 ifneq ($(strip $(LIBBSD_PKG_CHECK)),ok)
   $(error libbsd is not installed or version is older than $(LIBBSD_PKG_VERSION))
 endif
 LIBBSD_DEPS    :=
-LIBBSD_CFLAGS  := $(shell $(PKG_CONFIG) libbsd-overlay --cflags)
-LIBBSD_LDFLAGS := $(shell $(PKG_CONFIG) libbsd-overlay --libs)
+LIBBSD_CFLAGS  := $(shell pkg-config libbsd-overlay --cflags)
+LIBBSD_LDFLAGS := $(shell pkg-config libbsd-overlay --libs)
 
 endif
 
@@ -110,8 +106,8 @@ endif
 # Git submodule corresponding to libwaive is properly checked out.
 #
 ifeq ($(PLEDGE),waive)
-SECCOMP_CFLAGS := $(shell $(PKG_CONFIG) libseccomp --cflags)
-SECCOMP_LIBS   := $(shell $(PKG_CONFIG) libseccomp --libs)
+SECCOMP_CFLAGS := $(shell pkg-config libseccomp --cflags)
+SECCOMP_LIBS   := $(shell pkg-config libseccomp --libs)
 CFLAGS  += $(SECCOMP_CFLAGS) -pthread
 LDFLAGS += $(SECCOMP_LIBS) -pthread
 S       += libwaive/waive.c

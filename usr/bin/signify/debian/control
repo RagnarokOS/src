@@ -1,5 +1,5 @@
 Source: signify-openbsd
-Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
+Maintainer: Tomasz Buchert <tomasz@debian.org>
 Section: utils
 Priority: optional
 Build-Depends: debhelper (>= 13),
