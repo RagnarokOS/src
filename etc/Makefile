@@ -1,5 +1,5 @@
 # Makefile for /etc
-# $Ragnarok: Makefile,v 1.17 2023/12/23 15:25:08 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.18 2024/01/31 19:18:08 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/ragnarok-config.mk
 
@@ -20,7 +20,6 @@ miniroot:
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/preferences.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/sources.list.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/trusted.gpg.d
-	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/dpkg/origins
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/signify
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/skel
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/update-motd.d
@@ -28,14 +27,10 @@ miniroot:
 	install -m 644 -o root -g 0 apt/sources.list.d/llvm.sources ${DESTDIR}/etc/apt/sources.list.d
 	install -m 644 -o root -g 0 apt/trusted.gpg.d/apt.llvm.org.asc ${DESTDIR}/etc/apt/trusted.gpg.d
 	install -m 644 -o root -g 0 dpkg/buildflags.conf ${DESTDIR}/etc/dpkg
-	install -m 644 -o root -g 0 dpkg/origins/debian ${DESTDIR}/etc/dpkg/origins
-	install -m 644 -o root -g 0 dpkg/origins/ragnarok ${DESTDIR}/etc/dpkg/origins
-	ln -sf ${DESTDIR}/etc/dpkg/origins/ragnarok ${DESTDIR}/etc/dpkg/origins/default
 	install -m 644 -o root -g 0 skel/.aliases ${DESTDIR}/etc/skel
 	install -m 644 -o root -g 0 skel/.profile ${DESTDIR}/etc/skel
 	install -m 644 -o root -g 0 signify/ragnarok${VERSION}.pub ${DESTDIR}/etc/signify
 	install -m 644 -o root -g 0 signify/ragnarok${NEXT}.pub ${DESTDIR}/etc/signify
-	install -m 755 -o root -g 0 update-motd.d/10-uname ${DESTDIR}/etc/update-motd.d
 	install -m 644 -o root -g 0 ${644FILES} ${DESTDIR}/etc
 
 install:
@@ -44,12 +39,10 @@ install:
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/sources.list.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/trusted.gpg.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/default/grub.d
-	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/dpkg/origins
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/init.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/pam.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/signify
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/skel
-	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/update-motd.d
 	# Install the files
 	install -m 644 -o root -g 0 apt/preferences.d/systemd ${DESTDIR}/etc/apt/preferences.d
 	install -m 644 -o root -g 0 apt/sources.list.d/llvm.sources ${DESTDIR}/etc/apt/sources.list.d
@@ -58,9 +51,6 @@ install:
 	install -m 600 -o root -g 0 default/grub.d/01_hardening.cfg ${DESTDIR}/etc/default/grub.d/
 	install -m 644 -o root -g 0 default/grub ${DESTDIR}/etc/default
 	install -m 644 -o root -g 0 dpkg/buildflags.conf ${DESTDIR}/etc/dpkg
-	install -m 644 -o root -g 0 dpkg/origins/debian ${DESTDIR}/etc/dpkg/origins
-	install -m 644 -o root -g 0 dpkg/origins/ragnarok ${DESTDIR}/etc/dpkg/origins
-	ln -sf ${DESTDIR}/etc/dpkg/origins/ragnarok ${DESTDIR}/etc/dpkg/origins/default
 	cd init.d; \
 		install -m 755 -o root -g 0 ${INIT} ${DESTDIR}/etc/init.d
 	install -m 644 -o root -g 0 logrotate.d/nftables ${DESTDIR}/etc/logrotate.d
@@ -73,5 +63,3 @@ install:
 	install -m 700 -o root -g 0 nftables.conf ${DESTDIR}/etc
 	install -m 644 -o root -g 0 ${644FILES} ${DESTDIR}/etc
 	install -m 644 -o root -g 0 ${NETBASE} ${DESTDIR}/etc
-	cd pam.d; \
-		install -m 644 -g 0 -o root ${PAMFILES} ${DESTDIR}/etc/pam.d
