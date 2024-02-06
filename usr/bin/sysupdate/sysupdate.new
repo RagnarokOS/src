@@ -89,8 +89,8 @@ get_file() {
 	unpriv -f "${TMP}/index.txt.sig" "wget -q --show-progress -O index.txt.sig ${URL}/index.txt.sig"
 }
 
-# Fetching the updates
-get_upd() {
+# Download the set(s).
+dl() {
 	local _file="$1"
 
 	cd "${TMP}" || cd
@@ -115,26 +115,6 @@ comp_date() {
 	awk -v var="$_repo" '$0 ~ var { print $2 }' "$_file"
 }
 
-# Check if there are any updates
-#check_update() {
-#	local _date _repos
-#
-#	# Fetch index.txt and verify its signature
-#	get_file
-#	check_sig "${TMP}/index.txt"
-#
-#	set -A _repos -- $(while IFS= read -r line; do printf '%s\n' "$line"; done < "${REPOPATH}repos/installed")
-#
-#	for _repo in "${_repos[@]}"; do
-#		# If the dates match, no updates are available.
-#		if [[ $(comp_date "$_repo" "${TMP}/index.txt") == $(comp_date "$_repo" "${REPOPATH}repos/index.txt") ]]; then
-#			printf '%s\n' "$_repo is up to date"
-#		else
-#			get_upd "$_repo"
-#		fi
-#	done
-#}
-
 check_update() {
 	local _date _repo=$1
 
@@ -142,7 +122,7 @@ check_update() {
 	get_file
 	check_sig "${TMP}/index.txt"
 
-	if [[ $(comp_date "$_repo" "${TMP}/index.txt") == $(comp_date "$_repo" "${REPOPATH}repos/index.txt") ]]; then
+	if [[ $(comp_date "$_repo" "${TMP}/index.txt") == $(comp_date "$_repo" "${REPOPATH}index.txt") ]]; then
 		printf '%s\n' "$_repo is up to date"
 		return 2
 	else
@@ -156,7 +136,7 @@ get_sets() {
 
 	# If no args are given, then fetch the repos from the 'installed' file.
 	if [[ -z $1 ]]; then
-		set -A _repos -- $(while IFS= read -r line; do printf '%s\n' "$line"; done < "${REPOPATH}repos/installed")
+		set -A _repos -- $(while IFS= read -r line; do printf '%s\n' "$line"; done < "${REPOPATH}installed")
 		for _repo in "${_repos[@]}"; do
 			get_upd "$_repo"
 		done
@@ -171,17 +151,19 @@ get_sets() {
 handle_tar() {
 	local _archive=$1
 
-	/usr/bin/tar xzpf "$_archive" -C "${REPOPATH}repos/"
+	/usr/bin/tar xzpf "$_archive" -C "${REPOPATH}"
 }
 
-do_update() {
+# Actually download the sets, then check their sig and extract the repo
+# to $REPOPATH if sig matches.
+get_sets() {
 	local _repos _ret
 
 	# If the 'installed' file doesn't exist, assume all repos should be downloaded and installed
-	if [[ ! -f ${REPOPATH}repos/installed ]]; then
+	if [[ ! -f ${REPOPATH}installed ]]; then
 		set -A _repos -- base01.tgz
 	else
-		set -A _repos -- $(while IFS= read -r line; do printf '%s\n' "$line"; done < "${REPOPATH}repos/installed")
+		set -A _repos -- $(while IFS= read -r line; do printf '%s\n' "$line"; done < "${REPOPATH}installed")
 	fi
 
 	for _repo in "${_repos[@]}"; do
@@ -191,7 +173,7 @@ do_update() {
 			printf '%s\n' "$_repo is up to date."
 		else
 			printf '%s\n' "Fetching ${_repo}..."
-			get_upd "$_repo"
+			dl "$_repo"
 			printf '%s\n' "Verifying $_repo signature"
 			check_sig "${TMP}/$_repo"
 			printf '%s\n' "Extracting ${_repo}..."
@@ -213,6 +195,8 @@ case "$1" in
 	-d)	do_download "$2"
 		;;
 	-h)	usage
+		;;
+	-q)	do_query
 		;;
 	*)	do_update
 		;;
