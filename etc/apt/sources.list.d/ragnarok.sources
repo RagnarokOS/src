@@ -1,8 +1,5 @@
-Origin: Ragnarok
-Label: Ragnarok
 Types: deb
 URIs: copy:/var/db/repos/base01
 Suites: bookworm
 Components: main
-Description: Ragnarok base set repository.
 Trusted: yes
