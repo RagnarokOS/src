@@ -116,7 +116,7 @@ comp_date() {
 }
 
 check_update() {
-	local _date _repo=$1
+	local _repo=$1
 
 	# Fetch index.txt and verify its signature
 	get_file
@@ -184,8 +184,21 @@ get_sets() {
 	done
 }
 
-do_update() {
+do_query() {
+	local _repos _ret
 
+	set -A _repos -- $(while IFS= read -r line; do printf '%s\n' "$line"; done < "${REPOPATH}installed")
+
+	for repo in "${_repos[@]}"; do
+		check_update "${_repo}"
+		_ret=$?
+		if [[ $_ret == 0 ]]; then
+			printf '%s\n' "Updates are available for $_repo"
+		fi
+	done
+}
+
+do_update() {
 	get_sets
 	printf '%s\n' "Updating base system..."
 	# Point to the Ragnarok.sources list to only update the base
