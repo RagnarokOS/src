@@ -83,7 +83,8 @@ get_file() {
 	cd "${TMP}" || cd
 	unpriv -f "${TMP}/index.txt" "wget -q --show-progress -O index.txt ${URL}/index.txt" || _ret=$?
 	if ((_ret != 0)); then
-		printf '%s\n' "No Updates Available"
+		printf '%s\n' "The mirror appears to be temporarily unavailable. Try again later.
+If the problem persists, please open an issue at https://github.com/RagnarokOS/repos/issues"
 		exit 2
 	fi
 	unpriv -f "${TMP}/index.txt.sig" "wget -q --show-progress -O SHA256.sig ${URL}/SHA256.sig"
