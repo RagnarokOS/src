@@ -204,7 +204,9 @@ do_update() {
 	printf '%s\n' "Updating base system..."
 	# Point to the Ragnarok.sources list to only update the base
 	# system. Updates to third party packages should be done separately.
-	/usr/bin/apt-get -o "Dir:Etc:SourceParts=/etc/apt/sources.list.d/ragnarok.sources"
+	/usr/bin/apt-get update -o Dir::Etc::sourcelist="sources.list.d/ragnarok.sources" \
+		-o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0" && \
+		/usr/bin/apt-get upgrade
 }
 
 # Cleanup after finish
