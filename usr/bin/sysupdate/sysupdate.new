@@ -79,7 +79,7 @@ unpriv() {
 get_file() {
 	local _ret
 
-	printf '%s\n' "Fetching repos.list..."
+	printf '%s\n' "Fetching index.txt..."
 	cd "${TMP}" || cd
 	unpriv -f "${TMP}/index.txt" "wget -q --show-progress -O index.txt ${URL}/index.txt" || _ret=$?
 	if ((_ret != 0)); then
