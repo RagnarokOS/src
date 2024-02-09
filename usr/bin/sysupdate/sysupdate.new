@@ -4,7 +4,7 @@
 
 # sysupdate: update Ragnarok base system.
 #
-# $Id: sysupdate,v 1.3 2023/08/18 18:46:45 lecorbeau Exp $
+# $Ragnarok: sysupdate,v 1.3 2023/08/18 18:46:45 lecorbeau Exp $
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #											#
@@ -86,7 +86,7 @@ get_file() {
 		printf '%s\n' "No Updates Available"
 		exit 2
 	fi
-	unpriv -f "${TMP}/index.txt.sig" "wget -q --show-progress -O index.txt.sig ${URL}/index.txt.sig"
+	unpriv -f "${TMP}/index.txt.sig" "wget -q --show-progress -O SHA256.sig ${URL}/SHA256.sig"
 }
 
 # Download the set(s).
@@ -102,7 +102,7 @@ dl() {
 check_sig() {
 	local _file="$1"
 
-	if ! /usr/bin/signify -V -p "$PUBKEY" -x "${_file}".sig -m "$_file"; then
+	if ! /usr/bin/signify -C -p "$PUBKEY" -x SHA256.sig -m "$_file"; then
 		echo "Signature verification failed. Exiting..."
 		exit 1
 	fi
@@ -131,21 +131,21 @@ check_update() {
 }
 
 # Fetching sets
-get_sets() {
-	local _repos
-
-	# If no args are given, then fetch the repos from the 'installed' file.
-	if [[ -z $1 ]]; then
-		set -A _repos -- $(while IFS= read -r line; do printf '%s\n' "$line"; done < "${REPOPATH}installed")
-		for _repo in "${_repos[@]}"; do
-			get_upd "$_repo"
-		done
-	else
-		_repos=$1
-		get_upd "$_repos"
-	fi
-
-}
+#get_sets() {
+#	local _repos
+#
+#	# If no args are given, then fetch the repos from the 'installed' file.
+#	if [[ -z $1 ]]; then
+#		set -A _repos -- $(while IFS= read -r line; do printf '%s\n' "$line"; done < "${REPOPATH}installed")
+#		for _repo in "${_repos[@]}"; do
+#			get_upd "$_repo"
+#		done
+#	else
+#		_repos=$1
+#		get_upd "$_repos"
+#	fi
+#
+#}
 
 # Extract or create tarball
 handle_tar() {
