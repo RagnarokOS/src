@@ -87,7 +87,7 @@ get_file() {
 If the problem persists, please open an issue at https://github.com/RagnarokOS/repos/issues"
 		exit 2
 	fi
-	unpriv -f "${TMP}/index.txt.sig" "wget -q --show-progress -O SHA256.sig ${URL}/SHA256.sig"
+	unpriv -f "${TMP}/SHA256.sig" "wget -q --show-progress -O SHA256.sig ${URL}/SHA256.sig"
 }
 
 # Download the set(s).
