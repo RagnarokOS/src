@@ -121,7 +121,7 @@ check_update() {
 
 	# Fetch index.txt and verify its signature
 	get_file
-	check_sig "${TMP}/index.txt"
+	check_sig index.txt
 
 	if [[ $(comp_date "$_repo" "${TMP}/index.txt") == $(comp_date "$_repo" "${REPOPATH}index.txt") ]]; then
 		printf '%s\n' "$_repo is up to date"
