@@ -1,6 +1,16 @@
 #!/bin/ksh
 
-# Work in Progress
+# NOTE: ok, after testing this script, it works well, but I'm not a fan
+# of spending time to re-download a whole set just to update one or two
+# packages at once. This script, however, is perfect for the sysupgrade
+# mechanism (whether it's used when running the -current branch or when
+# upgrading from one stable version to the next), so soon this will be
+# renamed to sysupgrade.
+#
+# For sysupdate, I'll re-adapt the very first version which installed
+# the individual updated deb packages. Makes a lot more sense. Original
+# version can be found here: 
+# https://github.com/RagnarokOS/src/blob/4bf86a8b9713fda38fd4a83da6170f6f60d06625/usr/bin/sysupdate/sysupdate
 
 # sysupdate: update Ragnarok base system.
 #
