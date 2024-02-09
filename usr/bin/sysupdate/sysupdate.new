@@ -103,7 +103,7 @@ dl() {
 check_sig() {
 	local _file="$1"
 
-	if ! /usr/bin/signify -C -p "$PUBKEY" -x SHA256.sig -m "$_file"; then
+	if ! /usr/bin/signify -C -p "$PUBKEY" -x SHA256.sig "$_file"; then
 		echo "Signature verification failed. Exiting..."
 		exit 1
 	fi
