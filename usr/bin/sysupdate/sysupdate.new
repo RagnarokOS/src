@@ -178,7 +178,7 @@ get_sets() {
 			printf '%s\n' "Fetching ${_repo}..."
 			dl "$_repo"
 			printf '%s\n' "Verifying $_repo signature"
-			check_sig "${TMP}/$_repo"
+			check_sig "$_repo"
 			printf '%s\n' "Extracting ${_repo}..."
 			handle_tar "$_repo"
 		fi
