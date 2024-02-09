@@ -113,7 +113,7 @@ check_sig() {
 comp_date() {
 	local _repo=$1 _file=$2
 
-	awk -v var="$_repo" '$0 ~ var { print $2 }' "$_file"
+	/usr/bin/grep "$_repo" "$_file"
 }
 
 check_update() {
