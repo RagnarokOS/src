@@ -1,0 +1,59 @@
+.Dd February 14, 2024
+.Dt SYSUPGRADE 8
+.Os Ragnarok
+.Sh NAME
+.Nm sysupgrade
+.Nd upgrade the Ragnarok base system to the next release or snapshot
+.Sh SYNOPSIS
+.Nm sysupgrade
+.Op Fl d | h | l | q | r
+.Sh DESCRIPTION
+.Nm
+is a small utility to fetch, verify and upgrade Ragnarok's base system
+to the next release or snapshot (when running -current).
+.Pp
+When run without any options,
+.Nm sysupgrade
+will fetch the latest available sets/snapshots for the base system, then
+verify their signature with
+.Xr signify 1
+before extracting then installing the upgrade.
+.Pp
+All operations prior to the extraction and installation of files are performed
+as an unprivileged system user with no login shell access.
+.Sh OPTIONS
+The options are as follow:
+.Bl -tag -width "-q"
+.It Fl d
+Download upgradeable sets without installing.
+.It Fl h
+Show help message.
+.It Fl q
+Check if upgrades are available.
+.El
+.Sh FILES
+.Bl -tag -width "/var/db/repos/installed" -compact
+.It Pa /etc/sysupdate.conf
+Configuration file containing the mirror path, Ragnarok's current version,
+and the path to the public signify key (/usr/share/ragnarok-keys/ragnarok01.pub).
+.It Pa /var/db/repos/index.txt
+File listing the sets and their upload date.
+.It Pa /var/db/repos/installed
+File listing the sets currently installed on the system.
+.El
+.Sh EXIT STATUS
+.Ex -std sysupgrade
+In particular, 1 indicates that the utility encountered and error, while 2 indicates
+that no upgrades were found
+.Sh SEE ALSO
+.Xr sysupdate 8 ,
+.Xr signify 1 ,
+.Xr sysupdate.conf 5
+.Sh AUTHORS
+.Nm
+was written by
+.An Ian LeCorbeau Aq Mt I-LeCorbeau@protonmail.com .
+.Sh CAVEATS
+.Nm
+is only meant to upgrade the base system and does not upgrade packages installed
+from Debian's repositories via apt/apt-get.
