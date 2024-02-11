@@ -1,6 +1,6 @@
-# $Id: Makefile,v 1.2 2023/09/07 18:01:19 lecorbeau Exp $
+# $Id: Makefile,v 1.3 2024/02/11 16:40:28 lecorbeau Exp $
 
-PROG	= sysupdate
+PROG	= sysupdate sysupgrade
 CONF	= ${PROG}.conf
 
 all:
