@@ -1,0 +1,7 @@
+#! /bin/sh
+set -e
+
+# add unprivileged user for _sysupdate and _sysupgrade in case
+# something goes wrong.
+adduser --force-badname --system --home /nonexistent  \
+    --no-create-home --quiet _sysupdate || true
