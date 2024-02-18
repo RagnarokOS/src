@@ -25,7 +25,9 @@ as an unprivileged system user with no login shell access.
 The options are as follow:
 .Bl -tag -width "-q"
 .It Fl d
-Download upgradeable sets without installing.
+Download upgradable sets without installing. This option takes a set name as
+an argument. If no set name is given, all sets will be downloaded. The downloaded
+sets are saved to /var/db/repos/download,
 .It Fl h
 Show help message.
 .It Fl q
