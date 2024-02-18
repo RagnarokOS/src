@@ -5,7 +5,9 @@ License: ISC
 
 Files:     Makefile
            sysupdate
+	   sysupgrade
            sysupdate.8
+	   sysupgrade.8
            sysupdate.conf
            sysupdate.conf.5
 Copyright: 2023-2024 Ian LeCorbeau <I-LeCorbeau@protonmail.com>
