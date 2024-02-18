@@ -3,7 +3,7 @@
 # sysupgrade: upgrade the Ragnarok base system, from one version to the next
 # or from one snapshot to the next.
 #
-# $Ragnarok: sysupgrade,v 1.1 2024/02/10 15:32:21 lecorbeau Exp $
+# $Ragnarok: sysupgrade,v 1.2 2024/02/18 16:34:29 lecorbeau Exp $
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #											#
@@ -130,23 +130,6 @@ check_update() {
 	fi
 }
 
-# Fetching sets
-#get_sets() {
-#	local _repos
-#
-#	# If no args are given, then fetch the repos from the 'installed' file.
-#	if [[ -z $1 ]]; then
-#		set -A _repos -- $(while IFS= read -r line; do printf '%s\n' "$line"; done < "${REPOPATH}installed")
-#		for _repo in "${_repos[@]}"; do
-#			get_upd "$_repo"
-#		done
-#	else
-#		_repos=$1
-#		get_upd "$_repos"
-#	fi
-#
-#}
-
 # Extract or create tarball
 handle_tar() {
 	local _archive=$1
@@ -182,6 +165,25 @@ get_sets() {
 			handle_tar "$_repo"
 		fi
 	done
+}
+
+# Download, but don't install the sets.
+do_download() {
+	# If no set name is given as argument, download all of them.
+	if [[ -z "$1" ]]; then
+		# There's only one set now, but more will be added later.
+		for _set in base01.tgz; do
+			dl "$_set"
+			check_sig "$_set"
+			/usr/bin/mkdir -p /var/db/repos/download
+			/usr/bin/mv "$_set" /var/db/repos/download/
+		done
+	else
+		dl "$1"
+		check_sig "$1"
+		/usr/bin/mkdir -p /var/db/repos/download
+		/usr/bin/mv "$1" /var/db/repos/download/
+	fi
 }
 
 do_query() {
