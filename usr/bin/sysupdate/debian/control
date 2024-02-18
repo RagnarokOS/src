@@ -3,6 +3,7 @@ Section: admin
 Priority: required
 Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
 Standards-Version: 4.6.2
+Build-Depends: debhelper-compat (=13)
 Rules-Requires-Root: no
 Homepage: https://github.com/RagnarokOS/src
 Vcs-Git: https://github.com/RagnarokOS/src.git
