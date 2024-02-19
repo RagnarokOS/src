@@ -3,7 +3,7 @@
 # sysupgrade: upgrade the Ragnarok base system, from one version to the next
 # or from one snapshot to the next.
 #
-# $Ragnarok: sysupgrade,v 1.4 2024/02/19 00:08:52 lecorbeau Exp $
+# $Ragnarok: sysupgrade,v 1.5 2024/02/19 16:32:35 lecorbeau Exp $
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #											#
@@ -122,11 +122,12 @@ check_update() {
 	get_file
 	check_sig index.txt
 
-	# If REPOPATH/index.txt doesn't exist, copy the one we've
-	# just downloaded. Afterwards sysupgrade will assume everything
-	# is up to date.
+	# If $REPOPATH/index.txt doesn't exist, copy the one we've
+	# just downloaded and return 0. The get_sets() function will
+	# then assume the sets need to be updated.
 	if [[ ! -f "${REPOPATH}index.txt" ]]; then
 		/usr/bin/cp "${TMP}/index.txt" "${REPOPATH}"
+		return 0
 	fi
 
 	if [[ $(comp_date "$_repo" "${TMP}/index.txt") == $(comp_date "$_repo" "${REPOPATH}index.txt") ]]; then
@@ -200,7 +201,7 @@ do_query() {
 
 	set -A _repos -- $(while IFS= read -r line; do printf '%s\n' "$line"; done < "${REPOPATH}installed")
 
-	for repo in "${_repos[@]}"; do
+	for _repo in "${_repos[@]}"; do
 		check_update "${_repo}"
 		_ret=$?
 		if [[ $_ret == 0 ]]; then
