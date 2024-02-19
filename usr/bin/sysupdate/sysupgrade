@@ -3,7 +3,7 @@
 # sysupgrade: upgrade the Ragnarok base system, from one version to the next
 # or from one snapshot to the next.
 #
-# $Ragnarok: sysupgrade,v 1.3 2024/02/18 16:50:45 lecorbeau Exp $
+# $Ragnarok: sysupgrade,v 1.4 2024/02/19 00:08:52 lecorbeau Exp $
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #											#
@@ -122,6 +122,13 @@ check_update() {
 	get_file
 	check_sig index.txt
 
+	# If REPOPATH/index.txt doesn't exist, copy the one we've
+	# just downloaded. Afterwards sysupgrade will assume everything
+	# is up to date.
+	if [[ ! -f "${REPOPATH}index.txt" ]]; then
+		/usr/bin/cp "${TMP}/index.txt" "${REPOPATH}"
+	fi
+
 	if [[ $(comp_date "$_repo" "${TMP}/index.txt") == $(comp_date "$_repo" "${REPOPATH}index.txt") ]]; then
 		printf '%s\n' "$_repo is up to date"
 		return 2
@@ -166,7 +173,7 @@ get_sets() {
 		fi
 	done
 	# Now copy the new index.txt to /var/db/repos
-	/usr/bin/cp index.txt /var/db/repos/
+	/usr/bin/cp index.txt "${REPOPATH}"
 }
 
 # Download, but don't install the sets.
@@ -177,14 +184,14 @@ do_download() {
 		for _set in base01.tgz; do
 			dl "$_set"
 			check_sig "$_set"
-			/usr/bin/mkdir -p /var/db/repos/download
-			/usr/bin/mv "$_set" /var/db/repos/download/
+			/usr/bin/mkdir -p "${REPOPATH}download/"
+			/usr/bin/mv "$_set" "${REPOPATH}download/"
 		done
 	else
 		dl "$1"
 		check_sig "$1"
-		/usr/bin/mkdir -p /var/db/repos/download
-		/usr/bin/mv "$1" /var/db/repos/download/
+		/usr/bin/mkdir -p "${REPOPATH}download"
+		/usr/bin/mv "$1" "${REPOPATH}download/"
 	fi
 }
 
