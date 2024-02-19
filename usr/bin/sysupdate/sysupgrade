@@ -3,7 +3,7 @@
 # sysupgrade: upgrade the Ragnarok base system, from one version to the next
 # or from one snapshot to the next.
 #
-# $Ragnarok: sysupgrade,v 1.5 2024/02/19 16:32:35 lecorbeau Exp $
+# $Ragnarok: sysupgrade,v 1.6 2024/02/19 16:48:09 lecorbeau Exp $
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #											#
@@ -179,6 +179,11 @@ get_sets() {
 
 # Download, but don't install the sets.
 do_download() {
+	cd "${TMP}"
+
+	# Download SHA256.sig
+	unpriv -f "${TMP}/SHA256.sig" "wget -q --show-progress -O SHA256.sig ${URL}/SHA256.sig"
+	
 	# If no set name is given as argument, download all of them.
 	if [[ -z "$1" ]]; then
 		# There's only one set now, but more will be added later.
