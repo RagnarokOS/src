@@ -1,5 +1,5 @@
 # Construct the Ragnarok base system
-# $Ragnarok: Makefile,v 1.5 2024/02/19 17:40:39 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.6 2024/02/19 17:42:13 lecorbeau Exp $
 
 MAKE = make -C
 
@@ -13,7 +13,7 @@ all:
 # Build deb packages for the entire source tree.
 dist:
 	for _dir in ${SUBDIRS}; do \
-		${MAKE} $$_dir deb; \
+		${MAKE} $$_dir dist; \
 		done
 
 # Build miniroot files
