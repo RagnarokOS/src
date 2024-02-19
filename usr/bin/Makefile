@@ -1,5 +1,5 @@
 # Makefile for usr/bin
-# $Ragnarok: Makefile,v 1.16 2024/01/30 18:24:55 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.17 2024/02/19 17:36:08 lecorbeau Exp $
 
 MAKE	= make -C
 
@@ -10,8 +10,11 @@ CONFIGURE = mandoc
 SUBDIRS	= yacc apply banner bsd-mailx doas mandoc rcs sysupdate who
 STANDALONE = checkhash
 
-# miniroot.tgz requires less stuff
+# miniroot.tgz requires less stuff (this will be removed at some point.
 MINIROOTDIRS	= signify sysupdate
+
+DEBS	= signify sysupdate
+
 
 all:
 	@echo "Pre-configuring..."
@@ -23,6 +26,14 @@ all:
 	@for _dir in ${SUBDIRS}; do \
 		${MAKE} $$_dir; \
 		done
+
+deb:
+	for _deb in ${DEBS}; do \
+		cd $$_deb; \
+			dch -n -p; \
+			debuild -i -us -uc -b; \
+		cd ..; \
+	done
 
 miniroot:
 	for _dir in ${MINIROOTDIRS}; do \
