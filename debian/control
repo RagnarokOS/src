@@ -7,8 +7,36 @@ Standards-Version: 4.6.1
 Homepage: https://github.com/RagnarokOS/src
 Rules-Requires-Root: no
 
-Package: ragnarok-files
-Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Package: ragnarok-base
+Architecture: amd64
+Depends: policy-rcd-declarative-deny-all,
+ oksh,
+ ed,
+ mandoc,
+ doas,
+ signify-openbsd,
+ bsd-mailx,
+ dma,
+ sysvinit-core,
+ sysv-rc,
+ orphan-sysvinit-scripts,
+ systemctl,
+ hardened-malloc,
+ elogind,
+ libpam-elogind,
+ procps,
+ nftables,
+ rsyslog,
+ logrotate,
+ tmux,
+ vim,
+ ifupdown,
+ wpasupplicant,
+ libbsd-dev,
+ adduser,
+ openrcs,
 Description: files for Ragnarok
- Package for files specific to Ragnarok systems.
+ Package providing extra files for Ragnarok, as well as
+ a postinst script that sets up the base system. This also
+ serves as a metapackage, fetching other packages required
+ by the base system.
