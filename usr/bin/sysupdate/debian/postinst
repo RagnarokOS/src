@@ -3,5 +3,10 @@ set -e
 
 # add unprivileged user for _sysupdate and _sysupgrade in case
 # something goes wrong.
-adduser --force-badname --system --home /nonexistent  \
-    --no-create-home --quiet _sysupdate || true
+if [ "$1" = 'configure' ] && [ -z "$DPKG_ROOT" ] && ! getent passwd _apt >/dev/null; then
+	# add unprivileged user for the apt methods
+	adduser --force-badname --system --home /nonexistent  \
+	    --no-create-home --quiet _sysupdate || true
+fi
+
+#DEBHELPER#
