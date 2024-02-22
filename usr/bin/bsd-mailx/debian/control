@@ -5,6 +5,7 @@ Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
 XSBC-Original-Maintainer: Robert Luberda <robert@debian.org>
 Standards-Version: 4.6.0
 Build-Depends: debhelper-compat (= 13),
+	       yacc, 
                groff,
                libbsd-dev,
                liblockfile-dev

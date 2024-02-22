@@ -34,7 +34,7 @@ $(PROG): $(OBJS)
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 .y.c:
-	bison $<
+	yacc $<
 	mv -f $*.tab.c $@
 
 clean:
