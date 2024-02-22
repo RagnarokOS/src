@@ -1,0 +1,14 @@
+Source: ed
+Section: editors
+Priority: optional
+Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
+Build-Depends: debhelper-compat (= 13)
+Standards-Version: 4.5.1
+Homepage: https://github.com/ibara/oed
+Rules-Requires-Root: no
+
+Package: ed
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: OpenBSD's ed.
+ This is the ed version used in Ragnarok.
