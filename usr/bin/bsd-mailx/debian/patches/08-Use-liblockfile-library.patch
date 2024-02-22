@@ -1,0 +1,99 @@
+From: Robert Luberda <robert@debian.org>
+Date: Wed, 21 Mar 2001 01:05:00 +0100
+Subject: 08 Use liblockfile library
+
+Security fix: don't install mailx binary setgid mail.
+Now the liblockfile library is used for mailbox locking.
+---
+ popen.c | 64 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 64 insertions(+)
+
+diff --git a/popen.c b/popen.c
+index d02a718..7a79b41 100644
+--- a/popen.c
++++ b/popen.c
+@@ -35,6 +35,7 @@
+ #include <fcntl.h>
+ #include <errno.h>
+ #include <stdarg.h>
++#include <lockfile.h>
+ #include "extern.h"
+ 
+ #define READ 0
+@@ -421,6 +422,7 @@ free_child(pid_t pid)
+ static int
+ handle_spool_locks(int action)
+ {
++#ifndef DEBIAN
+ 	static FILE *lockfp = NULL;
+ 
+ 	if (action == 0) {
+@@ -460,6 +462,68 @@ handle_spool_locks(int action)
+ 	}
+ 
+ 	return(1);
++#else
++	int retval;
++	char lockpath[PATHSIZE];
++
++	snprintf(lockpath, PATHSIZE - 1, "%s.lock", mailname);
++	lockpath[PATHSIZE - 1] = '\0';
++
++	if (action == 0) {
++		/* Clear the lock */
++		retval = lockfile_remove(lockpath);
++		if (retval == 0)
++			return(1);
++		else
++			warn("Cannot remove lockfile %s", lockpath);
++
++	} else if (action == 1) {
++
++		retval = lockfile_create(lockpath, 3, 0);
++		switch (retval) {
++			case L_SUCCESS:
++				return(1);
++
++			case L_NAMELEN:
++				warnx( "Cannot create lockfile %s: %s",
++				       lockpath,
++				       "Recipient name too long."
++				     );
++				break;
++
++			case L_TMPLOCK:
++				warnx( "Cannot create lockfile %s: %s",
++				       lockpath,
++				       "Error creating temporary lockfile"
++				     );
++				break;
++
++			case L_TMPWRITE:
++				warnx( "Cannot create lockfile %s: %s",
++				       lockpath,
++				       "Failed to write pid into tmp lockfile."
++				     );
++				break;
++
++			case L_MAXTRYS:
++				warnx( "Cannot create lockfile %s: %s",
++				       lockpath,
++				       "Failed after max tries."
++				     );
++				break;
++
++			case L_ERROR:
++			default:
++				warn( "Cannot create lockfile %s",
++				       lockpath
++				    );
++				break;
++
++		}
++	}
++
++	return(0);
++#endif
+ }
+ 
+ int

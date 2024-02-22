@@ -1,0 +1,7 @@
+version=4
+# Note: mailx is part of OpenBSD base system, e.g. ftp://ftp.openbsd.org/pub/OpenBSD/5.5/src.tar.gz
+# Debian package is based on CVS version of the sources, see cvsweb interface
+# on https://openbsd.cs.toronto.edu/cgi-bin/cvsweb/src/usr.bin/mail/
+# It is not possible to extract the upstream version from neither of the above links,
+# so use the following link to the Debian repository just to make lintian and PTS happy.
+https://ftp.debian.org/debian/pool/main/b/bsd-mailx/ bsd-mailx_(.*)\.orig\.tar\.xz

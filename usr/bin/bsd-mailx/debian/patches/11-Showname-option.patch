@@ -1,0 +1,134 @@
+From: Tormod Volden <volden@iqe.phys.ethz.ch>
+Date: Sun, 6 May 2001 20:23:48 +0200
+Subject: 11 Showname option
+
+Debian Bug#96867:
+
+Dear mailx maintainer,
+
+I have written a patch that mimics the SunOS mailx
+"showname" option, that is, in the mail header listing the
+senders full name is shown instead of the e-mail address.
+
+I had to make the "skin" function aware of the reptype variable,
+and thus give a reptype value for each call of skin. Ugly but
+it seems to work.
+---
+ cmd1.c   |  2 +-
+ cmd3.c   | 18 +++++++++---------
+ extern.h |  2 +-
+ util.c   |  9 +++++++--
+ 4 files changed, 18 insertions(+), 13 deletions(-)
+
+diff --git a/cmd1.c b/cmd1.c
+index 84186c5..1c7f748 100644
+--- a/cmd1.c
++++ b/cmd1.c
+@@ -214,7 +214,7 @@ printhead(int mesg)
+ 		dispc = 'M';
+ 	parse(headline, &hl, pbuf);
+ 	from = nameof(mp, 0);
+-	to = skin(hfield("to", mp));
++	to = skin(hfield("to", mp), 0);
+ 	np = extract(from, GTO);
+ 	np = delname(np, myname);
+ 	if (altnames)
+diff --git a/cmd3.c b/cmd3.c
+index 95e959d..07fede0 100644
+--- a/cmd3.c
++++ b/cmd3.c
+@@ -203,11 +203,11 @@ _respond(msgvec)
+ 	mp = &message[msgvec[0] - 1];
+ 	touch(mp);
+ 	dot = mp;
+-	if ((rcv = skin(hfield("from", mp))) == NULL)
+-		rcv = skin(nameof(mp, 1));
+-	if ((replyto = skin(hfield("reply-to", mp))) != NULL)
++	if ((rcv = skin(hfield("from", mp), 1)) == NULL)
++		rcv = skin(nameof(mp, 1), 1);
++	if ((replyto = skin(hfield("reply-to", mp), 1)) != NULL)
+ 		np = extract(replyto, GTO);
+-	else if ((cp = skin(hfield("to", mp))) != NULL)
++	else if ((cp = skin(hfield("to", mp), 1)) != NULL)
+ 		np = extract(cp, GTO);
+ 	else
+ 		np = NULL;
+@@ -232,7 +232,7 @@ _respond(msgvec)
+ 	if ((head.h_subject = hfield("subject", mp)) == NULL)
+ 		head.h_subject = hfield("subj", mp);
+ 	head.h_subject = reedit(head.h_subject);
+-	if (replyto == NULL && (cp = skin(hfield("cc", mp))) != NULL) {
++	if (replyto == NULL && (cp = skin(hfield("cc", mp), 2)) != NULL) {
+ 		np = elide(extract(cp, GCC));
+ 		np = delname(np, myname);
+ 		if (altnames != 0)
+@@ -244,7 +244,7 @@ _respond(msgvec)
+ 	head.h_bcc = NULL;
+ 	head.h_smopts = NULL;
+ 	head.h_replyto = getenv("REPLYTO");
+-	head.h_inreplyto = skin(hfield("message-id", mp));
++	head.h_inreplyto = skin(hfield("message-id", mp), 1);
+ 
+ 	mail1(&head, 1);
+ 	return(0);
+@@ -617,10 +617,10 @@ _Respond(int *msgvec)
+ 		mp = &message[*ap - 1];
+ 		touch(mp);
+ 		dot = mp;
+-		if ((cp = skin(hfield("from", mp))) == NULL)
+-			cp = skin(nameof(mp, 2));
++		if ((cp = skin(hfield("from", mp), 2)) == NULL)
++			cp = skin(nameof(mp, 2), 2);
+ 		head.h_to = cat(head.h_to, extract(cp, GTO));
+-		mid = skin(hfield("message-id", mp));
++		mid = skin(hfield("message-id", mp), 1);
+ 	}
+ 	if (head.h_to == NULL)
+ 		return(0);
+diff --git a/extern.h b/extern.h
+index 16aa4fa..5b04011 100644
+--- a/extern.h
++++ b/extern.h
+@@ -68,7 +68,7 @@ FILE	*run_editor(FILE *, off_t, int, int);
+ char	*salloc(int);
+ char	*savestr(const char *);
+ FILE	*setinput(struct message *);
+-char	*skin(char *);
++char	*skin(char *, int);
+ char	*skip_comment(char *);
+ char	*snarf(char *, int *);
+ const char
+diff --git a/util.c b/util.c
+index e6c0334..1a237e2 100644
+--- a/util.c
++++ b/util.c
+@@ -362,7 +362,7 @@ nameof(struct message *mp, int reptype)
+ {
+ 	char *cp, *cp2;
+ 
+-	cp = skin(name1(mp, reptype));
++	cp = skin(name1(mp, reptype), reptype);
+ 	if (reptype != 0 || charcount(cp, '!') < 2)
+ 		return(cp);
+ 	cp2 = strrchr(cp, '!');
+@@ -405,7 +405,7 @@ skip_comment(char *cp)
+  * of "host-phrase."
+  */
+ char *
+-skin(char *name)
++skin(char *name, int reptype)
+ {
+ 	char *nbuf, *bufend, *cp, *cp2;
+ 	int c, gotlt, lastsp;
+@@ -459,6 +459,11 @@ skin(char *name)
+ 			break;
+ 
+ 		case '<':
++			/* in case of showname it is time to return */
++			if (reptype == 0 && value("showname") != NULL) {
++				*cp2 = 0;
++				return(savestr(nbuf));
++			}
+ 			cp2 = bufend;
+ 			gotlt++;
+ 			lastsp = 0;

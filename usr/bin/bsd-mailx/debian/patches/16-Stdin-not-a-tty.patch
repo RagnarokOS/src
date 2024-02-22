@@ -1,0 +1,25 @@
+From: Robert Luberda <robert@debian.org>
+Date: Tue, 18 Jun 2002 22:58:00 +0200
+Subject: 16 Stdin not a tty
+
+Return from grabh() if stdin is not a terminal.
+This fixes the `-I' option (closes: #149005).
+---
+ tty.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/tty.c b/tty.c
+index 078801b..99da944 100644
+--- a/tty.c
++++ b/tty.c
+@@ -85,6 +85,10 @@ grabh(struct header *hp, int gflags)
+ 	char *s;
+ 	int error;
+ 
++	/* do nothing if not on tty, see Debian Bug #149005 */
++	if (!isatty(0))
++	    return 0;
++
+ 	sigemptyset(&act.sa_mask);
+ 	act.sa_flags = SA_RESTART;
+ 	act.sa_handler = SIG_DFL;

@@ -1,0 +1,38 @@
+Source: bsd-mailx
+Section: mail
+Priority: optional
+Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
+XSBC-Original-Maintainer: Robert Luberda <robert@debian.org>
+Standards-Version: 4.6.0
+Build-Depends: debhelper-compat (= 13),
+               groff,
+               libbsd-dev,
+               liblockfile-dev
+Rules-Requires-Root: no
+Vcs-Git: https://salsa.debian.org/debian/bsd-mailx.git
+Vcs-Browser: https://salsa.debian.org/debian/bsd-mailx/
+
+Package: bsd-mailx
+Architecture: any
+Depends: default-mta | mail-transport-agent,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Provides: mail-reader, mailx
+Description: simple mail user agent
+ bsd-mailx is the traditional simple command-line-mode mail user agent.
+ Even if you don't use it, it may be required by other programs.
+ .
+ The /usr/bin/mail command provided by this package is a very simple one,
+ and does not include many features that can be found in more advanced
+ mail user agents.
+ .
+ For example bsd-mailx DOES NOT support:
+  - MIME           (i.e. no attachments, no UTF-8 or other charsets support);
+  - SMTP protocol  (/usr/sbin/sendmail interface only is used);
+  - POP3/IMAP      (bsd-mailx reads local mailboxes only);
+  - maildir format (traditional mbox only format is supported).
+ .
+ If the above features are needed, please consider installing another package
+ providing similar /usr/bin/mail interface:
+  - s-nail package,
+  - or mailutils package.

@@ -1,0 +1,31 @@
+From: Robert Luberda <robert@debian.org>
+Date: Thu, 9 Apr 2015 23:27:36 +0200
+Subject: 27 Use FOPEN_MAX
+
+Use FOPEN_MAX instead of OPEN_MAX, which is unavailable on Linux
+---
+ util.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/util.c b/util.c
+index 1a237e2..f53acc9 100644
+--- a/util.c
++++ b/util.c
+@@ -261,7 +261,7 @@ struct sstack {
+ 	FILE	*s_file;		/* File we were in. */
+ 	int	s_cond;			/* Saved state of conditionals */
+ 	int	s_loading;		/* Loading .mailrc, etc. */
+-} sstack[OPEN_MAX];
++} sstack[FOPEN_MAX];
+ 
+ /*
+  * Pushdown current input file and switch to a new one.
+@@ -281,7 +281,7 @@ source(void *v)
+ 		warn("%s", cp);
+ 		return(1);
+ 	}
+-	if (ssp >= OPEN_MAX - 1) {
++	if (ssp >= FOPEN_MAX - 1) {
+ 		puts("Too much \"sourcing\" going on.");
+ 		(void)Fclose(fi);
+ 		return(1);

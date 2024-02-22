@@ -1,0 +1,41 @@
+From: Arnaud Giersch <arnaud.giersch@free.fr>
+Date: Mon, 11 Mar 2002 22:22:03 +0100
+Subject: 13 Mailx concatenates messages
+
+Debian Bug#71759
+
+Check if there is still an empty line at
+the end of the edited message. If not, it adds one.
+---
+ edit.c | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
+
+diff --git a/edit.c b/edit.c
+index 7a2f5d6..d0ed83c 100644
+--- a/edit.c
++++ b/edit.c
+@@ -112,6 +112,24 @@ edit1(int *msgvec, int type)
+ 		(void)ignoresig(SIGINT, &oact, &oset);
+ 		fp = run_editor(setinput(mp), (off_t)mp->m_size, type, readonly);
+ 		if (fp != NULL) {
++			int c1, c2;
++
++			/* Check if the last empty line is still here.
++			* If no, add it.
++			* (closes Debian bug #71759)
++			*/
++			(void)fseek(fp, -2L, SEEK_END);
++			c2 = getc(fp);
++			c1 = getc(fp);
++			(void)fseek(fp, 0L, SEEK_END);
++			if (c1 != '\n') {
++				putc('\n', fp);
++				putc('\n', fp);
++			} else if (c2 != '\n') {
++				putc('\n', fp);
++			}
++			(void)fflush(fp);
++
+ 			(void)fseek(otf, 0L, SEEK_END);
+ 			size = ftell(otf);
+ 			mp->m_block = blockof(size);

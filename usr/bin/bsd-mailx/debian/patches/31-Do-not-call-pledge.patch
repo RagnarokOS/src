@@ -1,0 +1,26 @@
+From: Robert Luberda <robert@debian.org>
+Date: Sat, 23 Jan 2016 10:54:35 +0100
+Subject: 31 Do not call pledge
+
+pledge(2) syscall is not available in Linux,
+so the change introduced by upstream
+in 8.1.2-0.20160123cvs.
+---
+ main.c | 4 ----
+ 1 file changed, 4 deletions(-)
+
+diff --git a/main.c b/main.c
+index ade811f..fa086d8 100644
+--- a/main.c
++++ b/main.c
+@@ -111,10 +111,6 @@ main(int argc, char **argv)
+ 	char *rc;
+ 	extern const char version[];
+ 
+-	if (pledge("stdio rpath wpath cpath getpw tmppath fattr tty flock proc exec",
+-	    NULL) == -1)
+-		err(1, "pledge");
+-
+         /*
+ 	 * drop any sgid/suid privileges
+          */

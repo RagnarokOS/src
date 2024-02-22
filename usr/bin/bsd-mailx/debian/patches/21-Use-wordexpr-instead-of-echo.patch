@@ -1,0 +1,134 @@
+From: Robert Luberda <robert@debian.org>
+Date: Wed, 3 Nov 2004 20:52:00 +0100
+Subject: 21 Use wordexpr instead of echo
+
+fio.c: Use wordexpr() instead of calling /bin/echo not to allow
+    executing external commands while expanding shell variables
+    and wildcards.
+---
+ fio.c   | 58 +++++++++++++++++++++++++++++++++++++++++++++++++++++-----
+ names.c |  5 +++--
+ 2 files changed, 56 insertions(+), 7 deletions(-)
+
+diff --git a/fio.c b/fio.c
+index 9327cdb..7355734 100644
+--- a/fio.c
++++ b/fio.c
+@@ -35,9 +35,15 @@
+ #include <unistd.h>
+ #include <paths.h>
+ #include <errno.h>
++#ifndef DEBIAN
+ #include <glob.h>
++#endif
+ #include "extern.h"
+ 
++#ifdef DEBIAN
++#include <wordexp.h>
++#endif
++
+ /*
+  * Mail -- a mail program
+  *
+@@ -418,11 +424,14 @@ fsize(FILE *iob)
+ char *
+ expand(char *name)
+ {
++#ifndef DEBIAN
+ 	const int flags = GLOB_BRACE|GLOB_TILDE|GLOB_NOSORT;
++#endif
+ 	char xname[PATHSIZE];
+ 	char cmdbuf[PATHSIZE];		/* also used for file names */
+-	char *match = NULL;
+-	glob_t names;
++#ifdef DEBIAN
++	wordexp_t p;
++#endif
+ 
+ 	/*
+ 	 * The order of evaluation is "%" and "#" expand into constants.
+@@ -456,9 +465,48 @@ expand(char *name)
+ 		(void)snprintf(xname, sizeof(xname), "%s%s", homedir, name + 1);
+ 		name = savestr(xname);
+ 	}
+-	if (strpbrk(name, "~{[*?\\") == NULL)
++	if (strpbrk(name, "~{[*?$`'\"\\") == NULL)
+ 		return(savestr(name));
++#ifdef DEBIAN
++	{
++		*xname = '\0';
++		memset(&p, 0, sizeof(p));
++		switch (wordexp(name, &p, WRDE_NOCMD)) {
++			case 0: /* OK */
++				if (p.we_wordc == 0) {
++					fprintf(stderr, "\"%s\": No match.\n", name);
++				} else if (p.we_wordc > 1) {
++					fprintf(stderr, "\"%s\": Ambiguous.\n", name);
++				} else if (strlen(p.we_wordv[0]) >= PATHSIZE) {
++					fprintf(stderr, "\"%s\": Expansion buffer overflow.\n", name);
++				} else {
++					strncpy(xname, p.we_wordv[0], PATHSIZE);
++				};
++				break;
++			case WRDE_NOSPACE:
++				fprintf(stderr, "\"%s\": Out of memory.\n", name);
++				break;
++			case WRDE_BADVAL:
++			case WRDE_BADCHAR:
++			case WRDE_SYNTAX:
++				fprintf(stderr, "\"%s\": Syntax error.\n", name);
++				break;
++			case WRDE_CMDSUB:
++				fprintf(stderr, "\"%s\": Command execution not allowed.\n", name);
++				break;
++			default:
++				fprintf(stderr, "\"%s\": Unknown expansion error.\n", name);
++				break;
++		}
++
++		wordfree(&p);
++		if (!*xname)
++			return (NULL);
++		else
++			return(savestr(xname));
+ 
++	}
++#else
+ 	/* XXX - does not expand enviroment variables. */
+ 	switch (glob(name, flags, NULL, &names)) {
+ 	case 0:
+@@ -477,8 +525,8 @@ expand(char *name)
+ 		fprintf(stderr, "\"%s\": Expansion failed.\n", name);
+ 		break;
+ 	}
+-	globfree(&names);
+-	return(match);
++	return(savestr(xname));
++#endif
+ }
+ 
+ /*
+diff --git a/names.c b/names.c
+index a046f74..e57e00c 100644
+--- a/names.c
++++ b/names.c
+@@ -350,6 +350,7 @@ int
+ isfileaddr(char *name)
+ {
+ 	char *cp;
++	int ret = 0;
+ 
+ 	if (*name == '+')
+ 		return(1);
+@@ -357,9 +358,9 @@ isfileaddr(char *name)
+ 		if (*cp == '!' || *cp == '%' || *cp == '@')
+ 			return(0);
+ 		if (*cp == '/')
+-			return(1);
++			ret=1;
+ 	}
+-	return(0);
++	return(ret);
+ }
+ 
+ /*

@@ -1,0 +1,166 @@
+From: Martin Schulze <joey@kuolema.Infodrom.North.DE>
+Date: Tue, 9 Jun 1998 22:42:19 +0200
+Subject: 04 Add custom header
+
+Provide a possibility to add custom header fields such as
+"X-Loop: This service" or "X-Generated: via cron"
+(Closes: Bug#23356, Bug#13756).
+---
+ def.h  |  1 +
+ mail.1 |  8 +++++++-
+ main.c | 24 +++++++++++++++++++++---
+ send.c |  6 +++++-
+ 4 files changed, 34 insertions(+), 5 deletions(-)
+
+diff --git a/def.h b/def.h
+index 187d2ec..c128df8 100644
+--- a/def.h
++++ b/def.h
+@@ -179,6 +179,7 @@ struct header {
+ 	struct name *h_to;		/* Dynamic "To:" string */
+ 	char *h_from;			/* User-specified "From:" string */
+ 	char *h_subject;		/* Subject string */
++	char *h_header;			/* Additional header string */
+ 	struct name *h_cc;		/* Carbon copies string */
+ 	struct name *h_bcc;		/* Blind carbon copies */
+ 	struct name *h_smopts;		/* Sendmail options */
+diff --git a/mail.1 b/mail.1
+index 0aad06b..96a907c 100644
+--- a/mail.1
++++ b/mail.1
+@@ -41,6 +41,7 @@
+ .Nm mail
+ .Bk -words
+ .Op Fl dEIinv
++.Op Fl a Ar header
+ .Op Fl b Ar bcc-addr
+ .Op Fl c Ar cc-addr
+ .Op Fl r Ar from-addr
+@@ -63,6 +64,11 @@ with lines replaced by messages.
+ .Pp
+ The options are as follows:
+ .Bl -tag -width Ds
++.It Fl a
++Specify additional header fields on the command line such as "X-Loop:
++foo@bar" etc.  You have to use quotes if the string contains spaces.
++This argument may be specified more than once, the headers will then
++be concatenated.
+ .It Fl b Ar bcc-addr
+ Send blind carbon copies to
+ .Ar bcc-addr .
+@@ -1254,7 +1260,7 @@ and are not supported by this implementation of
+ .Nm mailx .
+ .Pp
+ The flags
+-.Op Fl bcdEIrv
++.Op Fl abcdEIrv
+ are extensions to the specification.
+ .Sh HISTORY
+ A
+diff --git a/main.c b/main.c
+index c1c474c..aac1e89 100644
+--- a/main.c
++++ b/main.c
+@@ -103,6 +103,7 @@ main(int argc, char **argv)
+ 	struct name *to, *cc, *bcc, *smopts;
+ 	char *fromaddr;
+ 	char *subject;
++	char *header = NULL;
+ 	char *ef;
+ 	char nosrc = 0;
+ 	char *rc;
+@@ -147,7 +148,7 @@ main(int argc, char **argv)
+ 	smopts = NULL;
+ 	fromaddr = NULL;
+ 	subject = NULL;
+-	while ((i = getopt(argc, argv, "EINb:c:dfinr:s:u:v")) != -1) {
++	while ((i = getopt(argc, argv, "EINa:b:c:dfeinr:s:u:v")) != -1) {
+ 		switch (i) {
+ 		case 'u':
+ 			/*
+@@ -184,6 +185,22 @@ main(int argc, char **argv)
+ 			 */
+ 			subject = optarg;
+ 			break;
++
++		case 'a':
++			/*
++			 * Give additional header fields for sending from
++			 * non terminal
++			 */
++			if (header == NULL) {
++				if ((header = (char *)malloc(strlen(optarg)+1)) != NULL)
++					strcpy(header, optarg);
++                        } else {
++				if ((header = (char *)realloc(header, strlen(optarg)+strlen(header)+2)) != NULL) {
++					strcat(header, "\n");
++					strcat(header, optarg);
++				}
++			}
++			break;
+ 		case 'f':
+ 			/*
+ 			 * User is specifying file to "edit" with Mail,
+@@ -229,6 +246,7 @@ main(int argc, char **argv)
+ 			 */
+ 			bcc = cat(bcc, nalloc(optarg, GBCC));
+ 			break;
++		case 'e':
+ 		case 'E':
+ 			/*
+ 			 * Don't send messages with an empty body.
+@@ -282,7 +300,7 @@ main(int argc, char **argv)
+ 		rc = "~/.mailrc";
+ 	load(expand(rc));
+ 	if (!rcvmode) {
+-		mail(to, cc, bcc, smopts, fromaddr, subject);
++		mail(to, cc, bcc, smopts, fromaddr, subject, header);
+ 		/*
+ 		 * why wait?
+ 		 */
+@@ -350,7 +368,7 @@ static void
+ usage(void)
+ {
+ 
+-	fprintf(stderr, "usage: %s [-dEIinv] [-b bcc-addr] [-c cc-addr] "
++	fprintf(stderr, "usage: %s [-dEIinv] [-a header] [-b bcc-addr] [-c cc-addr] "
+ 	    "[-r from-addr] [-s subject] to-addr ...\n", __progname);
+ 	fprintf(stderr, "       %s [-dEIiNnv] -f [name]\n", __progname);
+ 	fprintf(stderr, "       %s [-dEIiNnv] [-u user]\n", __progname);
+diff --git a/send.c b/send.c
+index 6976ad7..83d7bce 100644
+--- a/send.c
++++ b/send.c
+@@ -280,13 +280,14 @@ statusput(struct message *mp, FILE *obuf, char *prefix)
+  */
+ int
+ mail(struct name *to, struct name *cc, struct name *bcc, struct name *smopts,
+-     char *fromaddr, char *subject)
++     char *fromaddr, char *subject, char *header)
+ {
+ 	struct header head;
+ 
+ 	head.h_to = to;
+ 	head.h_from = fromaddr;
+ 	head.h_subject = subject;
++	head.h_header = header;
+ 	head.h_cc = cc;
+ 	head.h_bcc = bcc;
+ 	head.h_smopts = smopts;
+@@ -307,6 +308,7 @@ sendmail(void *v)
+ 	head.h_to = extract(str, GTO);
+ 	head.h_from = NULL;
+ 	head.h_subject = NULL;
++	head.h_header = NULL;
+ 	head.h_cc = NULL;
+ 	head.h_bcc = NULL;
+ 	head.h_smopts = NULL;
+@@ -530,6 +532,8 @@ puthead(struct header *hp, FILE *fo, int w)
+ 		fmt("Cc:", hp->h_cc, fo, w&GCOMMA), gotcha++;
+ 	if (hp->h_bcc != NULL && w & GBCC)
+ 		fmt("Bcc:", hp->h_bcc, fo, w&GCOMMA), gotcha++;
++	if (hp->h_header != NULL && w)
++		fprintf(fo, "%s\n", hp->h_header), gotcha++;
+ 	if (gotcha && w & GNL)
+ 		(void)putc('\n', fo);
+ 	return(0);

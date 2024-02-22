@@ -1,0 +1,48 @@
+From: Robert Luberda <robert@debian.org>
+Date: Thu, 28 Jan 2016 23:04:33 +0100
+Subject: 32 Fix FTBFS on Hurd
+
+Fallback to a previously version of alter() function if UTIME_OMIT
+is not defined (which happens most probably on Hurd only, see #762677).
+---
+ util.c | 20 ++++++++++++++++++++
+ 1 file changed, 20 insertions(+)
+
+diff --git a/util.c b/util.c
+index 88613c9..e4f2ff0 100644
+--- a/util.c
++++ b/util.c
+@@ -328,6 +328,7 @@ unstack(void)
+  * Touch the indicated file.
+  * This is nifty for the shell.
+  */
++#ifdef UTIME_OMIT
+ void
+ alter(char *name)
+ {
+@@ -339,6 +340,25 @@ alter(char *name)
+ 	(void)utimensat(AT_FDCWD, name, ts, 0);
+ }
+ 
++#else
++#warning "UTIME_OMIT not defined, falling back to the old version of alter() function"
++#include <sys/time.h>
++void
++alter(char *name)
++{
++	struct stat sb;
++	struct timeval tv[2];
++
++	if (stat(name, &sb))
++		return;
++	(void) gettimeofday(&tv[0], (struct timezone *)0);
++	tv[0].tv_sec++;
++	tv[1].tv_sec = sb.st_mtime;
++	tv[1].tv_usec = 0;
++	(void)utimes(name, tv);
++}
++#endif
++
+ /*
+  * Examine the passed line buffer and
+  * return true if it is all blanks and tabs.

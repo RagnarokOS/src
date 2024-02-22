@@ -1,0 +1,211 @@
+From: Edward Betts <edward@debian.org>
+Date: Sun, 28 Jan 2001 14:40:00 -0700
+Subject: 03 Base fixes 2
+
+Fixes from  Debian patch 1:8.1.1-10.3
+---
+ cmd1.c   |  2 ++
+ def.h    |  9 +++++++++
+ extern.h |  2 +-
+ mail.1   | 20 ++++++++++----------
+ main.c   | 21 +++++++++++++++++----
+ vars.c   |  9 +++++++--
+ 6 files changed, 46 insertions(+), 17 deletions(-)
+
+diff --git a/cmd1.c b/cmd1.c
+index bcc29f6..84186c5 100644
+--- a/cmd1.c
++++ b/cmd1.c
+@@ -340,6 +340,8 @@ type1(int *msgvec, char *cmd, int doign, int page)
+ 	char *cp;
+ 	FILE *obuf;
+ 
++	cp = NULL;
++
+ 	obuf = stdout;
+ 	restoreterm = 0;
+ 
+diff --git a/def.h b/def.h
+index af7b2b5..187d2ec 100644
+--- a/def.h
++++ b/def.h
+@@ -71,6 +71,10 @@
+ 
+ #define	equal(a, b)	(strcmp(a,b)==0)/* A nice function to string compare */
+ 
++#ifndef NOFILE
++#define NOFILE 256
++#endif
++
+ struct message {
+ 	short	m_flag;			/* flags, see below */
+ 	int	m_offset;		/* offset in block of message */
+@@ -264,4 +268,9 @@ struct ignoretab {
+ 	(void)ftruncate(fileno(stream), (off_t)ftell(stream));		\
+ } while(0)
+ 
++
++
++#ifndef UID_MAX
++#define UID_MAX -1
++#endif
+ #endif /* MAIL_DEF_H */
+diff --git a/extern.h b/extern.h
+index 60a1088..8c5edaa 100644
+--- a/extern.h
++++ b/extern.h
+@@ -233,7 +233,7 @@ int	 spool_unlock(void);
+ void	 spreserve(void);
+ void	 sreset(void);
+ pid_t	 start_command(char *cmd, sigset_t *nset, int infd, int outfd, ...);
+-pid_t	 start_commandv(char *, sigset_t *, int, int, __va_list);
++pid_t	 start_commandv(char *, sigset_t *, int, int, va_list);
+ int	 statusput(struct message *, FILE *, char *);
+ void	 stop(int);
+ int	 stouch(void *);
+diff --git a/mail.1 b/mail.1
+index aece9c1..0aad06b 100644
+--- a/mail.1
++++ b/mail.1
+@@ -41,8 +41,8 @@
+ .Nm mail
+ .Bk -words
+ .Op Fl dEIinv
+-.Op Fl b Ar list
+-.Op Fl c Ar list
++.Op Fl b Ar bcc-addr
++.Op Fl c Ar cc-addr
+ .Op Fl r Ar from-addr
+ .Op Fl s Ar subject
+ .Ar to-addr ...
+@@ -63,14 +63,14 @@ with lines replaced by messages.
+ .Pp
+ The options are as follows:
+ .Bl -tag -width Ds
+-.It Fl b Ar list
++.It Fl b Ar bcc-addr
+ Send blind carbon copies to
+-.Ar list .
+-.It Fl c Ar list
++.Ar bcc-addr .
++.It Fl c Ar cc-addr
+ Send carbon copies to
+-.Ar list
++list
+ of users.
+-.Ar list
++.Ar cc-addr
+ should be a comma separated list of names.
+ .It Fl d
+ Causes
+@@ -1219,7 +1219,7 @@ system initialization file
+ .Ex -std mail
+ .Sh SEE ALSO
+ .Xr fmt 1 ,
+-.Xr lockspool 1 ,
++.Xr newaliases 1 ,
+ .Xr vacation 1 ,
+ .Xr aliases 5 ,
+ .Xr mail.local 8 ,
+@@ -1266,9 +1266,9 @@ This man page is derived from the
+ originally written by Kurt Shoens.
+ .Sh BUGS
+ Usually,
+-.Nm mail
++.Nm Mail
+ and
+ .Nm mailx
+ are just links to
+-.Nm Mail ,
++.Nm mail ,
+ which can be confusing.
+diff --git a/main.c b/main.c
+index b8c80fd..c1c474c 100644
+--- a/main.c
++++ b/main.c
+@@ -87,7 +87,7 @@ sigset_t intset;			/* Signal set that is just SIGINT */
+  */
+ struct strings stringdope[NSPACE];
+ 
+-__dead	void	usage(void);
++  static void	usage(void);
+ 	int	main(int, char **);
+ 
+ /*
+@@ -112,6 +112,17 @@ main(int argc, char **argv)
+ 	    NULL) == -1)
+ 		err(1, "pledge");
+ 
++        /*
++	 * drop any sgid/suid privileges
++         */
++        if (setgid (getgid()) < 0) {
++          err(1, "setgid");
++	}
++
++	if (setuid (getuid()) < 0) {
++          err(1, "setuid");
++	}
++
+ 	/*
+ 	 * Set up a reasonable environment.
+ 	 * Figure out whether we are being run interactively,
+@@ -142,8 +153,10 @@ main(int argc, char **argv)
+ 			/*
+ 			 * Next argument is person to pretend to be.
+ 			 */
++#ifndef DEBIAN
+ 			if (strlen(optarg) >= LOGIN_NAME_MAX)
+ 				errx(1, "username `%s' too long", optarg);
++#endif
+ 			unsetenv("MAIL");
+ 			myname = optarg;
+ 			uflag = 1;
+@@ -333,13 +346,13 @@ setscreensize(void)
+ 		screenwidth = 80;
+ }
+ 
+-__dead void
++static void
+ usage(void)
+ {
+ 
+-	fprintf(stderr, "usage: %s [-dEIinv] [-b list] [-c list] "
++	fprintf(stderr, "usage: %s [-dEIinv] [-b bcc-addr] [-c cc-addr] "
+ 	    "[-r from-addr] [-s subject] to-addr ...\n", __progname);
+-	fprintf(stderr, "       %s [-dEIiNnv] -f [file]\n", __progname);
++	fprintf(stderr, "       %s [-dEIiNnv] -f [name]\n", __progname);
+ 	fprintf(stderr, "       %s [-dEIiNnv] [-u user]\n", __progname);
+ 	exit(1);
+ }
+diff --git a/vars.c b/vars.c
+index 2830d90..47ea353 100644
+--- a/vars.c
++++ b/vars.c
+@@ -100,19 +100,24 @@ char *
+ value(char *name)
+ {
+ 	struct var *vp;
++#ifndef DEBIAN
+ 	char *env;
++#endif
+ 
+ 	if ((vp = lookup(name)) != NULL)
+ 		return(vp->v_value);
++#ifndef DEBIAN /* do not trust environment */
++
+ 	else if ((env = getenv(name)))
+ 		return(env);
++#endif
+ 	/* not set, see if we can provide a default */
+ 	else if (strcmp(name, "SHELL") == 0)
+-		return(_PATH_CSHELL);
++		return(_PATH_SHELL);
+ 	else if (strcmp(name, "LISTER") == 0)
+ 		return(_PATH_LS);
+ 	else if (strcmp(name, "PAGER") == 0)
+-		return(_PATH_MORE);
++		return(_PATH_PAGER);
+ 	else
+ 		return(NULL);
+ }

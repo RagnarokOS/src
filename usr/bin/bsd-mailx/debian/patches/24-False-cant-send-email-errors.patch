@@ -1,0 +1,128 @@
+From: Ivan Zahariev <famzah@icdsoft.com>
+Date: Wed, 7 Oct 2009 20:50:11 +0300
+Subject: 24 False cant send email errors
+
+Debian Bug  #550116:
+
+This bug is caused by the patch in "send.c" for the bug report #145379.
+Under certain circumstances, a race condition can occur if:
+1. The parent fork()'s a process and exec()'s "sendmail" in "send.c".
+The child process is born.
+2. The child starts, finishes quickly and exits. The parent has not
+called wait_child(pid) in "send.c" yet.
+3. The parent immediately gets SIGCHLD because the child exited already.
+The sigchild() handler in "popen.c" reaps the child via waitpid() and
+exits directly because findchild(pid, 1) returned NULL. It returned NULL
+because the PID of the child process has not been added to the "child"
+structure list at all.
+4. The execution of the parent process is resumed in "send.c", and it
+now calls wait_child(pid). The function wait_child(pid) returns "-1"
+because wait_child(pid) in "popen.c" calls waitpid(pid, ...) again for
+the same child PID, which the sigchild() handler already reaped. The
+second call to findchild(pid, 1) by wait_child(pid) in "popen.c" returns
+NULL too, because as already stated the PID of the child process has not
+been added to the "child" structure list. As a result, the false error
+message "Can't send mail: sendmail process failed" is given.
+
+This bug happens only rarely, usually when the system is under load and
+the parent process lags a bit after the child one. But it does happen.
+We send about 15 messages every hour on 36 servers each, and we get 10
+false error messages on average for 24 hours (0.08% false error rate).
+---
+ extern.h |  1 +
+ popen.c  |  9 +++++++++
+ send.c   | 28 ++++++++++++++++++++++++++++
+ 3 files changed, 38 insertions(+)
+
+diff --git a/extern.h b/extern.h
+index da9c3b5..9b30524 100644
+--- a/extern.h
++++ b/extern.h
+@@ -126,6 +126,7 @@ void	 fixhead(struct header *, struct name *);
+ void	 fmt(char *, struct name *, FILE *, int);
+ int	 folders(void *);
+ int	 forward(char *, FILE *, char *, int);
++int	 add_child(pid_t);
+ void	 free_child(pid_t);
+ int	 from(void *);
+ off_t	 fsize(FILE *);
+diff --git a/popen.c b/popen.c
+index 847be61..c9370ca 100644
+--- a/popen.c
++++ b/popen.c
+@@ -396,6 +396,15 @@ wait_child(pid_t pid)
+ 		return (WEXITSTATUS(wait_status));
+ 	else
+ 		return(-1);
++}
++
++/*
++ * Mark that we will wait for this child via SIGCHLD, or waitpid() manually, and we want its exit status stored.
++ */
++int
++add_child(pid_t pid) {
++	if (!findchild(pid, 0/* alloc if not present */))
++		return(-1); // this should never happen
+ 	else
+ 		return(0);
+ }
+diff --git a/send.c b/send.c
+index c16e427..c3ceb24 100644
+--- a/send.c
++++ b/send.c
+@@ -334,6 +334,7 @@ mail1(struct header *hp, int printheaders)
+ 	struct name *to;
+ 	FILE *mtf;
+ 	int w;
++	sigset_t parent_nset, parent_oset;
+ 
+ 	/*
+ 	 * Collect user's mail from standard input.
+@@ -402,6 +403,15 @@ mail1(struct header *hp, int printheaders)
+ 		putchar('\n');
+ 		goto out;
+ 	}
++
++	/*
++	 * Block the SIGCHLD signal temporarily, until we fork() a child and add its PID to the struct child "child" list.
++	 * See: Bug#550116
++	 */
++	sigemptyset(&parent_nset);
++	sigaddset(&parent_nset, SIGCHLD);
++	sigprocmask(SIG_BLOCK, &parent_nset, &parent_oset);
++
+ 	/*
+ 	 * Fork, set up the temporary mail file as standard
+ 	 * input for "mail", and exec with the user list we generated
+@@ -416,6 +426,12 @@ mail1(struct header *hp, int printheaders)
+ 	if (pid == 0) {
+ 		sigset_t nset;
+ 
++		/*
++		 * Restore the original signal mask which we altered in the parent, just in case.
++		 * See: Bug#550116
++		 */
++		sigprocmask(SIG_SETMASK, &parent_oset, NULL);
++
+ 		sigemptyset(&nset);
+ 		sigaddset(&nset, SIGHUP);
+ 		sigaddset(&nset, SIGINT);
+@@ -433,6 +449,18 @@ mail1(struct header *hp, int printheaders)
+ 		_exit(1);
+ 	}
+ 	free(envfrom);
++
++	/*
++	 * Add the PID to the struct child "child" list or else the sigchild() handler may reap the child
++	 *   before we manage to reap it in wait_child().
++	 * Then restore the original signal mask.
++	 * See: Bug#550116
++	 */
++	if (add_child(pid)) {
++		fprintf(stderr, "findchild() failed"); // this should never happen
++	}
++	sigprocmask(SIG_SETMASK, &parent_oset, NULL);
++
+ #ifndef DEBIAN
+ 	if (value("verbose") != NULL)
+ 		(void)wait_child(pid);

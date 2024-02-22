@@ -1,0 +1,10 @@
+bsd-mailx (8.1.2-0.20160123cvs-4) unstable; urgency=medium
+
+   Since this version MIME headers are added to every outgoing mail
+   to indicate the correct local charset (from the POSIX locale)
+   and transfer encoding (always 8bit).
+
+   See "Character sets and MIME" in bsd-mailx(1) man page
+   and Bug#859935 for more information.
+
+ -- Robert Luberda <robert@debian.org>  Sat, 15 Apr 2017 00:11:27 +0200

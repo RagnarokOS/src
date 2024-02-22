@@ -1,0 +1,4 @@
+This directory contains ChangeLog generated from upstream CVS repository
+with the help of `cvs2cl --no-wrap --gmt -S' command.
+
+-- Robert Luberda <robert@debian.org>  Sun, 06 Nov 2011 21:43:13 +0100

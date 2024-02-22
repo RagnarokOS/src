@@ -1,0 +1,57 @@
+From: Robert Luberda <robert@debian.org>
+Date: Tue, 7 Aug 2018 22:37:26 +0200
+Subject: Fix calls to strnvis
+
+Define LIBBSD_NETBSD_VIS macro, and re-order arguments of strnvis
+calls to fix warnings caused by incompatibilities with future
+versions of libbsd, as documented in the following comment
+from /usr/include/bsd/vis.h:
+
+/*
+ * NetBSD added an strnvis and unfortunately made it incompatible with the
+ * existing one in OpenBSD and Freedesktop's libbsd (the former having existed
+ * for over ten years). Despite this incompatibility being reported during
+ * development (see http://gnats.netbsd.org/44977) they still shipped it.
+ * Even more unfortunately FreeBSD and later MacOS picked up this incompatible
+ * implementation.
+ *
+ * Provide both implementations and default for now on the historical one to
+ * avoid breakage, we will switch to the NetBSD one in libbsd 0.10.0 or so.
+ * Define LIBBSD_NETBSD_VIS to switch to the NetBSD one now.
+ */
+---
+ cmd1.c | 4 ++--
+ def.h  | 1 +
+ 2 files changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/cmd1.c b/cmd1.c
+index 1c7f748..19855c5 100644
+--- a/cmd1.c
++++ b/cmd1.c
+@@ -226,12 +226,12 @@ printhead(int mesg)
+ 	else
+ 		/* from me - show TO */
+ 		name = value("showto") != NULL && to ? to : from;
+-	strnvis(visname, name, sizeof(visname), VIS_SAFE|VIS_NOSLASH);
++	strnvis(visname, sizeof(visname), name, VIS_SAFE|VIS_NOSLASH);
+ 	if (name == to)
+ 		fmt = "%c%c%3d TO %-14.14s  %16.16s %4d/%-5d %s";
+ 	else
+ 		fmt = "%c%c%3d %-17.17s  %16.16s %4d/%-5d %s";
+-	strnvis(vissub, subjline, sizeof(vissub), VIS_SAFE|VIS_NOSLASH);
++	strnvis(vissub, sizeof(vissub), subjline, VIS_SAFE|VIS_NOSLASH);
+ 	/* hl.l_date was sanity-checked when read in.  */
+ 	snprintf(fmtline, sizeof(fmtline), fmt, curind, dispc, mesg, visname,
+ 	    hl.l_date, mp->m_lines, mp->m_size, vissub);
+diff --git a/def.h b/def.h
+index 3f2cc2f..8fb3a2e 100644
+--- a/def.h
++++ b/def.h
+@@ -54,6 +54,7 @@
+ #include <termios.h>
+ #include <unistd.h>
+ #include <limits.h>
++#define LIBBSD_NETBSD_VIS
+ #include <bsd/vis.h>
+ #include <stdarg.h>
+ #include "pathnames.h"

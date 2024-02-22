@@ -1,0 +1,26 @@
+From: Tollef Fog Heen <tollef@add.no>
+Date: Sun, 1 Apr 2001 22:31:13 +0200
+Subject: 09 Saved mbox message
+
+Debian Bug#68920:
+Save message says mbox even when $MBOX is set
+---
+ quit.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/quit.c b/quit.c
+index dcc59dc..4b10b24 100644
+--- a/quit.c
++++ b/quit.c
+@@ -278,9 +278,9 @@ quit(void)
+ 	}
+ 	(void)Fclose(obuf);
+ 	if (mcount == 1)
+-		puts("Saved 1 message in mbox");
++		printf("Saved 1 message in %s\n", mbox);
+ 	else
+-		printf("Saved %d messages in mbox\n", mcount);
++		printf("Saved %d messages in %s\n", mcount, mbox);
+ 
+ 	/*
+ 	 * Now we are ready to copy back preserved files to

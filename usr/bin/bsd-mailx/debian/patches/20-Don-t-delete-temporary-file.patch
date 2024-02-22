@@ -1,0 +1,39 @@
+From: Robert Luberda <robert@debian.org>
+Date: Wed, 31 Mar 2004 23:01:00 +0200
+Subject: 20 Don't delete temporary file
+
+If the external editor (called by ~e or ~v commands) fails for
+some reason, don't delete the temporary file if it has been modified.
+This partly fixes bug#148071.
+---
+ edit.c | 17 ++++++++++++++++-
+ 1 file changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/edit.c b/edit.c
+index d0ed83c..92b2cc5 100644
+--- a/edit.c
++++ b/edit.c
+@@ -224,7 +224,22 @@ run_editor(FILE *fp, off_t size, int type, int readonly)
+ 			edit = _PATH_VI;
+ 	}
+ 	if (editit(edit, tempname) == -1) {
+-		(void)rm(tempname);
++		/*
++		 * Don't delete the file if user has changed it
++		 * See Debian bug#148071
++		 * robert@debian.org, 2004.03.30
++		 */
++		if ( !readonly &&
++			!stat(tempname, &statb) &&
++			(modtime != statb.st_mtime)) {
++			printf(
++				"Saved changed message in %s\n"
++				"Please note that this file is located in temporary\n"
++				"directory and may disappear without any notice\n",
++				tempname);
++		} else {
++			(void)rm(tempname);
++		}
+ 		goto out;
+ 	}
+ 	/*

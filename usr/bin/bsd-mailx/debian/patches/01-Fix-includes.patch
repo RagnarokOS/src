@@ -1,0 +1,113 @@
+From: Robert Luberda <robert@debian.org>
+Date: Sun, 6 Nov 2011 23:03:12 +0100
+Subject: 01 Fix includes
+
+---
+ def.h      | 4 +++-
+ edit.c     | 6 ++++++
+ list.c     | 3 +++
+ names.c    | 1 +
+ send.c     | 1 +
+ temp.c     | 2 +-
+ v7.local.c | 2 +-
+ 7 files changed, 16 insertions(+), 3 deletions(-)
+
+diff --git a/def.h b/def.h
+index 5df43a6..af7b2b5 100644
+--- a/def.h
++++ b/def.h
+@@ -50,10 +50,12 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ #include <string.h>
++#include <bsd/string.h>
+ #include <termios.h>
+ #include <unistd.h>
+ #include <limits.h>
+-#include <vis.h>
++#include <bsd/vis.h>
++#include <stdarg.h>
+ #include "pathnames.h"
+ 
+ #define	APPEND				/* New mail goes to end of mailbox */
+diff --git a/edit.c b/edit.c
+index 6328e96..7a2f5d6 100644
+--- a/edit.c
++++ b/edit.c
+@@ -30,6 +30,12 @@
+  * SUCH DAMAGE.
+  */
+ 
++#ifdef DEBIAN
++/* needed for asprintf */
++#define _GNU_SOURCE
++#include <string.h>
++#endif
++
+ #include <sys/types.h>
+ #include <sys/wait.h>
+ 
+diff --git a/list.c b/list.c
+index c870b9b..9db1bf8 100644
+--- a/list.c
++++ b/list.c
+@@ -30,6 +30,9 @@
+  * SUCH DAMAGE.
+  */
+ 
++#define _GNU_SOURCE // for strcasestr
++#include <string.h> // for strcasestr
++
+ #include "rcv.h"
+ #include <ctype.h>
+ #include "extern.h"
+diff --git a/names.c b/names.c
+index 77986dc..d08cbde 100644
+--- a/names.c
++++ b/names.c
+@@ -38,6 +38,7 @@
+ 
+ #include "rcv.h"
+ #include <fcntl.h>
++#include <time.h>
+ #include "extern.h"
+ 
+ /*
+diff --git a/send.c b/send.c
+index cbb9677..6976ad7 100644
+--- a/send.c
++++ b/send.c
+@@ -30,6 +30,7 @@
+  * SUCH DAMAGE.
+  */
+ 
++#include <time.h>
+ #include "rcv.h"
+ #include "extern.h"
+ 
+diff --git a/temp.c b/temp.c
+index 6f287ae..b2c6308 100644
+--- a/temp.c
++++ b/temp.c
+@@ -31,7 +31,7 @@
+  */
+ 
+ #include "rcv.h"
+-#include <pwd.h>
++#include <bsd/pwd.h>
+ #include "extern.h"
+ 
+ /*
+diff --git a/v7.local.c b/v7.local.c
+index 555a132..934ffab 100644
+--- a/v7.local.c
++++ b/v7.local.c
+@@ -41,7 +41,7 @@
+ #include "rcv.h"
+ #include <stdlib.h>
+ #include <fcntl.h>
+-#include <pwd.h>
++#include <bsd/pwd.h>
+ #include "extern.h"
+ 
+ /*

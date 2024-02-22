@@ -1,0 +1,39 @@
+From: Robert Luberda <robert@debian.org>
+Date: Thu, 3 May 2007 12:30:00 +0200
+Subject: 22 Replace newlines with spaces
+
+main.c: Replace with spaces any embedded newline passed in arguments
+for '-s' and '-a' options (closes: #419840).
+---
+ main.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/main.c b/main.c
+index 87aa845..627fe80 100644
+--- a/main.c
++++ b/main.c
+@@ -204,11 +204,16 @@ main(int argc, char **argv)
+ 			 */
+ 			fromaddr = optarg;
+ 			break;
++#define REMOVE_NEWLINES(arg) { 	char *t; 					\
++				for (t = (arg); *t; t++)			\
++					if (*t == '\n' || *t == '\r') *t = ' '; \
++			     }
+ 		case 's':
+ 			/*
+ 			 * Give a subject field for sending from
+ 			 * non terminal
+ 			 */
++			REMOVE_NEWLINES(optarg);
+ 			subject = optarg;
+ 			break;
+ 
+@@ -217,6 +222,7 @@ main(int argc, char **argv)
+ 			 * Give additional header fields for sending from
+ 			 * non terminal
+ 			 */
++			REMOVE_NEWLINES(optarg);
+ 			if (header == NULL) {
+ 				if ((header = (char *)malloc(strlen(optarg)+1)) != NULL)
+ 					strcpy(header, optarg);

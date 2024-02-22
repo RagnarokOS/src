@@ -1,0 +1,22 @@
+From: Robert Luberda <robert@debian.org>
+Date: Mon, 25 Aug 2014 21:41:11 +0200
+Subject: 26 Add missing include
+
+Add #include <bsd/err.h> to fix implicit declaration of
+function 'warnc' warning.
+---
+ lex.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/lex.c b/lex.c
+index 96935f6..8c2eae4 100644
+--- a/lex.c
++++ b/lex.c
+@@ -34,6 +34,7 @@
+ #include <errno.h>
+ #include <fcntl.h>
+ #include "extern.h"
++#include <bsd/err.h>
+ 
+ /*
+  * Mail -- a mail program

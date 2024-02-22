@@ -1,0 +1,286 @@
+From: Robert Luberda <robert@debian.org>
+Date: Mon, 2 Apr 2001 00:24:00 +0200
+Subject: 10 Reply-To header
+
+Applied some patches from FreeBSD:
+ + Add Relpy-To header if REPLYTO environment variable is set.
+ + Add In-Reply-To header for replies (closes: #23115).
+---
+ cmd3.c    |  9 +++++++++
+ collect.c | 11 ++++++++++-
+ def.h     | 12 ++++++++----
+ extern.h  |  2 +-
+ mail.1    | 10 +++++++++-
+ main.c    |  9 +++++++--
+ names.c   |  3 ++-
+ send.c    | 15 ++++++++++++---
+ 8 files changed, 58 insertions(+), 13 deletions(-)
+
+diff --git a/cmd3.c b/cmd3.c
+index 7d424e2..95e959d 100644
+--- a/cmd3.c
++++ b/cmd3.c
+@@ -243,6 +243,9 @@ _respond(msgvec)
+ 		head.h_cc = NULL;
+ 	head.h_bcc = NULL;
+ 	head.h_smopts = NULL;
++	head.h_replyto = getenv("REPLYTO");
++	head.h_inreplyto = skin(hfield("message-id", mp));
++
+ 	mail1(&head, 1);
+ 	return(0);
+ }
+@@ -605,8 +608,10 @@ _Respond(int *msgvec)
+ 	struct message *mp;
+ 	int *ap;
+ 	char *cp;
++	char *mid;
+ 	memset(&head, 0, sizeof(head));
+ 
++	mid = NULL;
+ 	head.h_to = NULL;
+ 	for (ap = msgvec; *ap != 0; ap++) {
+ 		mp = &message[*ap - 1];
+@@ -615,6 +620,7 @@ _Respond(int *msgvec)
+ 		if ((cp = skin(hfield("from", mp))) == NULL)
+ 			cp = skin(nameof(mp, 2));
+ 		head.h_to = cat(head.h_to, extract(cp, GTO));
++		mid = skin(hfield("message-id", mp));
+ 	}
+ 	if (head.h_to == NULL)
+ 		return(0);
+@@ -626,6 +632,9 @@ _Respond(int *msgvec)
+ 	head.h_cc = NULL;
+ 	head.h_bcc = NULL;
+ 	head.h_smopts = NULL;
++	head.h_replyto = getenv("REPLYTO");
++	head.h_inreplyto = mid;
++
+ 	mail1(&head, 1);
+ 	return(0);
+ }
+diff --git a/collect.c b/collect.c
+index 3bc16c3..708f257 100644
+--- a/collect.c
++++ b/collect.c
+@@ -218,13 +218,22 @@ cont:
+ 			break;
+ 		case 's':
+ 			/*
+-			 * Set the Subject list.
++			 * Set the Subject line.
+ 			 */
+ 			cp = &linebuf[2];
+ 			while (isspace((unsigned char)*cp))
+ 				cp++;
+ 			hp->h_subject = savestr(cp);
+ 			break;
++               case 'R':
++                       /*
++                        * Set the Reply-To line.
++                        */
++                       cp = &linebuf[2];
++                       while (isspace(*cp))
++                               cp++;
++                       hp->h_replyto = savestr(cp);
++                       break;
+ 		case 'c':
+ 			/*
+ 			 * Add to the CC list.
+diff --git a/def.h b/def.h
+index c128df8..dc0b809 100644
+--- a/def.h
++++ b/def.h
+@@ -164,12 +164,14 @@ struct headline {
+ #define	GSUBJECT 2		/* Likewise, Subject: line */
+ #define	GCC	4		/* And the Cc: line */
+ #define	GBCC	8		/* And also the Bcc: line */
+-#define	GMASK	(GTO|GSUBJECT|GCC|GBCC)
++#define	GREPLYTO 0x10           /* And the Reply-To: line */
++#define	GINREPLYTO 0x20         /* The In-Reply-To: line */
++#define	GMASK   (GTO|GSUBJECT|GCC|GBCC|GREPLYTO|GINREPLYTO)
+ 				/* Mask of places from whence */
+ 
+-#define	GNL	16		/* Print blank line after */
+-#define	GDEL	32		/* Entity removed from list */
+-#define	GCOMMA	64		/* detract puts in commas */
++#define	GNL	0x40		/* Print blank line after */
++#define	GDEL	0x80		/* Entity removed from list */
++#define	GCOMMA	0x100		/* detract puts in commas */
+ 
+ /*
+  * Structure used to pass about the current
+@@ -182,6 +184,8 @@ struct header {
+ 	char *h_header;			/* Additional header string */
+ 	struct name *h_cc;		/* Carbon copies string */
+ 	struct name *h_bcc;		/* Blind carbon copies */
++	char *h_replyto;                /* Reply address */
++	char *h_inreplyto;              /* Reference */
+ 	struct name *h_smopts;		/* Sendmail options */
+ };
+ 
+diff --git a/extern.h b/extern.h
+index 6ee17f5..16aa4fa 100644
+--- a/extern.h
++++ b/extern.h
+@@ -163,7 +163,7 @@ void	 load(char *);
+ struct var *
+ 	 lookup(char *);
+ int	 mail(struct name *, struct name *, struct name *, struct name *,
+-	       char *, char *);
++	       char *, char *, char *);
+ void	 mail1(struct header *, int);
+ void	 makemessage(FILE *, int);
+ void	 mark(int);
+diff --git a/mail.1 b/mail.1
+index 3e10a50..f148efd 100644
+--- a/mail.1
++++ b/mail.1
+@@ -836,6 +836,10 @@ Abort the message being sent, copying the message to
+ in your home directory if
+ .Ic save
+ is set.
++.It Ic ~R Ns Ar string
++Use
++.Ar string
++as the Reply-To field.
+ .Pp
+ .It Ic ~r Ns Ar filename
+ .It Ic ~< Ns Ar filename
+@@ -1124,6 +1128,9 @@ variable is set.
+ The default paginator
+ .Xr more 1
+ is used if this option is not defined.
++.It Ev REPLYTO
++If set, will be used to initialize the Reply-To field for outgoing
++messages.
+ .It Ev SHELL
+ Pathname of the shell to use in the
+ .Ic !\&
+@@ -1198,7 +1205,8 @@ utilizes the
+ .Ev PAGER ,
+ .Ev LISTER ,
+ .Ev EDITOR ,
+-.Ev VISUAL
++.Ev VISUAL ,
++.Ev REPLYTO ,
+ .Ev MAIL ,
+ .Ev MAILRC ,
+ and
+diff --git a/main.c b/main.c
+index 425646a..b036aee 100644
+--- a/main.c
++++ b/main.c
+@@ -103,7 +103,8 @@ main(int argc, char **argv)
+ 	struct name *to, *cc, *bcc, *smopts;
+ 	char *fromaddr;
+ 	char *subject;
+-	char *header = NULL;
++	char *replyto;
++	char *header;
+ 	char *ef;
+ 	char* cmd;
+ 	char nosrc = 0;
+@@ -168,7 +169,10 @@ main(int argc, char **argv)
+ 	smopts = NULL;
+ 	fromaddr = NULL;
+ 	subject = NULL;
++	header = NULL;
++	replyto = NULL;
+ 	while ((i = getopt(argc, argv, "EINa:b:c:dfeinr:s:u:v")) != -1) {
++
+ 		switch (i) {
+ 		case 'u':
+ 			/*
+@@ -312,6 +316,7 @@ main(int argc, char **argv)
+ 	spreserve();
+ 	if (!nosrc)
+ 		load(_PATH_MASTER_RC);
++	replyto = getenv("REPLYTO");
+ 	/*
+ 	 * Expand returns a savestr, but load only uses the file name
+ 	 * for fopen, so it's safe to do this.
+@@ -320,7 +325,7 @@ main(int argc, char **argv)
+ 		rc = "~/.mailrc";
+ 	load(expand(rc));
+ 	if (!rcvmode) {
+-		mail(to, cc, bcc, smopts, fromaddr, subject, header);
++		mail(to, cc, bcc, smopts, fromaddr, subject, header, replyto);
+ 		/*
+ 		 * why wait?
+ 		 */
+diff --git a/names.c b/names.c
+index ce00861..a046f74 100644
+--- a/names.c
++++ b/names.c
+@@ -256,7 +256,8 @@ outof(struct name *names, FILE *fo, struct header *hp)
+ 				goto cant;
+ 			}
+ 			fprintf(fout, "From %s %s", myname, date);
+-			puthead(hp, fout, GTO|GSUBJECT|GCC|GNL);
++			puthead(hp, fout,
++				GTO|GSUBJECT|GCC|GREPLYTO|GINREPLYTO|GNL);
+ 			while ((c = getc(fo)) != EOF)
+ 				(void)putc(c, fout);
+ 			rewind(fo);
+diff --git a/send.c b/send.c
+index 83d7bce..0fd5a3a 100644
+--- a/send.c
++++ b/send.c
+@@ -280,7 +280,7 @@ statusput(struct message *mp, FILE *obuf, char *prefix)
+  */
+ int
+ mail(struct name *to, struct name *cc, struct name *bcc, struct name *smopts,
+-     char *fromaddr, char *subject, char *header)
++     char *fromaddr, char *subject, char *header, char *replyto)
+ {
+ 	struct header head;
+ 
+@@ -290,6 +290,8 @@ mail(struct name *to, struct name *cc, struct name *bcc, struct name *smopts,
+ 	head.h_header = header;
+ 	head.h_cc = cc;
+ 	head.h_bcc = bcc;
++	head.h_replyto = replyto;
++	head.h_inreplyto = NULL;
+ 	head.h_smopts = smopts;
+ 	mail1(&head, 0);
+ 	return(0);
+@@ -311,6 +313,8 @@ sendmail(void *v)
+ 	head.h_header = NULL;
+ 	head.h_cc = NULL;
+ 	head.h_bcc = NULL;
++	head.h_replyto = getenv("REPLYTO");
++	head.h_inreplyto = NULL;
+ 	head.h_smopts = NULL;
+ 	mail1(&head, 0);
+ 	return(0);
+@@ -379,7 +383,7 @@ mail1(struct header *hp, int printheaders)
+         *ap++ = "-t";
+ 	cp = hp->h_from ? hp->h_from : value("from");
+ 	if (cp != NULL) {
+-		envfrom = skin(cp);
++		envfrom = skin(cp, 1);
+ 		*ap++ = "-f";
+ 		*ap++ = envfrom;
+ 		if (envfrom == cp)
+@@ -485,7 +489,8 @@ infix(struct header *hp, FILE *fi)
+ 		return(fi);
+ 	}
+ 	(void)rm(tempname);
+-	(void)puthead(hp, nfo, GTO|GSUBJECT|GCC|GBCC|GNL|GCOMMA);
++	(void)puthead(hp, nfo,
++		      GTO|GSUBJECT|GCC|GBCC|GREPLYTO|GINREPLYTO|GNL|GCOMMA);
+ 	c = getc(fi);
+ 	while (c != EOF) {
+ 		(void)putc(c, nfo);
+@@ -534,6 +539,10 @@ puthead(struct header *hp, FILE *fo, int w)
+ 		fmt("Bcc:", hp->h_bcc, fo, w&GCOMMA), gotcha++;
+ 	if (hp->h_header != NULL && w)
+ 		fprintf(fo, "%s\n", hp->h_header), gotcha++;
++        if (hp->h_replyto != NULL && w & GREPLYTO)
++                fprintf(fo, "Reply-To: %s\n", hp->h_replyto), gotcha++;
++        if (hp->h_inreplyto != NULL && w & GINREPLYTO)
++                fprintf(fo, "In-Reply-To: <%s>\n", hp->h_inreplyto), gotcha++;
+ 	if (gotcha && w & GNL)
+ 		(void)putc('\n', fo);
+ 	return(0);

@@ -1,0 +1,162 @@
+From: Wichert Akkerman <wakkerma@debian.org>
+Date: Tue, 8 Aug 2000 11:42:00 -0700
+Subject: 05 Mailx fixes
+
+mailx (1:8.1.1-10.1.3) frozen unstable; urgency=high
+
+  * More security fixes
+  * Don't allow one to set interactive in mailrc (or interactively)
+  * Modify the variable-handling code to grok NULL values
+
+ -- Wichert Akkerman <wakkerma@debian.org>  Mon,  7 Aug 2000 17:22:57 -0700
+
+mailx (1:8.1.1-10.1.2) frozen unstable; urgency=high
+
+ * Another security problem: refuse to get the interactive variable
+   from the environment by explicitly setting it in the hashtable.
+
+ -- Wichert Akkerman <wakkerma@debian.org>  Mon,  7 Aug 2000 12:36:10 -0700
+---
+ extern.h |  2 +-
+ mail.1   |  9 ++++++++-
+ main.c   | 20 ++++++++++++++++++++
+ names.c  | 10 ++++++----
+ vars.c   |  5 +++--
+ 5 files changed, 38 insertions(+), 8 deletions(-)
+
+diff --git a/extern.h b/extern.h
+index 8c5edaa..6ee17f5 100644
+--- a/extern.h
++++ b/extern.h
+@@ -75,7 +75,7 @@ const char
+ 	*username(void);
+ char	*value(char *);
+ char	*vcopy(char *);
+-char	*yankword(char *, char *);
++char	*yankword(char *, char *, int);
+ int	 Fclose(FILE *);
+ int	 More(void *);
+ int	 Pclose(FILE *);
+diff --git a/mail.1 b/mail.1
+index 96a907c..3e10a50 100644
+--- a/mail.1
++++ b/mail.1
+@@ -1192,10 +1192,17 @@ command; normally, the first five lines are printed.
+ utilizes the
+ .Ev HOME ,
+ .Ev LOGNAME ,
++.Ev USER ,
++.Ev SHELL ,
++.Ev DEAD ,
++.Ev PAGER ,
++.Ev LISTER ,
++.Ev EDITOR ,
++.Ev VISUAL
+ .Ev MAIL ,
+ .Ev MAILRC ,
+ and
+-.Ev USER
++.Ev MBOX
+ environment variables.
+ .Pp
+ If the
+diff --git a/main.c b/main.c
+index aac1e89..425646a 100644
+--- a/main.c
++++ b/main.c
+@@ -105,6 +105,7 @@ main(int argc, char **argv)
+ 	char *subject;
+ 	char *header = NULL;
+ 	char *ef;
++	char* cmd;
+ 	char nosrc = 0;
+ 	char *rc;
+ 	extern const char version[];
+@@ -133,6 +134,25 @@ main(int argc, char **argv)
+ 	(void)signal(SIGPIPE, SIG_IGN);
+ 	if (isatty(0))
+ 		assign("interactive", "");
++
++	/*
++	 * Grab some stuff from the environment we might use
++	 */
++
++	if ((cmd = getenv("PAGER")))
++		assign("PAGER", cmd);
++	if ((cmd = getenv("LISTER")))
++		assign("LISTER", cmd);
++	if ((cmd = getenv("SHELL")))
++		assign("SHELL", cmd);
++	if ((cmd = getenv("EDITOR")))
++		assign("EDITOR", cmd);
++	if ((cmd = getenv("VISUAL")))
++		assign("VISUAL", cmd);
++	if ((cmd = getenv("MBOX")))
++		assign("MBOX", cmd);
++	if ((cmd = getenv("DEAD")))
++		assign("DEAD", cmd);
+ 	image = -1;
+ 	/*
+ 	 * Now, determine how we are being used.
+diff --git a/names.c b/names.c
+index 8f35e6d..ce00861 100644
+--- a/names.c
++++ b/names.c
+@@ -94,7 +94,7 @@ extract(char *line, int ntype)
+ 	top = NULL;
+ 	np = NULL;
+ 	cp = line;
+-	while ((cp = yankword(cp, nbuf)) != NULL) {
++	while ((cp = yankword(cp, nbuf, BUFSIZ)) != NULL) {
+ 		t = nalloc(nbuf, ntype);
+ 		if (top == NULL)
+ 			top = t;
+@@ -155,9 +155,10 @@ detract(struct name *np, int ntype)
+  * Throw away things between ()'s, and take anything between <>.
+  */
+ char *
+-yankword(char *ap, char *wbuf)
++yankword(char *ap, char *wbuf, int maxsize)
+ {
+ 	char *cp, *cp2;
++	int used = 0;
+ 
+ 	cp = ap;
+ 	for (;;) {
+@@ -184,10 +185,11 @@ yankword(char *ap, char *wbuf)
+ 			break;
+ 	}
+ 	if (*cp ==  '<')
+-		for (cp2 = wbuf; *cp && (*cp2++ = *cp++) != '>';)
++		/* Pre-increment "used" so we leave room for the trailing zero */
++		for (cp2 = wbuf; *cp && (++used < maxsize) && (*cp2++ = *cp++) != '>';)
+ 			;
+ 	else
+-		for (cp2 = wbuf; *cp && !strchr(" \t,(", *cp); *cp2++ = *cp++)
++		for (cp2 = wbuf; *cp && (++used < maxsize) && !strchr(" \t,(", *cp); *cp2++ = *cp++)
+ 			;
+ 	*cp2 = '\0';
+ 	return(cp);
+diff --git a/vars.c b/vars.c
+index 47ea353..c37e6be 100644
+--- a/vars.c
++++ b/vars.c
+@@ -70,8 +70,7 @@ assign(char *name, char *value)
+ void
+ vfree(char *cp)
+ {
+-
+-	if (*cp)
++	if (cp && *cp)
+ 		(void)free(cp);
+ }
+ 
+@@ -84,6 +83,8 @@ vcopy(char *str)
+ {
+ 	char *new;
+ 
++	if (str == NULL)
++		return NULL;
+ 	if (*str == '\0')
+ 		return("");
+ 	if ((new = strdup(str)) == NULL)

@@ -1,0 +1,114 @@
+From: Robert Luberda <robert@debian.org>
+Date: Tue, 7 Aug 2018 22:42:45 +0200
+Subject: Fix compilation issues
+
+Fix the following gcc issues:
+- disable code that references to ALTWERASE that is not
+  defined on Debian;
+- use 'char' rather than 'unsigned char' to get rid of warnings
+  about unsigned/signed conversions;
+- check result of snprintf calls to fix `output might be
+  truncated' warnings.
+---
+ extern.h |  2 +-
+ fio.c    |  4 ++--
+ popen.c  |  6 +++++-
+ tty.c    | 10 ++++++----
+ 4 files changed, 14 insertions(+), 8 deletions(-)
+
+diff --git a/extern.h b/extern.h
+index 9b30524..4e09d4f 100644
+--- a/extern.h
++++ b/extern.h
+@@ -155,7 +155,7 @@ int	 isdate(char *);
+ int	 isdir(char *);
+ int	 isfileaddr(char *);
+ int	 ishead(char *);
+-int	 isign(char *, struct ignoretab *);
++int	 isign(char *, struct ignoretab [2]);
+ int	 isprefix(char *, char *);
+ size_t	 istrlcpy(char *, const char *, size_t);
+ const struct cmd *
+diff --git a/fio.c b/fio.c
+index 7355734..97a7595 100644
+--- a/fio.c
++++ b/fio.c
+@@ -456,8 +456,8 @@ expand(char *name)
+ 			name = "~/mbox";
+ 		/* fall through */
+ 	}
+-	if (name[0] == '+' && getfold(cmdbuf, sizeof(cmdbuf)) >= 0) {
+-		(void)snprintf(xname, sizeof(xname), "%s/%s", cmdbuf, name + 1);
++	if (name[0] == '+' && getfold(cmdbuf, sizeof(cmdbuf)) >= 0 &&
++		snprintf(xname, sizeof(xname), "%s/%s", cmdbuf, name + 1) < sizeof(xname)) {
+ 		name = savestr(xname);
+ 	}
+ 	/* catch the most common shell meta character */
+diff --git a/popen.c b/popen.c
+index c9370ca..c5c5030 100644
+--- a/popen.c
++++ b/popen.c
+@@ -481,7 +481,11 @@ handle_spool_locks(int action)
+ 	int retval;
+ 	char lockpath[PATHSIZE];
+ 
+-	snprintf(lockpath, PATHSIZE - 1, "%s.lock", mailname);
++	if (snprintf(lockpath, PATHSIZE - 1, "%s.lock", mailname) >= PATHSIZE)
++  {
++			warnx("Cannot create lock file for %s: %s", mailname, "Path too long");
++      return(1);
++  }
+ 	lockpath[PATHSIZE - 1] = '\0';
+ 
+ 	if (action == 0) {
+diff --git a/tty.c b/tty.c
+index 99da944..22193c5 100644
+--- a/tty.c
++++ b/tty.c
+@@ -104,8 +104,10 @@ grabh(struct header *hp, int gflags)
+ 		return(-1);
+ 	}
+ 	tty.keys = oldtio.c_cc;
++#ifdef ALTWERASE
+ 	if (oldtio.c_lflag & ALTWERASE)
+ 		tty.flags |= TTY_ALTWERASE;
++#endif
+ 
+ 	newtio = oldtio;
+ 	newtio.c_lflag &= ~(ECHO | ICANON);
+@@ -175,7 +177,7 @@ char *
+ readtty(char *pr, char *src)
+ {
+ 	struct sigaction act, saveint;
+-	unsigned char canonb[BUFSIZ];
++	char canonb[BUFSIZ];
+ 	char *cp;
+ 	sigset_t oset;
+ 	int c, done;
+@@ -327,7 +329,7 @@ static int
+ tty_getc(struct tty *t)
+ {
+ 	ssize_t		n;
+-	unsigned char	c;
++	char	c;
+ 
+ 	n = read(t->fdin, &c, 1);
+ 	switch (n) {
+@@ -344,7 +346,7 @@ tty_getc(struct tty *t)
+ static int
+ tty_insert(struct tty *t, int c, int nocntrl)
+ {
+-	const unsigned char	*ws = " \t";
++	const char	*ws = " \t";
+ 
+ 	if (CCEQ(t->keys[VERASE], c)) {
+ 		if (nocntrl)
+@@ -380,7 +382,7 @@ tty_insert(struct tty *t, int c, int nocntrl)
+ static void
+ tty_putc(struct tty *t, int c)
+ {
+-	unsigned char	cc = c;
++	char	cc = c;
+ 
+ 	write(t->fdout, &cc, 1);
+ }

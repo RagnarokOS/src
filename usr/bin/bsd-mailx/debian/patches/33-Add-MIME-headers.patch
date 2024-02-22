@@ -1,0 +1,158 @@
+From: Robert Luberda <robert@debian.org>
+Date: Thu, 13 Apr 2017 23:39:39 +0200
+Subject: Add MIME headers unless set by user
+
+Generate the three following headers by default:
+  MIME-Version: 1.0
+  Content-Type: text/plain; charset="<current charset from $LC_CTYPE>"
+  Content-Transfer-Encoding: 8bit
+
+However allow a user to override each of them with the -a flag.
+Example:
+   bsd-mailx -a "Content-Type: text/html; charset=UTF-8"
+uses the above user-provided Content-Type, but still adds
+the default MIME-Version and Content-Transfer-Encoding headers.
+
+Bugs-Debian: https://bugs.debian.org/859935
+---
+ mail.1 | 28 +++++++++++++++++++++++++++-
+ main.c |  4 ++++
+ send.c | 43 +++++++++++++++++++++++++++++++++++++++++++
+ 3 files changed, 74 insertions(+), 1 deletion(-)
+
+diff --git a/mail.1 b/mail.1
+index f7d7101..1738f6c 100644
+--- a/mail.1
++++ b/mail.1
+@@ -67,7 +67,13 @@ The options are as follows:
+ .Bl -tag -width Ds
+ .It Fl a
+ Specify additional header fields on the command line such as "X-Loop:
+-foo@bar" etc.  You have to use quotes if the string contains spaces.
++foo@bar" etc.
++It can be also used to override MIME headers
++.Nm mail
++adds by default to each outgoing mail, see
++.Sx Character sets and MIME
++below.
++You have to use quotes if the string contains spaces.
+ This argument may be specified more than once, the headers will then
+ be concatenated.
+ .It Fl b Ar bcc-addr
+@@ -366,6 +372,26 @@ If the
+ .Ic expandaddr
+ option is not set (the default), no expansion is performed and
+ the recipient is treated as a local or network mail address.
++.Ss Character sets and MIME
++Generally
++.Nm mail
++does not handle neither different character sets nor any other MIME
++feature.  Especially it does not perform any any conversions between
++character sets while displaying or sending mails.
++.Pp
++Starting from April 2017, however, as a Debian extension this version of
++.Nm mail
++adds a few MIME headers to every outgoing mail in order to indicate
++that the mail is sent as 8-bit plain text data that uses character
++set encoding detected from the current
++.Xr locale 7
++settings.
++The
++.Fl a
++command-line option can be used to override those headers, for example:
++.Dl $  mail -a 'Content-Type: text/plain; charset="ISO-8859-1"'
++sets header indicating legacy character encoding.
++.Pp
+ .Sh SUMMARY
+ (Adapted from the
+ .Dq Mail Reference Manual . )
+diff --git a/main.c b/main.c
+index fa086d8..c2da93a 100644
+--- a/main.c
++++ b/main.c
+@@ -34,6 +34,7 @@
+ #include <fcntl.h>
+ #include <sys/ioctl.h>
+ #include "extern.h"
++#include <locale.h>
+ 
+ int	msgCount;			/* Count of messages read in */
+ int	rcvmode;			/* True if receiving mail */
+@@ -122,6 +123,9 @@ main(int argc, char **argv)
+           err(1, "setuid");
+ 	}
+ 
++	/* Set the current user locale's charset. */
++	setlocale(LC_CTYPE, "");
++
+ 	/*
+ 	 * Set up a reasonable environment.
+ 	 * Figure out whether we are being run interactively,
+diff --git a/send.c b/send.c
+index c3ceb24..efa51ab 100644
+--- a/send.c
++++ b/send.c
+@@ -30,6 +30,7 @@
+  * SUCH DAMAGE.
+  */
+ 
++#include <langinfo.h>
+ #include <time.h>
+ #include "rcv.h"
+ #include "extern.h"
+@@ -558,6 +559,36 @@ infix(struct header *hp, FILE *fi)
+ 	rewind(nfi);
+ 	return(nfi);
+ }
++/*
++ * Check if headers (a list separated by new line characters) contains a header
++ * which name is given in the headername argument of length given in headernamelen.
++ */
++static int hasheader(const char* headers, const char* const headername, const size_t headernamelen)
++{
++	while (headers) {
++		/*  Skip leading white spaces, including '\n' from
++		 *  the previous iteration of the loop
++		 */
++		while (isspace(*headers))
++			++headers;
++
++		if (strncasecmp(headers, headername, headernamelen) == 0) {
++			/* Found a match, check if it is followed by ':' */
++			const char* end = headers + headernamelen;
++			/* Permit optional white spaces before ':' */
++			while (isspace(*end) && *end != '\n')
++				++end;
++
++			if (*end == ':')
++				return 1;
++
++			headers = end; /* Small optimization for the following strchr() call */
++		}
++
++		headers = strchr(headers, '\n'); /* Find start of the next header */
++	}
++	return 0;
++}
+ 
+ /*
+  * Dump the to, subject, cc header on the
+@@ -583,6 +614,18 @@ puthead(struct header *hp, FILE *fo, int w)
+ 		fmt("Bcc:", hp->h_bcc, fo, w&GCOMMA), gotcha++;
+ 	if (hp->h_header != NULL && w)
+ 		fprintf(fo, "%s\n", hp->h_header), gotcha++;
++	if (w)
++	{
++#define ADDHEADER(name, value, ...) if (!hasheader(hp->h_header, name, sizeof(name) - 1)) \
++				     fprintf(fo, name ": " value "\n", ##__VA_ARGS__), gotcha++
++
++		const char* const cs = nl_langinfo(CODESET);
++		ADDHEADER("MIME-Version", "1.0");
++		ADDHEADER("Content-Type", "text/plain; charset=\"%s\"",
++				cs && *cs ? cs : "ANSI_X3.4-1968");
++		ADDHEADER("Content-Transfer-Encoding", "8bit");
++#undef ADDHEADER
++	}
+         if (hp->h_replyto != NULL && w & GREPLYTO)
+                 fprintf(fo, "Reply-To: %s\n", hp->h_replyto), gotcha++;
+         if (hp->h_inreplyto != NULL && w & GINREPLYTO)

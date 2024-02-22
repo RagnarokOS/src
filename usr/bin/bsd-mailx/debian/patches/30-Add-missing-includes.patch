@@ -1,0 +1,23 @@
+From: Robert Luberda <robert@debian.org>
+Date: Sat, 23 Jan 2016 10:52:27 +0100
+Subject: 30 Add missing includes
+
+Add includes for clock_gettime() and utimensat() calls
+introduced in 8.1.2-0.20160123cvs.
+---
+ util.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/util.c b/util.c
+index f53acc9..88613c9 100644
+--- a/util.c
++++ b/util.c
+@@ -32,6 +32,8 @@
+ 
+ #include "rcv.h"
+ #include <fcntl.h>
++#include <sys/stat.h>
++#include <time.h>
+ #include "extern.h"
+ 
+ /*

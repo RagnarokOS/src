@@ -1,0 +1,57 @@
+From: Robert Luberda <robert@debian.org>
+Date: Wed, 21 Mar 2001 23:07:00 +0100
+Subject: 07 Initialize head struct
+
+Initialize head struct and other fixes.
+---
+ cmd2.c    | 2 +-
+ cmd3.c    | 2 ++
+ collect.c | 2 +-
+ 3 files changed, 4 insertions(+), 2 deletions(-)
+
+diff --git a/cmd2.c b/cmd2.c
+index 54b30bc..8c014c1 100644
+--- a/cmd2.c
++++ b/cmd2.c
+@@ -171,7 +171,7 @@ save1(char *str, int mark, char *cmd, struct ignoretab *ignore)
+ 	else
+ 		disp = "[New file]";
+ 	if ((obuf = Fopen(file, "a")) == NULL) {
+-		warn(NULL);
++		warn("fopen");
+ 		return(1);
+ 	}
+ 	for (ip = msgvec; *ip && ip-msgvec < msgCount; ip++) {
+diff --git a/cmd3.c b/cmd3.c
+index 0758fee..7d424e2 100644
+--- a/cmd3.c
++++ b/cmd3.c
+@@ -195,6 +195,7 @@ _respond(msgvec)
+ 	struct name *np;
+ 	struct header head;
+ 
++	memset(&head, 0, sizeof(head));
+ 	if (msgvec[1] != 0) {
+ 		puts("Sorry, can't reply to multiple messages at once");
+ 		return(1);
+@@ -604,6 +605,7 @@ _Respond(int *msgvec)
+ 	struct message *mp;
+ 	int *ap;
+ 	char *cp;
++	memset(&head, 0, sizeof(head));
+ 
+ 	head.h_to = NULL;
+ 	for (ap = msgvec; *ap != 0; ap++) {
+diff --git a/collect.c b/collect.c
+index a63693f..3bc16c3 100644
+--- a/collect.c
++++ b/collect.c
+@@ -405,7 +405,7 @@ exwrite(char *name, FILE *fp, int f)
+         /* FIXME: Fopen with "w" will currently prevent writing to an existig file
+            (/dev/null), for now I am not sure this would even marginally useful to allow */
+ 	if ((of = Fopen(name, "w")) == NULL) {
+-		warn(NULL);
++		warn("fopen");
+ 		return(-1);
+ 	}
+ 	lc = 0;

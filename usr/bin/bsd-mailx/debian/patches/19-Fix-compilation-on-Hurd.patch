@@ -1,0 +1,25 @@
+From: Robert Luberda <robert@debian.org>
+Date: Tue, 14 Oct 2003 20:50:00 +0200
+Subject: 19 Fix compilation on Hurd
+
+Fix problem with building on Hurd (closes: #213929).
+---
+ def.h | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/def.h b/def.h
+index dc0b809..3f2cc2f 100644
+--- a/def.h
++++ b/def.h
+@@ -62,7 +62,11 @@
+ 
+ #define	ESCAPE		'~'		/* Default escape for sending */
+ #define	NMLSIZE		1024		/* max names in a message list */
++#ifdef PATH_MAX
+ #define	PATHSIZE	PATH_MAX	/* Size of pathnames throughout */
++#else
++#define	PATHSIZE 	4096
++#endif
+ #define	HSHSIZE		59		/* Hash size for aliases and vars */
+ #define	LINESIZE	BUFSIZ		/* max readable line width */
+ #define	STRINGSIZE	((unsigned) 128)/* Dynamic allocation units */

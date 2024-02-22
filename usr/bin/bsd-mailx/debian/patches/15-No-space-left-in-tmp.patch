@@ -1,0 +1,120 @@
+From: Arnaud Giersch <arnaud.giersch@free.fr>
+Date: Sun, 6 Nov 2011 23:59:06 +0100
+Subject: 15 No space left in /tmp
+
+Debian Bug#37104
+
+The problem reported here, i.e. a segmentation fault when reading mail
+is already corrected. The message "Message temporary file corrupted"
+is printed by a call to "errx" instead of "panic" as it was in
+mailx-8.1.1-10.
+
+*But* there is another problem[1]: mailx sends an empty mail when
+there is no space left in "/tmp". Here is a patch making mailx check
+if all is ok when writing new mail in temporary file. If not, it
+outputs an error message and no longer sends an empty mail.
+---
+ collect.c | 38 +++++++++++++++++++++++++++++---------
+ 1 file changed, 29 insertions(+), 9 deletions(-)
+
+diff --git a/collect.c b/collect.c
+index 708f257..9e7660e 100644
+--- a/collect.c
++++ b/collect.c
+@@ -151,8 +151,10 @@ cont:
+ 			break;
+ 		if (linebuf[0] != escape || value("interactive") == NULL ||
+ 		    lastlong) {
+-			if (putline(collf, linebuf, !longline) < 0)
++			if (putline(collf, linebuf, !longline) < 0) {
++			        warn("%s", tempname);
+ 				goto err;
++		       }
+ 			continue;
+ 		}
+ 		c = (unsigned char)linebuf[1];
+@@ -163,10 +165,12 @@ cont:
+ 			 * Otherwise, it's an error.
+ 			 */
+ 			if (c == escape) {
+-				if (putline(collf, &linebuf[1], !longline) < 0)
++			       if (putline(collf, &linebuf[1], !longline) < 0) {
++				        warn("%s", tempname);
+ 					goto err;
+-				else
++			       } else {
+ 					break;
++			       }
+ 			}
+ 			puts("Unknown tilde escape.");
+ 			break;
+@@ -284,6 +288,7 @@ cont:
+ 					lc++;
+ 				if ((t = putline(collf, linebuf,
+ 						 rc != LINESIZE-1)) < 0) {
++					warn("%s", tempname);
+ 					(void)Fclose(fbuf);
+ 					goto err;
+ 				}
+@@ -305,7 +310,10 @@ cont:
+ 			}
+ 			if ((cp = expand(cp)) == NULL)
+ 				break;
+-			rewind(collf);
++		       if (fseek(collf, 0L, SEEK_SET)) {
++				warn("%s", tempname);
++				goto err;
++		       }
+ 			exwrite(cp, collf, 1);
+ 			break;
+ 		case 'm':
+@@ -335,7 +343,10 @@ cont:
+ 			 * Print out the current state of the
+ 			 * message without altering anything.
+ 			 */
+-			rewind(collf);
++		       if (fseek(collf, 0L, SEEK_SET)) {
++				warn("%s", tempname);
++				goto err;
++		       }
+ 			puts("-------\nMessage contains:");
+ 			puthead(hp, stdout, GTO|GSUBJECT|GCC|GBCC|GNL);
+ 			while ((t = getc(collf)) != EOF)
+@@ -346,7 +357,10 @@ cont:
+ 			 * Pipe message through command.
+ 			 * Collect output as new message.
+ 			 */
+-			rewind(collf);
++		       if (fseek(collf, 0L, SEEK_SET)) {
++				warn("%s", tempname);
++				goto err;
++		       }
+ 			mespipe(collf, &linebuf[2]);
+ 			goto cont;
+ 		case 'v':
+@@ -356,7 +370,10 @@ cont:
+ 			 * 'e' means to use EDITOR
+ 			 * 'v' means to use VISUAL
+ 			 */
+-			rewind(collf);
++		       if (fseek(collf, 0L, SEEK_SET)) {
++				warn("%s", tempname);
++				goto err;
++		       }
+ 			mesedit(collf, c);
+ 			goto cont;
+ 		}
+@@ -384,8 +401,11 @@ err:
+ 		collf = NULL;
+ 	}
+ out:
+-	if (collf != NULL)
+-		rewind(collf);
++       if (collf != NULL && fseek(collf, 0L, SEEK_SET)) {
++	       warn("%s", tempname);
++	       (void)Fclose(collf);
++	       collf = NULL;
++       }
+ 	noreset--;
+ 	return(collf);
+ }

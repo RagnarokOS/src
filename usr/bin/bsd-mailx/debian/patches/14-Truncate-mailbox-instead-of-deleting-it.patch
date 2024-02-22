@@ -1,0 +1,48 @@
+From: Robert Luberda <robert@debian.org>
+Date: Wed, 27 Mar 2002 00:20:00 +0100
+Subject: 14 Truncate mailbox instead of deleting it
+
+fio.c: Don't delete mailbox file, always truncate it,
+because liblockfile fails to remove the lock file if mailbox doesn't exist (closes: #111537).
+
+quit.c: change message saing that mailbox was "removed" to "truncated" (closes: #196682);
+---
+ fio.c  | 8 ++++++++
+ quit.c | 4 ++++
+ 2 files changed, 12 insertions(+)
+
+diff --git a/fio.c b/fio.c
+index 368f164..9327cdb 100644
+--- a/fio.c
++++ b/fio.c
+@@ -319,6 +319,14 @@ rm(char *name)
+ 		errno = EISDIR;
+ 		return(-1);
+ 	}
++#ifdef DEBIAN
++	/*
++	 * lockfile_remove can't remove a lockfile if a mailbox file
++	 * doesn't exist, so we must not delete it (see Bug#111537).
++	 */
++	if (!strcmp (name, mailname))
++		return(truncate(name, 0));
++#endif
+ 	if (unlink(name) == -1) {
+ 		if (errno == EPERM)
+ 			return(truncate(name, (off_t)0));
+diff --git a/quit.c b/quit.c
+index 4b10b24..8c446ac 100644
+--- a/quit.c
++++ b/quit.c
+@@ -475,7 +475,11 @@ edstop(void)
+ 	(void)Fclose(obuf);
+ 	if (gotcha) {
+ 		(void)rm(mailname);
++#ifdef DEBIAN
++		puts("truncated");
++#else
+ 		puts("removed");
++#endif
+ 	} else
+ 		puts("complete");
+ 	fflush(stdout);

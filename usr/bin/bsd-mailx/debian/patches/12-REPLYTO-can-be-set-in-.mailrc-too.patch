@@ -1,0 +1,82 @@
+From: Robert Luberda <robert@debian.org>
+Date: Thu, 12 Jul 2001 19:00:00 +0200
+Subject: 12 REPLYTO can be set in .mailrc too
+
+REPLYTO can be set in ~/.mailrc too.
+---
+ cmd3.c   | 4 ++--
+ extern.h | 2 +-
+ main.c   | 4 +++-
+ send.c   | 2 +-
+ 4 files changed, 7 insertions(+), 5 deletions(-)
+
+diff --git a/cmd3.c b/cmd3.c
+index 07fede0..d94dc01 100644
+--- a/cmd3.c
++++ b/cmd3.c
+@@ -243,7 +243,7 @@ _respond(msgvec)
+ 		head.h_cc = NULL;
+ 	head.h_bcc = NULL;
+ 	head.h_smopts = NULL;
+-	head.h_replyto = getenv("REPLYTO");
++	head.h_replyto = value("REPLYTO");
+ 	head.h_inreplyto = skin(hfield("message-id", mp), 1);
+ 
+ 	mail1(&head, 1);
+@@ -632,7 +632,7 @@ _Respond(int *msgvec)
+ 	head.h_cc = NULL;
+ 	head.h_bcc = NULL;
+ 	head.h_smopts = NULL;
+-	head.h_replyto = getenv("REPLYTO");
++	head.h_replyto = value("REPLYTO");
+ 	head.h_inreplyto = mid;
+ 
+ 	mail1(&head, 1);
+diff --git a/extern.h b/extern.h
+index 5b04011..da9c3b5 100644
+--- a/extern.h
++++ b/extern.h
+@@ -163,7 +163,7 @@ void	 load(char *);
+ struct var *
+ 	 lookup(char *);
+ int	 mail(struct name *, struct name *, struct name *, struct name *,
+-	       char *, char *, char *);
++	       char *, char *, char *, char *);
+ void	 mail1(struct header *, int);
+ void	 makemessage(FILE *, int);
+ void	 mark(int);
+diff --git a/main.c b/main.c
+index b036aee..87aa845 100644
+--- a/main.c
++++ b/main.c
+@@ -154,6 +154,8 @@ main(int argc, char **argv)
+ 		assign("MBOX", cmd);
+ 	if ((cmd = getenv("DEAD")))
+ 		assign("DEAD", cmd);
++	if ((cmd = getenv("REPLYTO")))
++		assign("REPLYTO", cmd);
+ 	image = -1;
+ 	/*
+ 	 * Now, determine how we are being used.
+@@ -316,7 +318,7 @@ main(int argc, char **argv)
+ 	spreserve();
+ 	if (!nosrc)
+ 		load(_PATH_MASTER_RC);
+-	replyto = getenv("REPLYTO");
++	replyto = value("REPLYTO");
+ 	/*
+ 	 * Expand returns a savestr, but load only uses the file name
+ 	 * for fopen, so it's safe to do this.
+diff --git a/send.c b/send.c
+index 0fd5a3a..764c558 100644
+--- a/send.c
++++ b/send.c
+@@ -313,7 +313,7 @@ sendmail(void *v)
+ 	head.h_header = NULL;
+ 	head.h_cc = NULL;
+ 	head.h_bcc = NULL;
+-	head.h_replyto = getenv("REPLYTO");
++	head.h_replyto = value("REPLYTO");
+ 	head.h_inreplyto = NULL;
+ 	head.h_smopts = NULL;
+ 	mail1(&head, 0);

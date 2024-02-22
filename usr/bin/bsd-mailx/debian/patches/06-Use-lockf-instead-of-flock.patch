@@ -1,0 +1,22 @@
+From: Robert Luberda <robert@debian.org>
+Date: Tue, 5 Jun 2001 23:08:00 +0200
+Subject: 06 Use lockf instead of flock
+
+quit.c: Use lockf instead if flock.
+---
+ quit.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/quit.c b/quit.c
+index 0c47b1d..dcc59dc 100644
+--- a/quit.c
++++ b/quit.c
+@@ -96,7 +96,7 @@ quit(void)
+ 	fbuf = Fopen(mailname, "r+");
+ 	if (fbuf == NULL)
+ 		goto newmail;
+-	if (flock(fileno(fbuf), LOCK_EX) == -1) {
++	if (lockf(fileno(fbuf), F_LOCK, 0) == -1) {
+ 		warn("Unable to lock mailbox");
+ 		(void)Fclose(fbuf);
+ 		return(-1);

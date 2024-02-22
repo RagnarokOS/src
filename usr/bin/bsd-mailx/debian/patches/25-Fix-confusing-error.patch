@@ -1,0 +1,23 @@
+From: Robert Luberda <robert@debian.org>
+Date: Sun, 6 Oct 2013 10:30:36 +0200
+Subject: 25 Fix confusing error
+
+Fix an error message shown when -s, -c, or -b is used without -t
+to be less confusing for users (closes: #327809, #781170).
+---
+ main.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/main.c b/main.c
+index 627fe80..5f42145 100644
+--- a/main.c
++++ b/main.c
+@@ -306,7 +306,7 @@ main(int argc, char **argv)
+ 	 */
+ 	if (to == NULL && (subject != NULL || cc != NULL || bcc != NULL ||
+ 	    fromaddr != NULL))
+-		errx(1, "You must specify direct recipients with -s, -c, -b, "
++		errx(1, "You must specify to-addr recipients when using -s, -c, -b, "
+ 		    "or -r");
+ 	/*
+ 	 * Block SIGINT except where we install an explicit handler for it.
