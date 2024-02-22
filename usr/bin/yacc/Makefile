@@ -1,9 +1,9 @@
 # Makefile for OpenBSD's yacc.
-# $Ragnarok: Makefile,v 1.3 2023/12/26 16:11:15 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.4 2024/02/22 17:48:04 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/progs.mk
 
-CC =		cc
+CC =		clang
 CFLAGS +=	 -w -D_GNU_SOURCE -D__unused= ${O_FLAG} ${HARDENING_CPPFLAGS} ${HARDENING_CFLAGS}
 LDFLAGS +=	${HARDENING_LDFLAGS}
 BINDIR =	/usr/bin
