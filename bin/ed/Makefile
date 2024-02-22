@@ -1,7 +1,7 @@
 include ../../usr/share/mk/progs.mk
 
 
-CC =		cc
+CC =		clang
 CFLAGS +=	-g ${O_FLAG} -I. -D_GNU_SOURCE -flto=thin ${HARDENING_CPPFLAGS} ${HARDENING_CFLAGS}
 LDFLAGS +=	${HARDENING_LDFLAGS} -flto=thin -Wl,-O2
 
