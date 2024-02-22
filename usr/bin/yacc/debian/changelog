@@ -1,5 +1,5 @@
 yacc (99ragnarok01) unstable; urgency=medium
 
-  * Initial build of OpenBSD's yacc for Ragnarok
+  * Initial build of OpenBSD's yacc for Ragnarok.
 
- -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Tue, 26 Dec 2023 11:08:07 -0500
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Thu, 22 Feb 2024 12:43:37 -0500
