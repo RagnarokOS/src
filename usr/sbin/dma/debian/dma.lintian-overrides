@@ -1,0 +1,4 @@
+dma: setgid-binary usr/sbin/dma 2755 root/mail
+dma: setuid-binary usr/lib/dma/dma-mbox-create 4754 root/mail
+dma: non-standard-dir-perm var/spool/dma/ 2770 != 0755
+dma: non-standard-file-perm etc/dma/auth.conf 0640 != 0644

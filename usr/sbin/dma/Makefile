@@ -1,34 +1,37 @@
-# Ragnarok's Makefile for dma (Dragonfly Mail Agent)
-# $Ragnarok: Makefile,v 1.1 2023/10/10 18:26:22 lecorbeau Exp $
-
-include ${TOPDIR}/usr/share/mk/progs.mk
+#
+# Depending on your operating system, you might want to influence
+# the conditional inclusion of some helper functions:
+#
+# Define HAVE_* (in caps) if your system already provides:
+#   reallocf
+#   strlcpy
+#   getprogname
+#
 
 SH?=		sh
 
 version=	$(shell ${SH} get-version.sh)
 debversion=	$(shell ${SH} get-version.sh | sed -Ee 's/^v//;s/[.]([[:digit:]]+)[.](g[[:xdigit:]]+)$$/+\1+\2/')
 
-CFLAGS?=	${O_FLAG} -pipe
+CC?=		clang
+CFLAGS?=	-O -pipe
 LDADD?=		-lssl -lcrypto -lresolv
 
-CFLAGS+=	-Wall -Wno-format-truncation -DDMA_VERSION='"${version}"' -DLIBEXEC_PATH='"${LIBEXEC}"' -DCONF_PATH='"${CONFDIR}"' \
-		${HARDENING_CPPFLAGS} ${HARDENING_CFLAGS}
-LDFLAGS+=	${HARDENING_LDFLAGS}
+CFLAGS+=	-Wall -Wno-format-truncation -DDMA_VERSION='"${version}"' -DLIBEXEC_PATH='"${LIBEXEC}"' -DCONF_PATH='"${CONFDIR}"'
 
 INSTALL?=	install -p
 CHGRP?=		chgrp
 CHMOD?=		chmod
 
-PREFIX?=	/usr
-BIN?=		${PREFIX}/bin
+PREFIX?=	/usr/local
 SBIN?=		${PREFIX}/sbin
-LIBEXEC?=	${PREFIX}/lib/dma
+LIBEXEC?=	${PREFIX}/lib
 CONFDIR?=	/etc/dma
 MAN?=		${PREFIX}/share/man
 VAR?=		/var
 DMASPOOL?=	${VAR}/spool/dma
 VARMAIL?=	${VAR}/mail
-SYMLINK?=	-sf # or empty to create hard link
+SYMLINK?=	-s # or empty to create hard link
 
 YACC?=		yacc
 LEX?=		lex
@@ -44,7 +47,7 @@ clean:
 	-rm -f .depend dma dma-mbox-create *.[do]
 	-rm -f aliases_parse.[ch] aliases_scan.c
 
-install-dma: all
+install: all
 	${INSTALL} -d ${DESTDIR}${SBIN}
 	${INSTALL} -d ${DESTDIR}${MAN}/man8 ${DESTDIR}${LIBEXEC}
 	${INSTALL} -m 2755 -o root -g mail dma ${DESTDIR}${SBIN}
@@ -53,7 +56,6 @@ install-dma: all
 
 sendmail-link:
 	cd ${DESTDIR}${SBIN} && ${LN} ${SYMLINK} dma sendmail
-	cd ${DESTDIR}${PREFIX}/lib && ${LN} ${SYMLINK} ../sbin/dma sendmail
 
 mailq-link:
 	cd ${DESTDIR}${SBIN} && ${LN} ${SYMLINK} dma mailq
@@ -81,16 +83,6 @@ install-etc:
 		echo ${INSTALL} -m 640 -o root -g mail auth.conf ${DESTDIR}${CONFDIR}; \
 		${INSTALL} -m 640 -o root -g mail auth.conf ${DESTDIR}${CONFDIR}; \
 	fi
-
-install: install-dma sendmail-link mailq-link install-spool-dirs install-etc
-	${INSTALL} -d ${DESTDIR}${BIN}
-	${INSTALL} -d ${DESTDIR}/etc/cron.d
-	${INSTALL} -m 644 -g 0 -o root dma.cron.d ${DESTDIR}/etc/cron.d/dma
-	cd ${DESTDIR}${BIN} && ${LN} ${SYMLINK} ../sbin/dma mailq
-	cd ${DESTDIR}${BIN} && ${LN} ${SYMLINK} ../sbin/dma newaliases
-	cd ${DESTDIR}${MAN}/man8 && ${LN} ${SYMLINK} dma.8 mailq.8
-	cd ${DESTDIR}${MAN}/man8 && ${LN} ${SYMLINK} dma.8 newaliases.8
-	cd ${DESTDIR}${MAN}/man8 && ${LN} ${SYMLINK} dma.8 sendmail.8
 
 aliases_parse.c: aliases_parse.y
 	${YACC} -d -o aliases_parse.c aliases_parse.y

@@ -1,0 +1,434 @@
+dma (0.13-1) unstable; urgency=medium
+
+  [ Debian Janitor ]
+  * Set debhelper-compat version in Build-Depends.
+  * Update standards version to 4.5.0, no changes needed.
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
+    Repository-Browse.
+
+  [ Laurent Bigonville ]
+  * New upstream version 0.13 (Closes: #963867)
+  * debian/dma.lintian-overrides: Drop ancient no-upstream-changelog tag
+    override
+
+  [ Antonio Russo ]
+  * remove obsolete parameter to -q
+
+ -- Laurent Bigonville <bigon@debian.org>  Wed, 13 Jan 2021 23:07:07 +0100
+
+dma (0.12-1) unstable; urgency=medium
+
+  * New upstream release
+    - Drop the patches that were cherrypicked from upstream
+  * debian/rules: Disable DH_VERBOSE by default
+  * debian/copyright: Use https when possible and update Source field
+  * Remove really old migration paths from the maintainer scripts
+
+ -- Laurent Bigonville <bigon@debian.org>  Thu, 22 Aug 2019 21:19:46 +0200
+
+dma (0.11-2) unstable; urgency=medium
+
+  * Bump debhelper compatibility version to 12
+  * debian/control: Update the Vcs-* fields to point to salsa
+  * debian/control: Bump Standards-Version to 4.4.0 (no further changes)
+  * debian/copyright: Add a wildcard file section
+  * debian/control: Add Rules-Requires-Root: binary-targets
+  * d/p/0002-crypto-Don-t-limit-to-TLSv1-only.patch: Do not limit SSL
+    connection to TLSv1 (Closes: #871429)
+  * d/p/0003-properly-deal-with-SSL_connect-return-value.patch: Properly check
+    the return code of SSL_connect()
+  * debian/po/pt_BR.po: Add translation for Brazilian Portuguese, thanks to
+    Adriano Rafael Gomes <adrianorg@arg.eti.br> (Closes: #816928)
+
+ -- Laurent Bigonville <bigon@debian.org>  Fri, 19 Jul 2019 21:30:04 +0200
+
+dma (0.11-1) unstable; urgency=medium
+
+  [ Arno Töll ]
+  * Read the relayhost value from the configuration file when it exists when
+    prompting with debconf (Closes: #741904)
+
+  [ Laurent Bigonville ]
+  * New upstream release
+    - Drop d/p/0001-set_from-always-fully-qualify-envelope-from.patch,
+      d/p/0002-aliases-log-errors-to-syslog-and-abort.patch,
+      d/p/0003-newaliases-provide-command-alias.patch: Merged upstream
+    - debian/patches/03-debian-locations.patch: Refreshed
+  * debian/control: Bump Standards-Version to 3.9.6 (no further changes)
+  * debian/postrm: Remove /var/spool/dma directory on purge (Closes: #766376)
+  * debian/postinst: Set proper permission on /var/spool/dma/flush file
+  * debian/po/nl.po: Add Dutch debconf translation (Closes: #766268)
+  * debian/control: Bump Standards-Version to 3.9.8 (no further changes)
+  * debian/dma.lintian-overrides: Drop unused lintian override
+  * debian/control: Use https:// in Vcs-* and Homepage URL's
+  * debian/copyright: Update some copyright information
+
+ -- Laurent Bigonville <bigon@debian.org>  Sun, 29 May 2016 12:29:37 +0200
+
+dma (0.9-1) unstable; urgency=low
+
+  * New upstream release (Closes: #671364, LP: #994003)
+    - Adopt package with Peter's approval. Thank you for all your previous
+      work of the years.
+    - New maintainers.
+
+  [ Arno Töll ]
+  * Update patches:
+      - 03-debian-locations.patch: refreshed, add Debian's default for
+        MAILNAME
+      - 04-debian-setgid.patch: applied upstream
+      - 09-typos.patch: applied upstream
+      - 10-liblockfile.patch: dropped. This removes a patch rejected by
+        upstream. Most users should not notice any change, however you cannot
+        safely lock your mailbox anymore if you use it on a NFS file system
+        without lockd running. Thus, also drop the liblockfile build
+        dependency.
+      - 11-double-bounce.patch: drop. See below.
+      - 13-hardening.patch: applied upstream
+      - 17-mailname.patch: drop. Upstream's MAILNAME directive supersets this
+        behavior. Note that this might require a configuration change to
+        existing installations
+      - 20-parse-recipient.patch: applied upstream
+      - 23-dirent-d_type.patch: drop. The code does not use d_type anymore
+      - 24-random-message-id: applied upstream
+      - 25-unsupported-starttls.patch: applied upstream
+      - 27-int-size.patch: applied upstream
+      - 28-valid-recipient.patch: applied upstream
+      - 29-double-free.patch: applied upstream
+      - 30-ldflags.patch: applied upstream
+      - 31-sigalrm-backoff.patch: applied upstream (but using SIGHUP instead)
+      - 32-comment-uncomment.patch: applied upstream
+      - 33-opportunistic-tls.patch: applied upstream
+      - 34-manpage-defaults.patch: applied upstream
+      - 35-delivery-retry.patch: applied upstream
+      - 36-sa_nocldwait.patc: drop. The code does not use SA_NOCLDWAIT anymore
+      - 37-gnu-hurd.patch: applied upstream
+      - 38-unresolvable-mx.patch: not needed anymore
+      - 39-fix-add-host.patch: applied upstream
+      - 40-smtp-banner.patch: applied upstream
+      - 41-cppcheck.patch: applied upstream
+      - 42-fix-ftbfs-binutils-gold.patch: applied upstream
+      - 43-const.patch: applied upstream
+      - 44-newline.patch: not needed anymore
+      - 45-received.patch: applied upstream
+      - 46-smtp-newline.patch: dropped, not needed anymore
+  * Use /etc/mailname by default for fresh installs unless changed through
+    debconf.
+  * Drop the Debian specific dbounce-simple-safecat behavior entirely. This
+    might still be useful for some users, but we prefer to keep in line with
+    upstream who prefers to keep this behavior out of their sources. Moreover,
+    also drop the safecat recommendation which is therefore not needed
+    anymore.
+  * Handle newaliases command when invoked through dma.
+  * Merge patches from a upstream snapshot:
+    - 0001-set_from-always-fully-qualify-envelope-from.patch (Closes: #697871)
+    - 0002-aliases-log-errors-to-syslog-and-abort.patch
+    - 0003-newaliases-provide-command-alias.patch
+
+
+  [ Laurent Bigonville ]
+  * Add debian/gbp.conf file
+  * debian/watch: Update watch file to point to github
+  * debian/control:
+    - Drop DM-Upload-Allowed field: Obsolete.
+    - Bump Standards-Version to 3.9.4 (no further changes)
+    - Adjust VCS fields to point to collab-maint
+    - Update Homepage field to point to upstream github
+    - Drop hardening-includes build-dependency, not needed with debhelper 9
+    - [AT] Drop dpkg-dev (build-,) pre-dependency as the required version is
+      available in oldstable by now.
+  * debian/rules:
+    - Drastically simplify the rules file
+    - Set LIBEXEC to /usr/lib/dma
+    - Install spool directory with setgid bit set
+  * Drop dma-migrate package, this package is not needed anymore
+    (Closes: #677368, #689363)
+  * Drop debian/source/options, use default compression options
+  * debian/dma.maintscript: Remove /etc/dma/virtusertable, this configuration
+    file is not used anymore
+  * debian/rules, debian/dma.lintian-overrides: Install dma-mbox-create with
+    setuid bit set
+
+ -- Arno Töll <arno@debian.org>  Sun, 07 Jul 2013 12:58:36 +0200
+
+dma (0.0.2010.06.17-14.1) unstable; urgency=low
+
+  * Non-maintainer upload.
+  * Fixed 'modifies conffiles (policy 10.7.3): /etc/dma/dma.conf'
+    Closes: #688682
+
+ -- Laszlo Kajan <lkajan@rostlab.org>  Sun, 25 Nov 2012 20:19:16 +0000
+
+dma (0.0.2010.06.17-14) unstable; urgency=low
+
+  * Fix the parsing of multiple comma-separated and bracketed addresses
+    in the 20-parse-recipient patch.  Closes: #686164
+  * Consequently, refresh (line numbering only) the 24-random-message-id,
+    28-valid-recipient, 40-smtp-banner, 44-newline and 45-received
+    patches.
+
+ -- Peter Pentchev <roam@ringlet.net>  Sat, 01 Sep 2012 02:05:15 +0300
+
+dma (0.0.2010.06.17-13) unstable; urgency=low
+
+  * Update the debconf translations:
+    - Danish by Joe Dalton; Closes: #659776
+    - Refresh the bg, cs, de, es, eu, fi, fr, ja, pt, ru, sv translations
+      using debconf-updatepo with no actual changes.
+  * Bump Standards-Version to 3.9.3 with no changes.
+  * Update the copyright file to the copyright-format/1.0 format and
+    bump the year on my copyright notice.
+  * Bump the debhelper compatibility level to 9 with no changes.
+
+ -- Peter Pentchev <roam@ringlet.net>  Sat, 03 Mar 2012 02:05:34 +0200
+
+dma (0.0.2010.06.17-12) unstable; urgency=low
+
+  * This is hopefully the last upload before the long overdue update of
+    dma to a newer upstream release.
+  * Fix the syntax of the dfcompat.c entry in debian/copyright.
+  * Add the 44-newline patch (upstream rev. 807f777) to allow the last
+    input line to not be terminated with a newline character.
+    Closes: #648369
+  * Add the 45-received patch to fix the format of the Received header.
+    Closes: #650268
+  * Add the 46-smtp-newline patch to deal with SMTP servers that may
+    send a response in more than one TCP packet.  Closes: #650265
+  * Amend the 13-hardening patch to also change three instances of
+    strncpy() to snprintf() to ensure null-termination.
+
+ -- Peter Pentchev <roam@ringlet.net>  Mon, 26 Dec 2011 16:10:36 +0200
+
+dma (0.0.2010.06.17-11) unstable; urgency=low
+
+  * Add the 42-fix-ftbfs-binutils-gold patch to fix the build on Ubuntu natty
+    with the binutils-gold linker - place the list of libraries *after*
+    the files that use the libraries' routines.  I couldn't reproduce
+    the FTBFS on Debian with binutils-gold-2.21.0.20110302-1, but it
+    seems a really sensible change to make anyway :)
+    Closes: #616586
+  * Update the copyright file to the latest DEP 5 candidate format and
+    fix the DEP 5 URL after the Alioth migration.
+  * Add the 43-const patch to fix the build with OpenSSL 1.0 and allow
+    dma to migrate back to testing (oops!).  Closes: #622052
+  * Add Multi-Arch: foreign, just in case.
+  * Only build with -Werror if the "werror" option is set, not by default.
+  * Bump Standards-Version to 3.9.2 with no changes.
+
+ -- Peter Pentchev <roam@ringlet.net>  Wed, 06 Jul 2011 12:04:04 +0300
+
+dma (0.0.2010.06.17-10) unstable; urgency=low
+
+  * Drop the explicit versioned dependency on liblockfile1.
+  * Add the 41-cppcheck patch to fix a memory leak.
+  * In the 37-gnu-hurd patch, look harder for the maximum length of
+    a hostname using sysconf(3) and also checking HOST_NAME_MAX.
+  * Mark the 37-gnu-hurd and 40-smtp-banner patches as forwarded upstream.
+  * Build with -Werror by default.
+  * Upload to unstable.
+
+ -- Peter Pentchev <roam@ringlet.net>  Wed, 23 Feb 2011 15:03:18 +0200
+
+dma (0.0.2010.06.17-9) experimental; urgency=low
+
+  * Add the 40-smtp-banner patch to properly deliver to remote MX's if
+    SECURETRANSFER is enabled but STARTTLS is not.
+  * Refresh the copyright file a bit:
+    - update to the latest revision of the DEP 5 candidate format
+    - re-add the Source field even though it duplicates the Homepage
+    - add the Upstream-Contact and License fields in the header
+    - bump the year of my copyright notice
+  * Use hardening-includes instead of the hardening-wrapper so that
+    the hardened flags are visible in CFLAGS and LDFLAGS.
+  * Harden the build by default.
+
+ -- Peter Pentchev <roam@ringlet.net>  Tue, 25 Jan 2011 13:51:12 +0200
+
+dma (0.0.2010.06.17-8) experimental; urgency=low
+
+  * Brown paper bag release: add the 39-fix-add-host patch to
+    actually deliver to remote MX's.
+    Reported by: "Nelson A. de Oliveira" <naoliv@gmail.com>
+
+ -- Peter Pentchev <roam@ringlet.net>  Fri, 17 Dec 2010 13:11:39 +0200
+
+dma (0.0.2010.06.17-7) experimental; urgency=low
+
+  * Provide the /usr/lib/sendmail symlink.  Closes: #606398
+  * Add the 38-unresolvable-mx patch to fix a segfault when
+    dma is unable to, well, resolve either the provided smarthost or
+    any of the mail exchangers for the recipient domain.
+  * Bump the debhelper compatibility level to 8 with no changes.
+
+ -- Peter Pentchev <roam@ringlet.net>  Tue, 14 Dec 2010 16:44:27 +0200
+
+dma (0.0.2010.06.17-6) unstable; urgency=low
+
+  * Add the 37-gnu-hurd patch to really fix the FTBFS on GNU/Hurd.
+  * Convert several shell output assignments from = to :=
+  * Switch to bzip2 compression for the Debian tarball.
+
+ -- Peter Pentchev <roam@ringlet.net>  Sun, 17 Oct 2010 00:08:33 +0300
+
+dma (0.0.2010.06.17-5) unstable; urgency=low
+
+  * Only use SA_NOCLDWAIT if available to fix the Hurd FTBFS.
+
+ -- Peter Pentchev <roam@ringlet.net>  Thu, 07 Oct 2010 11:42:23 +0300
+
+dma (0.0.2010.06.17-4) unstable; urgency=low
+
+  * Fix an infinite loop in dma-migrate if char is unsigned.
+    Closes: #599172
+  * Switch to Git and point the Vcs-* fields to Gitorious.
+
+ -- Peter Pentchev <roam@ringlet.net>  Wed, 06 Oct 2010 17:30:29 +0300
+
+dma (0.0.2010.06.17-3) unstable; urgency=low
+
+  * Update the debconf translations:
+    - French by Steve Petruzzello; Closes: #587883
+  * Bump Standards-Version to 3.9.1 with no changes.
+  * Disable deferred delivery by default, as in the upstream version:
+    - in the 03-debian-locations patch, comment the DEFER keyword in dma.conf,
+      as it is upstream
+    - refresh the 11-double-bounce.patch
+    - reword the README.Debian section on deferred delivery a bit
+    - add a news blurb
+
+ -- Peter Pentchev <roam@ringlet.net>  Tue, 27 Jul 2010 13:34:27 +0300
+
+dma (0.0.2010.06.17-2) unstable; urgency=low
+
+  * Quick on the heels of -1 to fix a momentary lapse of reason on my part:
+    in the 03-debian-locations patch, revert part of the 0.0.2010.06.17-1
+    change: do not set a un-overrideable default for the deferred delivery!
+    Closes: #587593
+  * Update the debconf translations:
+    - Japanese by Hideki Yamane; Closes: #587543
+
+ -- Peter Pentchev <roam@ringlet.net>  Wed, 30 Jun 2010 11:59:46 +0300
+
+dma (0.0.2010.06.17-1) unstable; urgency=low
+
+  * New upstream version:
+    - no longer reports the remote port number; Closes: #544820
+    - fixes some queue locking problems; Closes: #582593
+    - adapt the rules file to use the GNU Makefile instead of the BSD one
+    - drop pmake from Build-Depends
+    - remove the 01-debian-build patch, overtaken by upstream changes
+    - in the 03-debian-locations patch, make the Debian defaults actual
+      defaults for the dma binary, not just in the dma.conf file
+    - adapt the 04-debian-setgid patch for the GNU Makefile
+    - in the 10-liblockfile patch, change the GNU Makefile, too
+    - enhance the 11-double-bounce patch a bit:
+      - use dma's own delqueue() function instead of a naive unlink() so
+        all the queue files are cleaned up
+      - document the Debian default for DBOUNCEPROG in the manual page
+    - resurrect the 13-hardening patch, correcting a couple of
+      unchecked asprintf(3) and vasprintf(3) invocations
+    - the functionality of the 20-parse-recipient patch was implemented
+      upstream in a different way, so replace it with a small bugfix
+    - remove the 22-openfiles patch, overtaken by upstream changes
+    - in the 24-random-message-id patch, change the GNU Makefile, too
+    - add the 27-int-size patch to cast a variable to the correct type
+    - add the 28-valid-recipient patch to fix parsing recipients out of
+      the message body
+    - add the 29-double-free patch to fix a double-free error
+    - add the 30-ldflags patch to honor LDFLAGS if specified
+    - refresh the 09-typos, 17-mailname, 23-dirent-d_type, and
+      25-unsupported-starttls patches
+    - teach the dbounce-simple-safecat handler about the M*/Q* spool
+      files scheme
+  * Bump Standards-Version to 3.9.0 with no changes.
+  * Update the copyright file:
+    - bring it up to the latest revision of the DEP 5
+    - update the upstream copyright notices
+    - bump the year on my copyright notice
+  * Remove the diffsrc rules target which was intended for my own
+    internal use, but has outlived its time.
+  * Use dpkg-buildflags from dpkg-dev >= 1.15.7~ to get the default
+    values for CFLAGS, CPPFLAGS, and LDFLAGS; no longer rely on
+    dpkg-buildpackage to set them by default.
+  * Add the dma-migrate utility (in a separate binary package) to convert
+    spool files to the new queue format (M* and Q* files for each message)
+  * Add a dma-migrate invocation to dma.cron.d
+  * Shorten the Vcs-Browser URL.
+  * Add the 31-sigalrm-backoff patch to force a delivery attempt on SIGALRM.
+  * Properly substitute the debconf-supplied values for DBOUNCEPROG and
+    SMARTHOST into dma.conf even if they are empty without generating
+    an invalid dma.conf file.
+  * Remove the smarthost default; dma does MX lookups now, so it doesn't
+    really *need* one anymore.
+  * Reword the debconf relayhost question - dma does not really need
+    a smarthost anymore.
+  * Update the debconf translations:
+    - Bulgarian
+    - Portuguese by Américo Monteiro
+    - German by Helge Kreutzmann; Closes: #586531
+    - Russian by Yuri Kozlov; Closes: #586579
+    - Czech by Michal Simunek; Closes: #586791
+    - Swedish by Martin Bagge; Closes: #586825
+    - Spanish by Francisco Javier Cuadrado; Closes: #587088
+  * Update the smarthost configuration information in README.Debian.
+  * Add the 32-comment-uncomment patch to correct the manual page wording.
+  * Add the 33-opportunistic-tls patch to allow remote connections to proceed
+    even if the STARTTLS negotiation fails.
+  * Fix the 25-unsupported-starttls patch to actually error out if the SSL
+    negotiation fails.
+  * Forward all the non-Debian-specific patches upstream to Simon Schubert.
+  * Add the 34-manpage-defaults patch to properly document what dma will use
+    as default values if not specified in the config file instead of what
+    the default config file specifies.  Closes: #544748
+  * Add the 35-delivery-retry patch to try local deliveries a bit more often
+    and to randomize the delivery timeout to avoid locking issues.
+
+ -- Peter Pentchev <roam@ringlet.net>  Mon, 28 Jun 2010 23:26:36 +0300
+
+dma (0.0.2009.07.17-3) unstable; urgency=low
+
+  * Really install the files in /etc/dma/ as root/mail/640 and
+    change the ownership of the existing files in the postinst script
+    when upgrading from older versions.  Closes: #544664
+  * Install the /usr/bin/mailq and /usr/bin/newaliases symlinks.
+    Closes: #558421
+  * Switch to the 3.0 (quilt) source format.
+  * Update the debconf translations:
+    - add German.  Closes: #552754
+    - add Japanese.  Closes: #554515
+    - remove a double space and unfuzzy the translations.  Closes: #552586
+  * Fix a crash when the SMTP server does not support STARTTLS.
+    Closes: #547594
+  * Always use the user-supplied value from the debconf query for
+    the smarthost and the double-bounce program.  This may result in
+    debconf overriding a manually-edited config file, so add a note to
+    dma.conf stating that these values are handled via debconf.
+    Closes: #544663
+  * Fix a misspelling of dma/dbounceprog as dma/defer in the debconf
+    configuration script.  Oops.
+
+ -- Peter Pentchev <roam@ringlet.net>  Sat, 19 Dec 2009 14:35:10 +0200
+
+dma (0.0.2009.07.17-2) unstable; urgency=low
+
+  * Allow the spool directory to live on a filesystem that does not
+    set the d_type member of the dirent structure, like XFS.
+    Closes: #544357
+  * Randomize the Message-Id a bit more.  Closes: #544475
+  * Bump Standards-Version to 3.8.3 with no changes.
+  * Only enable the build hardening wrapper if the "hardening" build
+    option is specified.
+  * Switch the copyright file header from the Wiki to DEP 5.
+  * Remove the manual page ".Dx" patch - the groff version in Squeeze
+    knows about the .Dx mdoc macro.  Add a lintian override for
+    the "Unknown DragonFly version" error.
+  * Convert the patch file headers to the DEP 3 format.
+
+ -- Peter Pentchev <roam@ringlet.net>  Tue, 01 Sep 2009 13:36:33 +0300
+
+dma (0.0.2009.07.17-1) unstable; urgency=low
+
+  * Initial release
+    (Closes: #511410, #533458, #533614, #533890, #534101, #534860)
+
+ -- Peter Pentchev <roam@ringlet.net>  Tue, 11 Aug 2009 16:08:41 +0300
