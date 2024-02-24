@@ -4,6 +4,7 @@
 
 #export DH_VERBOSE=1
 
+export CC=clang
 DEB_BUILD_MAINT_OPTIONS := hardening=+all
 export DEB_CFLAGS_MAINT_APPEND = -flto=thin -fsanitize=cfi -fvisibility=hidden -fno-sanitize-trap=all
 export DEB_LDFLAGS_MAINT_APPEND = -flto=thin -Wl,-O2
