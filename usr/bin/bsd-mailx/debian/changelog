@@ -1,3 +1,13 @@
+bsd-mailx (8.1.2-0.20220412cvs-99ragnarok01) unstable; urgency=medium
+
+  * Initial build of bsd-mailx for Ragnarok.
+  * Differences with Debian:
+    - Built with Clang.
+    - Adds extra hardening flags (see etc/dpkg/buildflags.conf)
+    - Built with ThinLTO.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Sat, 24 Feb 2024 11:23:44 -0500
+
 bsd-mailx (8.1.2-0.20220412cvs-1) unstable; urgency=low
 
   [ Debian Janitor ]

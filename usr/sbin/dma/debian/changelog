@@ -1,3 +1,9 @@
+dma (0.13-99ragnarok01) unstable; urgency=medium
+
+  * Initial build of dma for Ragnarok.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Sat, 24 Feb 2024 11:36:56 -0500
+
 dma (0.13-1) unstable; urgency=medium
 
   [ Debian Janitor ]

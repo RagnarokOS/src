@@ -1,7 +1,7 @@
 #!/usr/bin/make -f
 
 DEB_BUILD_MAINT_OPTIONS := hardening=+all
-DEB_CFLAGS_MAINT_APPEND := -fPIC -Wall -flto=thin -fsanitize=cfi -fvisibility=hidden -fno-sanitize-trap=all $(shell getconf LFS_CFLAGS)
+DEB_CFLAGS_MAINT_APPEND := -fPIC -Wall -flto=thin $(shell getconf LFS_CFLAGS)
 DEB_LDFLAGS_MAINT_APPEND = -flto=thin -Wl,-O2
 DPKG_EXPORT_BUILDFLAGS  := 1
 
