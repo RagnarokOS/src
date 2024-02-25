@@ -1,0 +1,21 @@
+From: Dmitry Bogatov <KAction@debian.org>
+Date: Fri, 2 Aug 2019 09:51:17 +0000
+Subject: Fix FTBFS on kfreebsd-any
+
+Closes: #933638
+Thanks: Svante Signell <svante.signell@gmail.com>
+---
+ src/sulogin.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+--- a/src/sulogin.c
++++ b/src/sulogin.c
+@@ -146,7 +146,7 @@
+ 		cfsetispeed(tio, ispeed);
+ 		cfsetospeed(tio, ospeed);
+ 
+-#ifndef __GNU__
++#if !defined(__GNU__) && !defined(__FreeBSD_kernel__)
+ 		tio->c_line         = 0;
+ #endif
+ 		tio->c_cc[VTIME]    = 0;

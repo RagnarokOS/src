@@ -1,0 +1,44 @@
+From: Roger Leigh <rleigh@debian.org>
+Date: Fri, 2 Aug 2019 09:49:34 +0000
+Subject: Use /run/nologin instead of /etc/nologin
+
+Bug-Debian: http://bugs.debian.org/660862
+---
+ man/shutdown.8 | 2 +-
+ src/paths.h    | 2 +-
+ src/shutdown.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+--- a/man/shutdown.8
++++ b/man/shutdown.8
+@@ -147,7 +147,7 @@
+ The word \fBnow\fP is an alias for \fB+0\fP.
+ .PP
+ If \fBshutdown\fP is called with a delay, it will create the advisory file
+-.I /etc/nologin
++.I /run/nologin
+ which causes programs such as \fBlogin\fP(1) to not allow new user
+ logins. This file is created five minutes before the shutdown sequence
+ starts. \fBshutdown\fP removes this file if it is stopped before it
+--- a/src/paths.h
++++ b/src/paths.h
+@@ -29,7 +29,7 @@
+ #define INITTAB		"/etc/inittab"		/* Location of inittab */
+ #define INITTABD	"/etc/inittab.d"	/* Location of inittab.d directory */
+ #define INIT		"/sbin/init"		/* Location of init itself. */
+-#define NOLOGIN		"/etc/nologin"		/* Stop user logging in. */
++#define NOLOGIN		"/run/nologin"		/* Stop user logging in. */
+ #define FASTBOOT	"/fastboot"		/* Enable fast boot. */
+ #define FORCEFSCK	"/forcefsck"		/* Force fsck on boot */
+ #define SDPID		"/var/run/shutdown.pid"	/* PID of shutdown program */
+--- a/src/shutdown.c
++++ b/src/shutdown.c
+@@ -253,7 +253,7 @@
+ }
+ 
+ /*
+- *	Create the /etc/nologin file.
++ *	Create the /run/nologin file.
+  */
+ void donologin(int min)
+ {

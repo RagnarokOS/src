@@ -1,0 +1,27 @@
+From 93da64d13380b29fd330608493615f8877525494 Mon Sep 17 00:00:00 2001
+From: Jesse <jsmith@resonatingmedia.com>
+Date: Wed, 29 Mar 2023 10:34:45 -0300
+Subject: [PATCH] Accepted patch from Mark Hindle which avoids clearing
+ realpath information in pidof when trying to find matching executables.
+
+---
+ src/killall5.c | 2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/src/killall5.c b/src/killall5.c
+index 9ab0782a..6f7528ad 100644
+--- a/src/killall5.c
++++ b/src/killall5.c
+@@ -740,8 +740,8 @@ PIDQ_HEAD *pidof(char *prog)
+ 		return NULL;
+ 
+ 	/* Try to stat the executable. */
++	memset(real_path, 0, sizeof(real_path));
+ 	if ( (prog[0] == '/') && ( realpath(prog, real_path) ) ) {
+-		memset(&real_path[0], 0, sizeof(real_path));
+ 		dostat++;
+ 	}
+ 
+-- 
+2.39.2
+

@@ -1,0 +1,3 @@
+sbin/bootlogd
+usr/bin/readbootlog
+debian/src/bootlogd/etc/init.d/* /etc/init.d/

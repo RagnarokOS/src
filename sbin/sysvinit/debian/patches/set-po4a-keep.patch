@@ -1,0 +1,10 @@
+--- a/man/Makefile
++++ b/man/Makefile
+@@ -7,6 +7,7 @@
+ 
+ PO4A_OPTS = --previous --srcdir po/ --destdir ./ --no-backups --stamp \
+             --package-name sysvinit --package-version $(VERSION) \
++            --keep 40 \
+             --msgid-bugs-address "Jesse <jsmith@resonatingmedia.com>"
+ 
+ all:

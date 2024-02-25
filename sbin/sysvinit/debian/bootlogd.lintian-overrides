@@ -1,0 +1,12 @@
+# Registered in "postrm" scripts, but not recognized by Lintian.
+bootlogd: script-in-etc-init.d-not-registered-via-update-rc.d
+
+bootlogd: init.d-script-missing-dependency-on-local_fs
+bootlogd: init.d-script-depends-on-all-virtual-facility required-start [etc/init.d/stop-bootlogd]
+
+# lsb-base taken over by sysvinit-utils
+bootlogd: init.d-script-needs-depends-on-lsb-base [etc/init.d/bootlogd:23]
+
+# Actual code is in /etc/init.d/bootlogd
+bootlogd: init.d-script-does-not-source-init-functions [etc/init.d/stop-bootlogd-single]
+bootlogd: init.d-script-does-not-source-init-functions [etc/init.d/stop-bootlogd]

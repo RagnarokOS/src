@@ -1,0 +1,12 @@
+/lib/init/rc  /etc/init.d/rc
+/lib/init/rcS /etc/init.d/rcS
+
+/usr/share/doc/sysv-rc/init.d-README  /etc/init.d/README
+/usr/share/doc/sysv-rc/rc0.d-README   /etc/rc0.d/README
+/usr/share/doc/sysv-rc/rc1.d-README   /etc/rc1.d/README
+/usr/share/doc/sysv-rc/rc2-5.d-README /etc/rc2.d/README
+/usr/share/doc/sysv-rc/rc2-5.d-README /etc/rc3.d/README
+/usr/share/doc/sysv-rc/rc2-5.d-README /etc/rc4.d/README
+/usr/share/doc/sysv-rc/rc2-5.d-README /etc/rc5.d/README
+/usr/share/doc/sysv-rc/rc6.d-README   /etc/rc6.d/README
+/usr/share/doc/sysv-rc/rcS.d-README   /etc/rcS.d/README

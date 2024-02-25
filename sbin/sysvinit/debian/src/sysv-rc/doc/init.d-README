@@ -1,0 +1,22 @@
+	Configuration of System V init under Debian GNU/Linux
+
+Most Unix versions have a file here that describes how the scripts
+in this directory work, and how the links in the /etc/rc?.d/ directories
+influence system startup/shutdown.
+
+For Debian, this information is contained in the policy manual, chapter 
+"System run levels and init.d scripts".  The Debian Policy Manual is 
+available at:
+
+    http://www.debian.org/doc/debian-policy/#contents
+
+The Debian Policy Manual is also available in the Debian package
+"debian-policy".  When this package is installed, the policy manual can be
+found in directory /usr/share/doc/debian-policy. If you have a browser
+installed you can probably read it at
+
+    file://localhost/usr/share/doc/debian-policy/
+
+Required behaviour and arguments of init script are described in Policy, but
+for usual cases it is enough to use init-d-script(5). More information about
+LSB headers (mentioned in init-d-script manual) is available in insserv(8).

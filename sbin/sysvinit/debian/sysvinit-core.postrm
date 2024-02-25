@@ -1,0 +1,18 @@
+#!/bin/sh
+
+set -e
+
+# Remove diversions for manpages-*
+if [ remove = "$1" -o abort-install = "$1" -o disappear = "$1" ] ; then
+    for l10n in de es fi fr hu id pl
+    do
+	for manpage in init.8 halt.8 poweroff.8 reboot.8 runlevel.8 shutdown.8 telinit.8
+	do
+	    mandir=/usr/share/man/${l10n}/man${manpage##*.}
+	    dpkg-divert --package sysvinit-core --remove --rename \
+			--divert ${mandir}/${manpage}.dist ${mandir}/${manpage}.gz
+	done
+    done
+fi
+
+#DEBHELPER#

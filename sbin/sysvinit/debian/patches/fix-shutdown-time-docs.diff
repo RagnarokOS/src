@@ -1,0 +1,20 @@
+Description: Clarify that when called with a time shutdown will not exit.
+ That's important to know for programs or scripts that call shutdown … time
+ because they will never proceed after having called it (unless they fork,
+ exec or similar of course).
+ Point in case: unattended-upgrades gets caught by this.
+Author: Tomas Pospisek <tpo@debian.org>
+
+--- a/man/shutdown.8
++++ b/man/shutdown.8
+@@ -132,6 +132,10 @@
+ .\"{{{  time
+ .IP \fItime\fP
+ When to shutdown.
++If a
++\fItime\fP
++is given then the
++\fBshutdown\fP command will not exit but instead count down until reboot.
+ .\"}}}
+ .\"{{{  warning-message
+ .IP "\fIwarning message\fP"

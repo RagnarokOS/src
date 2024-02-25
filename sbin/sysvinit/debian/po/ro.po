@@ -1,0 +1,69 @@
+# Mesajele în limba română pentru pachetul sysvinit.
+# Romanian translation of sysvinit.
+# Copyright © 2023 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the sysvinit package.
+#
+# Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>, 2023.
+#
+# Cronologia traducerii fișierului „sysvinit”:
+# Traducerea inițială, făcută de R-GC, pentru versiunea sysvinit 3.06-2(2018-10-26).
+# Actualizare a traducerii pentru versiunea Y, făcută de X, Y(anul).
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: sysvinit 3.06-2\n"
+"Report-Msgid-Bugs-To: sysvinit@packages.debian.org\n"
+"POT-Creation-Date: 2018-10-26 08:14+0000\n"
+"PO-Revision-Date: 2023-03-26 17:16+0200\n"
+"Last-Translator: Remus-Gabriel Chelu <remusgabriel.chelu@disroot.org>\n"
+"Language-Team: Romanian <debian-l10n-romanian@lists.debian.org>\n"
+"Language: ro\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1 ? 0 : n==0 || (n!=1 && n%100>=1 && "
+"n%100<=19) ? 1 : 2);\n"
+"X-Bugs: Report translation errors to the Language-Team address.\n"
+"X-Generator: Poedit 3.2.2\n"
+
+#. Type: boolean
+#. Description
+#: ../sysvinit-core.templates:1001
+msgid "Update getty pathnames and add hurd-console?"
+msgstr "Doriți să actualizați căile „getty” și adăugați consola „hurd”?"
+
+#. Type: boolean
+#. Description
+#: ../sysvinit-core.templates:1001
+msgid ""
+"Your /etc/inittab seems to use /libexec/getty as getty and/or to miss hurd-"
+"console entry. The default inittab has been changed, however your /etc/inittab "
+"has been modified. Note that sysvinit has not been used to boot an Hurd system "
+"for long, so any errors in that file would not have shown up earlier."
+msgstr ""
+"„/etc/inittab” pare să folosească «/libexec/getty» ca «getty» și/sau să-i "
+"lipsească intrarea „hurd-console”. Fișierul „inittab” implicit a fost schimbat, "
+"însă fișierul dvs. „/etc/inittab” nu a fost modificat. Rețineți că sysvinit nu "
+"a fost folosit pentru a porni un sistem Hurd de mult timp, astfel încât orice "
+"eroare din acel fișier nu ar fi apărut mai devreme."
+
+#. Type: boolean
+#. Description
+#: ../sysvinit-core.templates:1001
+msgid ""
+"If you allow this change, a backup will be stored in /etc/inittab.dpkg-old."
+msgstr ""
+"Dacă permiteți această modificare, o copie de rezervă va fi stocată în „/etc/"
+"inittab.dpkg-old”."
+
+#. Type: boolean
+#. Description
+#: ../sysvinit-core.templates:1001
+msgid ""
+"If you don't allow this change, an updated inittab will be written to /etc/"
+"inittab.dpkg-new. Please review the changes and update your /etc/inittab "
+"accordingly."
+msgstr ""
+"Dacă nu permiteți această modificare, un inittab actualizat va fi scris în „/"
+"etc/inittab.dpkg-new”. Vă rugăm să examinați modificările și să vă actualizați "
+"fișierul „/etc/inittab” în consecință."
