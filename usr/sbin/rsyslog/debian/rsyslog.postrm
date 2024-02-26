@@ -1,0 +1,13 @@
+#!/bin/sh
+
+set -e
+
+if [ "$1" = "remove" ]; then
+	[ -f /etc/logrotate.d/rsyslog ] && mv -f /etc/logrotate.d/rsyslog /etc/logrotate.d/rsyslog.disabled
+fi
+
+if [ "$1" = "purge" ] || [ "$1" = "disappear" ]; then
+	[ -f /etc/logrotate.d/rsyslog.disabled ] && rm -f /etc/logrotate.d/rsyslog.disabled
+fi
+
+#DEBHELPER#
