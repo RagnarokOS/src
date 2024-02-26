@@ -1,0 +1,87 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Sun, 10 Jan 2016 20:38:26 +0100
+Subject: Enable running daemon in foreground
+
+Enable running the daemon in the foreground by specifying -f as an option.
+
+Contributed by Steve Greenland <stevegr@debian.org>.
+
+Bug-Debian: https://bugs.debian.org/108492
+Forwarded: no
+Last-Update: 2016-01-10
+Index: cron/cron.c
+===================================================================
+--- cron.orig/cron.c
++++ cron/cron.c
+@@ -119,7 +119,7 @@ main(argc, argv)
+ 	if (0) {
+ # endif
+ 		(void) fprintf(stderr, "[%d] cron started\n", getpid());
+-	} else {
++	} else if (!stay_foreground) {
+ 		switch (fork()) {
+ 		case -1:
+ 			log_it("CRON",getpid(),"DEATH","can't fork");
+@@ -447,9 +447,9 @@ sighup_handler(int x) {
+ 
+ 
+ #if DEBUGGING
+-const char *getoptarg = "lx:";
++const char *getoptarg = "flx:";
+ #else
+-const char *getoptarg = "l";
++const char *getoptarg = "fl";
+ #endif
+ 
+ static void
+@@ -459,12 +459,16 @@ parse_args(argc, argv)
+ {
+ 	int	argch;
+ 
++	stay_foreground = 0;
+ 	lsbsysinit_mode = 0;
+ 
+ 	while (EOF != (argch = getopt(argc, argv, getoptarg))) {
+ 		switch (argch) {
+ 		default:
+ 			usage();
++		case 'f':
++			stay_foreground = 1;
++			break;
+ 		case 'l':
+ 			lsbsysinit_mode = 1;
+ 			break;
+Index: cron/cron.h
+===================================================================
+--- cron.orig/cron.h
++++ cron/cron.h
+@@ -292,6 +292,7 @@ time_min virtualTime;
+ time_min clockTime;
+ static long GMToff;
+ 
++int	stay_foreground;
+ int	lsbsysinit_mode;
+ 
+ char	cron_default_mail_charset[MAX_ENVSTR] = "";
+Index: cron/cron.8
+===================================================================
+--- cron.orig/cron.8
++++ cron/cron.8
+@@ -23,6 +23,7 @@
+ cron \- daemon to execute scheduled commands (Vixie Cron)
+ .SH SYNOPSIS
+ cron
++.RB [ \-f ]
+ .RB [ \-l ]
+ .SH DESCRIPTION
+ .I cron
+@@ -30,6 +31,9 @@ is started automatically from /etc/init.
+ runlevels.
+ .SH OPTIONS
+ .TP 8
++.B \-f
++Stay in foreground mode, don't daemonize.
++.TP
+ .B \-l
+ Enable LSB compliant names for /etc/cron.d files.  This setting, however, does
+ not affect the parsing of files under /etc/cron.hourly, /etc/cron.daily,

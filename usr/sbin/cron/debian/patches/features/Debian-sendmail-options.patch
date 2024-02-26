@@ -1,0 +1,36 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Thu, 07 Jan 2016 22:11:18 +0100
+Subject: Debian sendmail options
+
+Modify the options passed to sendmail:
+ * Drop -odi option (don't force immediate delivery)
+ * Drop -or0s option (don't override read timeout)
+ * Add -i option (Don't terminate on "." by itself)
+
+
+Bug-Debian: https://bugs.debian.org/36338
+Bug-Debian: https://bugs.debian.org/146224
+Forwarded: no
+Last-Update: 2016-01-07
+Index: cron/config.h
+===================================================================
+--- cron.orig/config.h
++++ cron/config.h
+@@ -42,11 +42,16 @@
+ 			 */
+ 
+ #define MAILCMD _PATH_SENDMAIL					/*-*/
+-#define MAILARGS "%s -FCronDaemon -odi -oem -or0s -B8BITMIME %s"		/*-*/
++#define MAILARGS "%s -FCronDaemon -i -B8BITMIME -oem  %s"	/*-*/
+ 			/* -Fx	 = set full-name of sender
++			 * -i    = don't terminate on "." by itself
++			 * -B8BITMIME = 8-bit processing
+ 			 * -odi	 = Option Deliverymode Interactive
+ 			 * -oem	 = Option Errors Mailedtosender
++ 			 * -t    = read recipient from header of message
+ 			 * -or0s = Option Readtimeout -- don't time out
++			 * XXX: sendmail doesn't allow -or0s when invoked
++			 * by joe user.  --okir
+ 			 */
+ 
+ /* #define MAILCMD "/bin/mail"			/*-*/

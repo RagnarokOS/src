@@ -1,0 +1,28 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Fri, 15 Jan 2016 22:15:30 +0100
+Subject: crontab without arguments reads from stdin
+
+If crontab is run without argument, then POSIX mandates that it should read the
+crontab from stdin. See
+
+    http://pubs.opengroup.org/onlinepubs/9699919799/utilities/crontab.html
+
+Fix provided by TANIGUCHI Takaki <takaki@asis.media-as.org>.
+
+Bug-Debian: https://bugs.debian.org/514062
+Forwarded: no
+Last-Update: 2016-01-15
+Index: cron/crontab.c
+===================================================================
+--- cron.orig/crontab.c
++++ cron/crontab.c
+@@ -106,6 +106,9 @@ main(argc, argv)
+ #if defined(BSD)
+ 	setlinebuf(stderr);
+ #endif
++	if (argv[1] == NULL) {
++		argv[1] = "-";
++	}
+ 	parse_args(argc, argv);		/* sets many globals, opens a file */
+ 	set_cron_uid();
+ 	set_cron_cwd();

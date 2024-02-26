@@ -1,0 +1,27 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Tue, 22 Dec 2015 19:10:30 +0100
+Subject: Ensure stdin is open
+
+Ensure stdin is open on startup. This is needed by the job execution later on.
+
+Fix originally provided by Mustafa Mahudhawala for Red Hat's vixie cron.
+
+Bug-Debian: https://bugs.debian.org/295589
+Bug-RedHat: https://bugzilla.redhat.com/show_bug.cgi?id=145992
+Forwarded: no
+Last-Update: 2015-12-22
+Index: cron/cron.c
+===================================================================
+--- cron.orig/cron.c
++++ cron/cron.c
+@@ -74,6 +74,10 @@ main(argc, argv)
+ #endif
+ 	(void) signal(SIGHUP, sighup_handler);
+ 
++	if (fdopen(0, "r") == NULL) {
++		(void) open("dev/null", 0);
++	}
++
+ 	acquire_daemonlock(0);
+ 	set_cron_uid();
+ 	set_cron_cwd();

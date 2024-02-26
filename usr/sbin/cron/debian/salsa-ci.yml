@@ -1,0 +1,14 @@
+---
+include:
+  - https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/salsa-ci.yml
+  - https://salsa.debian.org/salsa-ci-team/pipeline/raw/master/pipeline-jobs.yml
+
+# I disabled the reprotest which fails in Salsa but doesn't fail otherwise
+#
+# diffoscope was reporting one difference : various timestamps for
+# the file ./usr/share/doc/cron/README .... WHY ?
+# one timestamp is 1970-11-28·03:56:00.000000
+
+variables:
+  DEB_BUILD_OPTIONS: 'nocheck'
+  SALSA_CI_DISABLE_REPROTEST: 1

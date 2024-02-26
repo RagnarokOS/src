@@ -1,0 +1,21 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Fri, 25 Dec 2015 23:49:34 +0100
+Subject: Improve retry prompt
+
+Include y/n in the prompt to indicate the expected input.
+
+Forwarded: no
+Last-Update: 2015-12-25
+Index: cron/crontab.c
+===================================================================
+--- cron.orig/crontab.c
++++ cron/crontab.c
+@@ -638,7 +638,7 @@ again: /* Loop point for retrying edit a
+ 		break;
+ 	case -1:
+ 		for (;;) {
+-			printf("Do you want to retry the same edit? ");
++			printf("Do you want to retry the same edit? (y/n) ");
+ 			fflush(stdout);
+ 			q[0] = '\0';
+ 			(void) fgets(q, sizeof q, stdin);

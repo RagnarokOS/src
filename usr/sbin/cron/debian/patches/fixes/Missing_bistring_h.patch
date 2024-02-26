@@ -1,0 +1,18 @@
+[proposed by Stefanos Chaliasos on 2019-12-22]
+
+add bitstring.h as a dependency to CRON_OBJ and CRONTAB_OBJ.
+The build can cause incorrect results when the project is incrementally
+built. For example, any changes in bitstring.h will not cause the object
+files to be rebuilt.
+Index: cron/Makefile
+===================================================================
+--- cron.orig/Makefile
++++ cron/Makefile
+@@ -127,5 +127,5 @@ clean		:
+ kit		:	$(SHAR_SOURCE)
+ 			makekit -m -s99k $(SHAR_SOURCE)
+ 
+-$(CRON_OBJ)	:	cron.h compat.h config.h externs.h pathnames.h Makefile
+-$(CRONTAB_OBJ)	:	cron.h compat.h config.h externs.h pathnames.h Makefile
++$(CRON_OBJ)	:	cron.h compat.h config.h externs.h pathnames.h bitstring.h Makefile
++$(CRONTAB_OBJ)	:	cron.h compat.h config.h externs.h pathnames.h bitstring.h Makefile

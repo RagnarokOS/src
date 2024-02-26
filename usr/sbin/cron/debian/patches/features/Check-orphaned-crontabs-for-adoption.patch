@@ -1,0 +1,172 @@
+From: Tomas Mraz <tmraz@fedoraproject.org>
+Date: Tue, 21 Jun 2011 18:26:38 +0200
+Subject: Check orphaned crontabs for adoption. 
+
+Change the default behaviour of permanently ignoring crontabs with an invalid
+owner (ie, getpwnam() fails) to checking for adoption every time cron wakes up.
+This makes more sense as nowadays such failures are often traced back to
+temporary issues, especially in the context of LDAP lookups and name-caching
+daemons.
+
+Bug-Debian: https://bugs.debian.org/634926
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/27520
+Origin: https://git.fedorahosted.org/cgit/cronie.git/commit/?id=8b407876f276f96914111bd9954f21f627db7b11
+Last-Update: 2016-01-15
+Index: cron/cron.c
+===================================================================
+--- cron.orig/cron.c
++++ cron/cron.c
+@@ -171,6 +171,7 @@ main(argc, argv)
+ 		} while (clockTime == timeRunning);
+ 		timeRunning = clockTime;
+ 
++		check_orphans(&database);
+ 		load_database(&database);
+ 
+ 		/*
+Index: cron/cron.h
+===================================================================
+--- cron.orig/cron.h
++++ cron/cron.h
+@@ -216,6 +216,13 @@ typedef	struct _cron_db {
+ 	time_t		sysd_mtime;     /* last modtime on system crondir */
+ } cron_db;
+ 
++typedef struct _orphan {
++	struct _orphan  *next;          /* link */
++	char	*uname;
++	char	*fname;
++	char	*tabname;
++} orphan;
++
+ void		set_cron_uid __P((void)),
+ 		set_cron_cwd __P((void)),
+ 		load_database __P((cron_db *)),
+@@ -232,7 +239,8 @@ void		set_cron_uid __P((void)),
+ 		acquire_daemonlock __P((int)),
+ 		skip_comments __P((FILE *)),
+ 		log_it __P((char *, int, char *, char *)),
+-		log_close __P((void));
++		log_close __P((void)),
++		check_orphans __P((cron_db *));
+ 
+ int		job_runqueue __P((void)),
+ 		set_debug_flags __P((char *)),
+Index: cron/database.c
+===================================================================
+--- cron.orig/database.c
++++ cron/database.c
+@@ -53,6 +53,9 @@ static user *get_next_system_crontab __P
+ 
+ void force_rescan_user(cron_db *old_db, cron_db *new_db, const char *fname, time_t old_mtime);
+ 
++static void add_orphan(const char *uname, const char *fname, const char *tabname);
++static void free_orphan(orphan *o);
++
+ void
+ load_database(old_db)
+ 	cron_db		*old_db;
+@@ -311,7 +314,7 @@ process_crontab(uname, fname, tabname, s
+ {
+ 	struct passwd	*pw = NULL;
+ 	int		crontab_fd = OK - 1;
+-	user		*u;
++	user		*u = NULL;
+ 
+ 	/* If the name begins with *system*, don't worry about password -
+ 	 it's part of the system crontab */
+@@ -321,6 +324,7 @@ process_crontab(uname, fname, tabname, s
+ 		if (strncmp(fname, "tmp.", 4)) {
+ 			/* don't log these temporary files */
+ 			log_it(fname, getpid(), "ORPHAN", "no passwd entry");
++			add_orphan(uname, fname, tabname);
+ 		}
+ 		goto next_crontab;
+ 	}
+@@ -444,7 +448,10 @@ process_crontab(uname, fname, tabname, s
+          * 1), but this is all we've got.
+          */
+ 	Debug(DLOAD, ("\t%s:", fname))
+-	u = find_user(old_db, fname);
++
++	if (old_db != NULL)
++		u = find_user(old_db, fname);
++
+ 	if (u != NULL) {
+ 		/* if crontab has not changed since we last read it
+ 		 * in, then we can just use our existing entry.
+@@ -580,3 +587,74 @@ force_rescan_user(cron_db *old_db, cron_
+ 	Debug(DLOAD, ("\t%s: [added empty placeholder to force rescan]\n", fname))
+ 	link_user(new_db, u);
+ }
++
++/* This fix was taken from Fedora cronie */
++static orphan *orphans;
++
++static void
++free_orphan(orphan *o) {
++	free(o->tabname);
++	free(o->fname);
++	free(o->uname);
++	free(o);
++}
++
++void
++check_orphans(cron_db *db) {
++	orphan *prev_orphan = NULL;
++	orphan *o = orphans;
++	struct stat statbuf;
++
++	while (o != NULL) {
++		if (getpwnam(o->uname) != NULL) {
++			orphan *next = o->next;
++
++			if (prev_orphan == NULL) {
++				orphans = next;
++			} else {
++				prev_orphan->next = next;
++			}
++
++			process_crontab(o->uname, o->fname, o->tabname,
++				&statbuf, db, NULL);
++
++			/* process_crontab could have added a new orphan */
++			if (prev_orphan == NULL && orphans != next) {
++				prev_orphan = orphans;
++			}
++			free_orphan(o);
++			o = next;
++		} else {
++			prev_orphan = o;
++			o = o->next;
++		}
++	}
++}
++
++static void
++add_orphan(const char *uname, const char *fname, const char *tabname) {
++	orphan *o;
++
++	o = calloc(1, sizeof(*o));
++	if (o == NULL)
++		return;
++
++	if (uname)
++		if ((o->uname=strdup(uname)) == NULL)
++			goto cleanup;
++
++	if (fname)
++		if ((o->fname=strdup(fname)) == NULL)
++			goto cleanup;
++
++	if (tabname)
++		if ((o->tabname=strdup(tabname)) == NULL)
++			goto cleanup;
++
++	o->next = orphans;
++	orphans = o;
++	return;
++
++cleanup:
++        free_orphan(o);
++}

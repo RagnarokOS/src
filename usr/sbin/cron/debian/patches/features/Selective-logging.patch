@@ -1,0 +1,252 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Fri, 15 Jan 2016 23:05:10 +0100
+Subject: Selective logging
+
+This implements a fine-grained control over what the cron daemon logs when it
+executes jobs. This is driven via the '-L' command line option, which accepts a
+bitmask of values for logging the start, end, failure and PID of jobs. The
+following things can be logged:
+    * Start of cron jobs
+    * End of cron jobs
+    * Failed jobs
+    * Include PID of cron job in messages
+
+The default is to log the start of jobs. 
+
+Initially contributed by Steve Fosdick <dbugs@pelvoux.nildram.co.uk>.
+
+Bug-Debian: https://bugs.debian.org/271747
+Bug-Debian: https://bugs.debian.org/318247
+Forwarded: no
+Last-Update: 2016-01-15
+Index: cron/cron.h
+===================================================================
+--- cron.orig/cron.h
++++ cron/cron.h
+@@ -138,6 +138,12 @@
+ 
+ typedef int time_min;
+ 
++/* Log levels */
++#define	CRON_LOG_JOBSTART	0x01
++#define	CRON_LOG_JOBEND		0x02
++#define	CRON_LOG_JOBFAILED	0x04
++#define	CRON_LOG_JOBPID		0x08
++
+ #define SECONDS_PER_MINUTE 60
+ 
+ #define	FIRST_MINUTE	0
+@@ -210,7 +216,6 @@ typedef	struct _cron_db {
+ 	time_t		sysd_mtime;     /* last modtime on system crondir */
+ } cron_db;
+ 
+-
+ void		set_cron_uid __P((void)),
+ 		set_cron_cwd __P((void)),
+ 		load_database __P((cron_db *)),
+@@ -294,6 +299,7 @@ static long GMToff;
+ 
+ int	stay_foreground;
+ int	lsbsysinit_mode;
++int	log_level;
+ 
+ char	cron_default_mail_charset[MAX_ENVSTR] = "";
+ 
+@@ -310,6 +316,7 @@ extern	char	*copyright[],
+ 		*DowNames[],
+ 		*ProgramName;
+ extern	int	lsbsysinit_mode;
++extern	int	log_level;
+ extern	int	LineNumber;
+ extern	time_t	StartTime;
+ extern  time_min timeRunning;
+Index: cron/do_command.c
+===================================================================
+--- cron.orig/do_command.c
++++ cron/do_command.c
+@@ -131,6 +131,7 @@ child_process(e, u)
+ 	register char	*input_data;
+ 	char		*usernm, *mailto;
+ 	int		children = 0;
++	pid_t		job_pid;
+ #if defined(USE_PAM)
+ 	int		retcode = 0;
+ #endif
+@@ -228,7 +229,7 @@ child_process(e, u)
+ 
+ 	/* fork again, this time so we can exec the user's command.
+ 	 */
+-	switch (fork()) {
++	switch (job_pid = fork()) {
+ 	case -1:
+ 		log_it("CRON",getpid(),"error","can't fork");
+ 		exit(ERROR_EXIT);
+@@ -242,14 +243,12 @@ child_process(e, u)
+ 		 * the actual user command shell was going to get and the
+ 		 * PID is part of the log message.
+ 		 */
+-		/*local*/{
++		if ((log_level & CRON_LOG_JOBSTART) && ! (log_level & CRON_LOG_JOBPID)) {
+ 			char *x = mkprints((u_char *)e->cmd, strlen(e->cmd));
+-
+ 			log_it(usernm, getpid(), "CMD", x);
+ 			free(x);
+ 		}
+-
+-		/* that's the last thing we'll log.  close the log files.
++		/* nothing to log from now on. close the log files.
+ 		 */
+ 		log_close();
+ 
+@@ -357,6 +356,16 @@ child_process(e, u)
+ 		break;
+ 	default:
+ 		/* parent process */
++		/* write a log message if we want the parent and child
++		 * PID values
++		 */
++		if ( (log_level & CRON_LOG_JOBSTART) && (log_level & CRON_LOG_JOBPID)) {
++			char logcmd[MAX_COMMAND + 8];
++			snprintf(logcmd, sizeof(logcmd), "[%d] %s", (int) job_pid, e->cmd);
++			char *x = mkprints((u_char *)logcmd, strlen(logcmd));
++			log_it(usernm, getpid(), "CMD", x);
++			free(x);
++		}
+ 		break;
+ 	}
+ 
+@@ -458,17 +467,19 @@ child_process(e, u)
+ 		Debug(DPROC, ("[%d] grandchild #%d finished, status=%04x\n",
+ 			getpid(), pid, WEXITSTATUS(waiter)))
+ 
+-		if (WIFEXITED(waiter) && WEXITSTATUS(waiter)) {
+-			status = waiter;
+-			snprintf(msg, 256, "grandchild #%d failed with exit "
+-				"status %d", pid, WEXITSTATUS(waiter));
+-			log_it("CRON", getpid(), "error", msg);
+-		} else if (WIFSIGNALED(waiter)) {
+-			status = waiter;
+-			snprintf(msg, 256, "grandchild #%d terminated by signal"
+-				" %d%s", pid, WTERMSIG(waiter),
+-				WCOREDUMP(waiter) ? ", dumped core" : "");
+-			log_it("CRON", getpid(), "error", msg);
++		if (log_level & CRON_LOG_JOBFAILED) {
++			if (WIFEXITED(waiter) && WEXITSTATUS(waiter)) {
++				status = waiter;
++				snprintf(msg, 256, "grandchild #%d failed with exit "
++					"status %d", pid, WEXITSTATUS(waiter));
++				log_it("CRON", getpid(), "error", msg);
++			} else if (WIFSIGNALED(waiter)) {
++				status = waiter;
++				snprintf(msg, 256, "grandchild #%d terminated by signal"
++					" %d%s", pid, WTERMSIG(waiter),
++					WCOREDUMP(waiter) ? ", dumped core" : "");
++				log_it("CRON", getpid(), "error", msg);
++			}
+ 		}
+ 	}
+ 
+@@ -616,6 +627,19 @@ child_process(e, u)
+ mail_finished:
+ 	fclose(tmpout);
+ 
++	if (log_level & CRON_LOG_JOBEND) {
++		char *x;
++		if (log_level & CRON_LOG_JOBPID) {
++			char logcmd[MAX_COMMAND + 8];
++			snprintf(logcmd, sizeof(logcmd), "[%d] %s", (int) job_pid, e->cmd);
++			x = mkprints((u_char *)logcmd, strlen(logcmd));
++		} else {
++			x = mkprints((u_char *)e->cmd, strlen(e->cmd));
++		}
++		log_it(usernm, job_pid, "END", x);
++		free(x);
++	}
++
+ #if defined(USE_PAM)
+ 	pam_setcred(pamh, PAM_DELETE_CRED | PAM_SILENT);
+ 	retcode = pam_close_session(pamh, PAM_SILENT);
+Index: cron/cron.c
+===================================================================
+--- cron.orig/cron.c
++++ cron/cron.c
+@@ -447,9 +447,9 @@ sighup_handler(int x) {
+ 
+ 
+ #if DEBUGGING
+-const char *getoptarg = "flx:";
++const char *getoptarg = "flL:x:";
+ #else
+-const char *getoptarg = "fl";
++const char *getoptarg = "flL:";
+ #endif
+ 
+ static void
+@@ -461,6 +461,7 @@ parse_args(argc, argv)
+ 
+ 	stay_foreground = 0;
+ 	lsbsysinit_mode = 0;
++	log_level = 1;
+ 
+ 	while (EOF != (argch = getopt(argc, argv, getoptarg))) {
+ 		switch (argch) {
+@@ -472,6 +473,9 @@ parse_args(argc, argv)
+ 		case 'l':
+ 			lsbsysinit_mode = 1;
+ 			break;
++		case 'L':
++			log_level = atoi(optarg);
++			break;
+ #if DEBUGGING
+ 		case 'x':
+ 			if (!set_debug_flags(optarg))
+Index: cron/cron.8
+===================================================================
+--- cron.orig/cron.8
++++ cron/cron.8
+@@ -25,6 +25,8 @@ cron \- daemon to execute scheduled comm
+ cron
+ .RB [ \-f ]
+ .RB [ \-l ]
++.RB [ \-L
++.IR loglevel ]
+ .SH DESCRIPTION
+ .I cron
+ is started automatically from /etc/init.d on entering multi-user
+@@ -38,6 +40,27 @@ Stay in foreground mode, don't daemonize
+ Enable LSB compliant names for /etc/cron.d files.  This setting, however, does
+ not affect the parsing of files under /etc/cron.hourly, /etc/cron.daily,
+ /etc/cron.weekly or /etc/cron.monthly.
++.TP
++.B \-L loglevel
++Tell cron what to log about \fBjobs\fR (errors are logged regardless of this
++value) as the sum of the following values:
++.br
++.RS 12
++.IP \fB1\fR
++will log the start of all cron jobs
++.IP \fB2\fR
++will log the end of all cron jobs
++.IP \fB4\fR
++will log all failed jobs (exit status != 0)
++.IP \fB8\fR
++will log the process number of all cron jobs
++.RE
++.IP
++The default is to log the start of all jobs (1).
++Logging will be disabled if
++.I levels
++is set to zero (0).
++A value of fifteen (15) will select all options.
+ .SH NOTES
+ .PP
+ .I cron
+@@ -271,7 +294,7 @@ daemon.  This file determines whether
+ will read the system's environment variables and makes it possible to add
+ additional options to the
+ .I cron
+-program before it is executed, for example to define how
++program before it is executed, either to configure its logging or to define how
+ it will treat the files under /etc/cron.d.
+ 
+ .SH "SEE ALSO"

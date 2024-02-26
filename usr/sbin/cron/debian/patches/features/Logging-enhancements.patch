@@ -1,0 +1,98 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Sat, 09 Jan 2016 19:37:40 +0100
+Subject: Logging enhancements
+
+Minor enhancements to logging, namely:
+  * Log to syslog exclusively
+  * Log the location of the PID file
+  * Log broken system crontabs (user crontabs are checked by crontab(1))
+ 
+Contributed by Steve Greenland <stevegr@debian.org>.
+
+Bug-Debian: https://bugs.debian.org/76625
+Forwarded: no
+Last-Update: 2016-01-09
+Index: cron/misc.c
+===================================================================
+--- cron.orig/misc.c
++++ cron/misc.c
+@@ -288,7 +288,8 @@ acquire_daemonlock(closeflag)
+ 			log_it("CRON", getpid(), "DEATH", buf);
+ 			exit(ERROR_EXIT);
+ 		}
+-
++		snprintf(buf, MAX_TEMPSTR, "pidfile fd = %d", fd);
++		log_it("CRON", getpid(), "INFO", buf);
+ 		(void) fcntl(fd, F_SETFD, 1);
+ 	}
+ 
+Index: cron/pathnames.h
+===================================================================
+--- cron.orig/pathnames.h
++++ cron/pathnames.h
+@@ -49,7 +49,7 @@
+ 			 */
+ #define	ALLOW_FILE	"/etc/cron.allow"		/*-*/
+ #define DENY_FILE	"/etc/cron.deny"		/*-*/
+-#define LOG_FILE	"log"		/*-*/
++/* #define LOG_FILE	"log"		/*-*/
+ 
+ 			/* where should the daemon stick its PID?
+ 			 */
+Index: cron/user.c
+===================================================================
+--- cron.orig/user.c
++++ cron/user.c
+@@ -23,8 +23,11 @@ static char rcsid[] = "$Id: user.c,v 2.8
+  */
+ 
+ 
++#include <syslog.h>
++#include <string.h>
+ #include "cron.h"
+ 
++
+ #ifdef WITH_SELINUX
+ #include <selinux/context.h>
+ #include <selinux/selinux.h>
+@@ -153,6 +156,29 @@ static int get_security_context(char *na
+ #endif
+ 
+ 
++/* Function used to log errors in crontabs from cron daemon. (User
++   crontabs are checked before they're accepted, but system crontabs
++   are not. */
++static char *err_user = NULL;
++
++void
++crontab_error(msg)
++	char *msg;
++{
++	const char *fn;
++	/* Figure out the file name from the username */
++	if (0 == strcmp(err_user, "*system*")) {
++		syslog(LOG_ERR|LOG_CRON, "Error: %s; while reading %s", msg, SYSCRONTAB);
++	} else if (0 == strncmp(err_user,"*system*",8)) {
++		fn = err_user+8;
++		syslog(LOG_ERR|LOG_CRON, "Error: %s; while reading %s/%s", msg,
++		SYSCRONDIR,fn);
++	} else {
++		syslog(LOG_ERR|LOG_CRON, "Error: %s; while reading crontab for user %s",
++			msg, err_user);
++	}
++}
++
+ void
+ free_user(u)
+ 	user	*u;
+@@ -256,7 +282,9 @@ load_user(crontab_fd, pw, uname, fname,
+ 			}
+ 			goto done;
+ 		case FALSE:
+-			e = load_entry(file, NULL, pw, envp);
++			err_user = fname;
++			e = load_entry(file, crontab_error, pw, envp);
++			err_user = NULL;
+ 			if (e) {
+ 				e->next = u->crontab;
+ 				u->crontab = e;

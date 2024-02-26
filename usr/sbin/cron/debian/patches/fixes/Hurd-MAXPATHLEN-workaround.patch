@@ -1,0 +1,43 @@
+From: Christian Kastner <ckk@kvr.at
+Date: Sun, 20 Dec 2015 12:36:14 +0100
+Subject: Hurd MAXPATHLEN workaround
+
+Hurd does not define MAXPATHLEN.
+
+Fix provided by Steve Greenland <stevegr@debian.org>.
+
+Bug-Debian: https://bugs.debian.org/64382
+Forwarded: no
+Last-Update: 2015-12-20
+Index: cron/database.c
+===================================================================
+--- cron.orig/database.c
++++ cron/database.c
+@@ -31,6 +31,18 @@ static char rcsid[] = "$Id: database.c,v
+ 
+ #define TMAX(a,b) ((a)>(b)?(a):(b))
+ 
++/* Try to get maximum path name -- this isn't really correct, but we're
++going to be lazy */
++
++#ifndef PATH_MAX
++
++#ifdef MAXPATHLEN
++#define PATH_MAX MAXPATHLEN
++#else
++#define PATH_MAX 2048
++#endif
++
++#endif /* ifndef PATH_MAX */
+ 
+ static	void		process_crontab __P((char *, char *, char *,
+ 					     struct stat *,
+@@ -102,7 +114,7 @@ load_database(old_db)
+ 
+ 	while (NULL != (dp = readdir(dir))) {
+ 		char	fname[MAXNAMLEN+1],
+-			tabname[MAXNAMLEN+1];
++			tabname[PATH_MAX+1];
+ 
+ 		/* avoid file names beginning with ".".  this is good
+ 		 * because we would otherwise waste two guaranteed calls

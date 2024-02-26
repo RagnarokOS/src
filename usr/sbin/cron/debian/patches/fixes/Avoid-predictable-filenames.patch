@@ -1,0 +1,64 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Wed, 23 Dec 2015 12:25:52 +0100
+Subject: Avoid predictable filenames
+
+Prevent symlink attack by using mkstemp() instead of predictable filenames.
+
+Based on a fix originally provided by Daniel Jacobowitz.
+
+Forwarded: no
+Last-Update: 2015-12-25
+Index: cron/crontab.c
+===================================================================
+--- cron.orig/crontab.c
++++ cron/crontab.c
+@@ -333,9 +333,9 @@ edit_cmd() {
+ 		}
+ 	}
+ 
+-	(void) snprintf(Filename, sizeof(Filename)-1, "/tmp/crontab.%d", Pid);
++	(void) snprintf(Filename, sizeof(Filename)-1, "/tmp/crontab.XXXXXX");
+ 	Filename[sizeof(Filename)-1] = '\0';
+-	if (-1 == (t = open(Filename, O_CREAT|O_EXCL|O_RDWR, 0600))) {
++	if (-1 == (t = mkstemp(Filename))) {
+ 		perror(Filename);
+ 		goto fatal;
+ 	}
+@@ -517,7 +517,7 @@ static int
+ replace_cmd() {
+ 	char	n[MAX_FNAME], envstr[MAX_ENVSTR], tn[MAX_FNAME];
+ 	FILE	*tmp;
+-	int	ch, eof;
++	int	ch, eof, fd;
+ 	int	nl = FALSE;
+ 	entry	*e;
+ 	time_t	now = time(NULL);
+@@ -527,10 +527,15 @@ replace_cmd() {
+ 		fprintf(stderr, "%s: Cannot allocate memory.\n", ProgramName);
+ 		return (-2);
+ 	}
+-	(void) snprintf(n, MAX_FNAME, "tmp.%d", Pid);
+-	(void) snprintf(tn, MAX_FNAME, CRON_TAB(n));
+-	if (!(tmp = fopen(tn, "w+"))) {
+-		perror(tn);
++	(void) snprintf(tn, MAX_FNAME, CRON_TAB("tmp.XXXXXX"));
++	fd = mkstemp(tn);
++	if (fd < 0) {
++		fprintf(stderr, "%s/: mkstemp: %s\n", CRONDIR, strerror(errno));
++		return(-2);
++	}
++	tmp = fdopen(fd, "w+");
++	if (!tmp) {
++		fprintf(stderr, "%s/: fdopen: %s\n", CRONDIR, strerror(errno));
+ 		return (-2);
+ 	}
+ 
+@@ -549,7 +554,7 @@ replace_cmd() {
+ 	while (EOF != (ch = get_char(NewCrontab)))
+ 		putc(ch, tmp);
+ 
+-	if (ferror(tmp) || fflush(tmp) || fsync(fileno(tmp))) {
++	if (ferror(tmp) || fflush(tmp) || fsync(fd)) {
+ 		fprintf(stderr, "%s: %s: %s\n",
+ 			ProgramName, tn, strerror(errno));
+ 		fclose(tmp);  unlink(tn);

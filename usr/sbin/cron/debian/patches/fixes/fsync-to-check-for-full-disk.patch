@@ -1,0 +1,35 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Tue, 22 Dec 2015 23:47:34 +0100
+Subject: fsync to check for full disk
+
+Make sure that writing the crontab actually succeeded.
+
+Based on an initial fix by Steve Greenland <stevegr@debian.org>.
+
+Bug-Debian: https://bugs.debian.org/110612
+Forwarded: no
+Last-Update: 2015-12-22
+Index: cron/crontab.c
+===================================================================
+--- cron.orig/crontab.c
++++ cron/crontab.c
+@@ -541,9 +541,8 @@ replace_cmd() {
+ 	Set_LineNum(1)
+ 	while (EOF != (ch = get_char(NewCrontab)))
+ 		putc(ch, tmp);
+-	fflush(tmp);  rewind(tmp);
+ 
+-	if (ferror(tmp)) {
++	if (ferror(tmp) || fflush(tmp) || fsync(fileno(tmp))) {
+ 		fprintf(stderr, "%s: %s: %s\n",
+ 			ProgramName, tn, strerror(errno));
+ 		fclose(tmp);  unlink(tn);
+@@ -552,7 +551,7 @@ replace_cmd() {
+ 
+ 	/* check the syntax of the file being installed.
+ 	 */
+-
++	rewind(tmp);
+ 	/* BUG: was reporting errors after the EOF if there were any errors
+ 	 * in the file proper -- kludged it by stopping after first error.
+ 	 *		vix 31mar87

@@ -1,0 +1,20 @@
+#! /bin/sh
+
+set -e
+
+dir=$(pwd)/debian/tests
+. $dir/textutils.sh
+
+frame "Here we are testing the patch" \
+      "features/Add-helpful-header-to-new-crontab.patch"
+
+echo "================= adding user 'dummy' ====================="
+getent passwd dummy || adduser --disabled-password --gecos "" dummy
+
+echo "========= make user 'dummy' fill his crontab =============="
+# stderr must be deactivated since crontab will report there
+# that there is no initial crontab for user "dummy"
+su dummy -c "EDITOR=$(pwd)/debian/tests/cronfiller.py crontab -e" 2>/dev/null
+
+echo "========== testing the crontab of user 'dummy' ============="
+crontab -u dummy -l | $(pwd)/debian/tests/testcronheader.py

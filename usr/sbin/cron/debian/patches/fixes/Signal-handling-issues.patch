@@ -1,0 +1,90 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Wed, 23 Dec 2015 10:13:55 +0100
+Subject: Signal handling issues
+
+Move signal handling away from the obsolete API.
+
+Fix provided by Justin Pryzby <justinpryzby@users.sourceforge.net>, as part of
+a larger fix, so it has been split out.
+
+Bug-Debian: https://bugs.debian.org/155109
+Forwarded: no
+Last-Update: 2015-12-22
+Index: cron/cron.c
+===================================================================
+--- cron.orig/cron.c
++++ cron/cron.c
+@@ -256,6 +256,7 @@ cron_sleep() {
+ #ifdef USE_SIGCHLD
+ static void
+ sigchld_handler(int x) {
++	int		save_errno = errno;
+ 	WAIT_T		waiter;
+ 	PID_T		pid;
+ 
+@@ -269,10 +270,12 @@ sigchld_handler(int x) {
+ 		case -1:
+ 			Debug(DPROC,
+ 				("[%d] sigchld...no children\n", getpid()))
++			errno = save_errno;
+ 			return;
+ 		case 0:
+ 			Debug(DPROC,
+ 				("[%d] sigchld...no dead kids\n", getpid()))
++			errno = save_errno;
+ 			return;
+ 		default:
+ 			Debug(DPROC,
+@@ -280,6 +283,7 @@ sigchld_handler(int x) {
+ 				getpid(), pid, WEXITSTATUS(waiter)))
+ 		}
+ 	}
++	errno = save_errno;
+ }
+ #endif /*USE_SIGCHLD*/
+ 
+@@ -287,6 +291,10 @@ sigchld_handler(int x) {
+ static void
+ sighup_handler(int x) {
+ 	log_close();
++
++	/* we should use sigaction for proper signal blocking as this
++	   has a race, but... */
++	signal(SIGHUP, sighup_handler);
+ }
+ 
+ 
+Index: cron/popen.c
+===================================================================
+--- cron.orig/popen.c
++++ cron/popen.c
+@@ -180,7 +180,7 @@ cron_pclose(iop)
+ 	FILE *iop;
+ {
+ 	register int fdes;
+-	int omask;
++	sigset_t omask, mask;
+ 	WAIT_T stat_loc;
+ 	PID_T pid;
+ 
+@@ -191,10 +191,15 @@ cron_pclose(iop)
+ 	if (pids == 0 || pids[fdes = fileno(iop)] == 0)
+ 		return(-1);
+ 	(void)fclose(iop);
+-	omask = sigblock(sigmask(SIGINT)|sigmask(SIGQUIT)|sigmask(SIGHUP));
+-	while ((pid = wait(&stat_loc)) != pids[fdes] && pid != -1)
+-		;
+-	(void)sigsetmask(omask);
++	sigemptyset(&mask);
++	sigaddset(&mask, SIGQUIT);
++	sigaddset(&mask, SIGINT);
++	sigaddset(&mask, SIGHUP);
++	sigprocmask(SIG_BLOCK, &mask, &omask);
++	pid = waitpid(pids[fdes], &stat_loc, 0);
++	sigprocmask(SIG_SETMASK, &omask, NULL);
+ 	pids[fdes] = 0;
+-	return (pid == -1 ? -1 : WEXITSTATUS(stat_loc));
++	if (pid == -1 || !WIFEXITED(stat_loc))
++		return -1;
++	return WEXITSTATUS(stat_loc);
+ }

@@ -1,0 +1,66 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Fri, 25 Dec 2015 12:17:09 +0100
+Subject: Cleanup tmpfiles
+
+Install a signal handler that removes a temporarily created file upon exit.
+
+Based on a fix originally provided by Daniel Jacobowitz together with symlink
+attack prevention.
+
+Forwarded: no
+Last-Update: 2015-12-25
+Index: cron/crontab.c
+===================================================================
+--- cron.orig/crontab.c
++++ cron/crontab.c
+@@ -471,6 +471,7 @@ edit_cmd() {
+ 	(void)signal(SIGHUP, SIG_DFL);
+ 	(void)signal(SIGINT, SIG_DFL);
+ 	(void)signal(SIGQUIT, SIG_DFL);
++	(void)signal(SIGTSTP, SIG_DFL);
+ 
+ 	fprintf(stderr, "%s: installing new crontab\n", ProgramName);
+ 	switch (replace_cmd()) {
+@@ -507,7 +508,14 @@ edit_cmd() {
+  done:
+ 	log_it(RealUser, Pid, "END EDIT", User);
+ }
+-	
++
++static char tn[MAX_FNAME];
++
++static void sig_handler(int x)
++{
++	unlink(tn);
++	exit(1);
++}
+ 
+ /* returns	0	on success
+  *		-1	on syntax error
+@@ -515,7 +523,7 @@ edit_cmd() {
+  */
+ static int
+ replace_cmd() {
+-	char	n[MAX_FNAME], envstr[MAX_ENVSTR], tn[MAX_FNAME];
++	char	n[MAX_FNAME], envstr[MAX_ENVSTR];
+ 	FILE	*tmp;
+ 	int	ch, eof, fd;
+ 	int	nl = FALSE;
+@@ -527,6 +535,17 @@ replace_cmd() {
+ 		fprintf(stderr, "%s: Cannot allocate memory.\n", ProgramName);
+ 		return (-2);
+ 	}
++
++
++	/* Assumes Linux-style signal handlers (takes int, returns void) */
++	/* Signal handlers, to ensure we do not leave temp files in the
++	   spool dir.  We don't remove these on exiting this function;
++	   but that's OK, we exit immediately afterwards anyway. */
++	signal(SIGHUP, sig_handler);
++	signal(SIGINT, sig_handler);
++	signal(SIGQUIT, sig_handler);
++	signal(SIGTSTP, SIG_IGN);
++
+ 	(void) snprintf(tn, MAX_FNAME, CRON_TAB("tmp.XXXXXX"));
+ 	fd = mkstemp(tn);
+ 	if (fd < 0) {

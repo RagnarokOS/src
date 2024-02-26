@@ -1,0 +1,55 @@
+#! /bin/sh
+set -e
+
+dir=$(pwd)/debian/tests
+. $dir/textutils.sh
+
+frame "this test has been designed to check that when one uses the new" \
+      "package set, cron + cron-daemon-common, the installed" \
+      "configuration files are the same than those who used to be" \
+      "installed by the package cron which comes with bullseye." \
+      "------------------------------------------------------------------" \
+      "one modification is allowed: parentheses () can be replaced" \
+      "by curly braces {} in /etc/crontab"
+
+unfoldPackage (){
+    package="$1"
+    destdir="$2"
+    echo "==== unfolding $package into $destdir ===="
+    cd $AUTOPKGTEST_TMP
+    mkdir -p "$destdir"
+    apt-get download "$package" 2>/dev/null
+    ar -x *.deb
+    tar xJf data.tar.xz -C "$destdir"
+    rm -f *.deb *.tar.xz debian-binary
+}
+
+# "==== including bullseye, updating apt dictionaries ===="
+echo "deb http://deb.debian.org/debian/ bullseye main" > /etc/apt/sources.list.d/bullseye.list
+apt-get update 2>/dev/null
+
+# "= download, uncompress the old package cron=3.0pl1-137 ="
+unfoldPackage "cron=3.0pl1-137" "old-cron"
+
+# same for packages cron-daemon-common and cron
+unfoldPackage "cron" "new-cron"
+unfoldPackage "cron-daemon-common" "new-cron"
+
+echo "====== differences in etc/cron.* ======="
+
+diff -ruN \
+     --exclude crontab --exclude cron.yearly \
+     $AUTOPKGTEST_TMP/old-cron/etc \
+     $AUTOPKGTEST_TMP/new-cron/etc
+
+echo "===== differences in etc/crontab ======="
+# we already know that some parentheses were changed to brackets
+# so we should ignore that change
+cat $AUTOPKGTEST_TMP/new-cron/etc/crontab | \
+    tr "{" "(" | \
+    sed 's/; \}/ )/' > \
+       $AUTOPKGTEST_TMP/new-cron/etc/crontab-without-brackets
+# ignore also changes in spaces
+diff -u --ignore-space-change \
+     $AUTOPKGTEST_TMP/old-cron/etc/crontab \
+     $AUTOPKGTEST_TMP/new-cron/etc/crontab-without-brackets

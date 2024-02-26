@@ -1,0 +1,29 @@
+This patch adds an example for people who wish to address the multiple
+timezone issue, without adding any new feature inside crontabs or cron 
+itself.
+
+It modifies only the file crontab.5
+
+Index: cron/crontab.5
+===================================================================
+--- cron.orig/crontab.5
++++ cron/crontab.5
+@@ -361,7 +361,17 @@ configured timezone.  Even if a user spe
+ environment variable in his
+ .I crontab
+ this will affect only the commands executed in the crontab, not the execution
+-of the crontab tasks themselves.
++of the crontab tasks themselves. If one wants to specify a particular
++timezone for crontab tasks, one may check the date in the child script,
++for example:
++
++.nf
++    # m h  dom mon dow   command
++
++    SHELL=/bin/bash
++    TZ=Australia/Sydney
++    0 * * * * [ "$(date +\\%H\\%M)" == "0000" ] && run_some_script
++.fi
+ 
+ POSIX specifies that the day of month and the day of week fields both need to
+ match the current time if either of them

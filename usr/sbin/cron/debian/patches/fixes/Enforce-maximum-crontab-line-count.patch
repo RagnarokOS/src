@@ -1,0 +1,113 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Sat, 23 Mar 2019 09:41:38 +0100
+Subject: Enforce maximum crontab line count
+
+As any user can create a crontab that is read by the cron daemon, it is
+possible for a user to cause a DoS via memory exhaustion by creating an
+excessivly large crontab. This was classified as a security issue with
+CVE-2019-9705.
+
+As a measure to prevent this, limit the size of individual crontab files
+to 1000 lines.
+
+While it is still technically possible for a user to create a larger crontab
+(for example, by creating a single, very long comment), this should not affect
+the daemon, as it simply skips over comments.
+
+For crontab entries (for which the daemon allocates memory), the maximum
+command length is already limited to 998 characters, so these allocations are
+already kept in check.
+
+Forwarded: no
+Last-Update: 2019-03-23
+Index: cron/cron.h
+===================================================================
+--- cron.orig/cron.h
++++ cron/cron.h
+@@ -68,6 +68,7 @@
+ #define	MAX_COMMAND	1000	/* max length of internally generated cmd */
+ #define	MAX_TEMPSTR	1000	/* max length of envvar=value\0 strings */
+ #define	MAX_ENVSTR	MAX_TEMPSTR	/* DO NOT change - buffer overruns otherwise */
++#define MAX_TAB_LINES	10000	/* max length of crontabs */
+ #define	MAX_UNAME	20	/* max length of username, should be overkill */
+ #define	ROOT_UID	0	/* don't change this, it really must be root */
+ #define	ROOT_USER	"root"	/* ditto */
+@@ -87,6 +88,7 @@
+ #define	CRON_TAB(u)	"%s/%s", SPOOL_DIR, u
+ #define	REG		register
+ #define	PPC_NULL	((char **)NULL)
++#define NHEADER_LINES   3
+ 
+ #ifndef MAXHOSTNAMELEN
+ #define MAXHOSTNAMELEN 64
+@@ -112,6 +114,8 @@
+ 			;
+ #endif /* DEBUGGING */
+ 
++#define Stringify_(x)	#x
++#define Stringify(x)	Stringify_(x)
+ #define	MkLower(ch)	(isupper(ch) ? tolower(ch) : ch)
+ #define	MkUpper(ch)	(islower(ch) ? toupper(ch) : ch)
+ #define	Set_LineNum(ln)	{Debug(DPARS|DEXT,("linenum=%d\n",ln)); \
+Index: cron/user.c
+===================================================================
+--- cron.orig/user.c
++++ cron/user.c
+@@ -130,7 +130,19 @@ load_user(crontab_fd, pw, name)
+ 			}
+ 			break;
+ 		}
+-	} while (status >= OK);
++	/* When counting lines, ignore the user-hidden header part, and account
++	 * for idiosyncrasies of LineNumber manipulation
++	 */
++	} while (status >= OK && LineNumber < MAX_TAB_LINES + NHEADER_LINES + 2);
++
++	if (LineNumber >= MAX_TAB_LINES + NHEADER_LINES + 2) {
++		log_it(fname, getpid(), "ERROR", "crontab must not be longer "
++				"than " Stringify(MAX_TAB_LINES) " lines, "
++				"this crontab file will be ignored");
++		free_user(u);
++		u = NULL;
++		goto done;
++	}
+ 
+  done:
+ 	env_free(envp);
+Index: cron/crontab.c
+===================================================================
+--- cron.orig/crontab.c
++++ cron/crontab.c
+@@ -45,9 +45,6 @@ static char rcsid[] = "$Id: crontab.c,v
+ #endif
+ 
+ 
+-#define NHEADER_LINES 3
+-
+-
+ enum opt_t	{ opt_unknown, opt_list, opt_delete, opt_edit, opt_replace };
+ 
+ #if DEBUGGING
+@@ -761,7 +758,7 @@ replace_cmd() {
+ 	 */
+ 	Set_LineNum(1 - NHEADER_LINES)
+ 	CheckErrorCount = 0;  eof = FALSE;
+-	while (!CheckErrorCount && !eof) {
++	while (!CheckErrorCount && !eof && LineNumber < MAX_TAB_LINES + 2) {
+ 		switch (load_env(envstr, tmp)) {
+ 		case ERR:
+ 			eof = TRUE;
+@@ -778,6 +775,13 @@ replace_cmd() {
+ 		}
+ 	}
+ 
++	if (LineNumber >= MAX_TAB_LINES + 2) {
++		fprintf(stderr, "crontab is too long; maximum number of lines "
++				"is %d.\n", MAX_TAB_LINES);
++		fclose(tmp);  unlink(tn);
++		return (-1);
++	}
++
+ 	if (CheckErrorCount != 0) {
+ 		fprintf(stderr, "errors in crontab file, can't install.\n");
+ 		fclose(tmp);  unlink(tn);

@@ -1,0 +1,23 @@
+#! /bin/sh
+
+set -e
+
+dir=$(pwd)/debian/tests
+. $dir/textutils.sh
+
+frame "Here we are testing the patch" \
+      "features/protect-list.patch"
+
+echo "================= adding user 'dummy' ====================="
+getent passwd dummy || adduser --disabled-password --gecos "" dummy
+
+echo "========= Inject an obfuscated line into dummy's crontab =============="
+printf "* * * * * >/tmp/x;\rno crontab for dummy\b\bbo\n" | crontab -u dummy -
+
+echo "========== testing the crontab of user 'dummy' ============="
+result="$(crontab -u dummy -l)"
+echo "========= here is a hexa dump of \$(crontab -u dummy -l) ===="
+echo "$result" | hd
+test "$result" = "* * * * * >/tmp/x;\\rno crontab for dummy\\b\\bbo"
+
+frame "Good! characters \\r and \\b were protected"

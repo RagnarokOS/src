@@ -1,0 +1,44 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Tue, 22 Dec 2015 18:56:31 +0100
+Subject: Limit number of command arguments
+
+Set an upper limit for the number of arguments in a command, instead of
+hardcoding 100 (and not checking for that limit).
+
+Fix provided by Steve Greenland <stevegr@debian.org>.
+
+Forwarded: no
+Last-Update: 2015-12-22
+Index: cron/popen.c
+===================================================================
+--- cron.orig/popen.c
++++ cron/popen.c
+@@ -32,6 +32,7 @@ static char sccsid[] = "@(#)popen.c	5.7
+ #include <signal.h>
+ 
+ 
++#define MAX_ARGS 100
+ #define WANT_GLOBBING 0
+ 
+ /*
+@@ -50,7 +51,7 @@ cron_popen(program, type)
+ 	FILE *iop;
+ 	int argc, pdes[2];
+ 	PID_T pid;
+-	char *argv[100];
++	char *argv[MAX_ARGS + 1];
+ #if WANT_GLOBBING
+ 	char **pop, *vv[2];
+ 	int gargc;
+@@ -72,9 +73,10 @@ cron_popen(program, type)
+ 		return(NULL);
+ 
+ 	/* break up string into pieces */
+-	for (argc = 0, cp = program;; cp = NULL)
++	for (argc = 0, cp = program; argc < MAX_ARGS; cp = NULL)
+ 		if (!(argv[argc++] = strtok(cp, " \t\n")))
+ 			break;
++	argv[MAX_ARGS] = NULL;
+ 
+ #if WANT_GLOBBING
+ 	/* glob each piece */

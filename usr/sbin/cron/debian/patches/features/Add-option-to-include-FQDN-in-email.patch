@@ -1,0 +1,93 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Fri, 15 Jan 2016 23:12:35 +0100
+Subject: Add option to include FQDN in email
+
+Add an option -n to with which the daemon can be instructed to include the FQDN
+in the subject when sending mails.
+
+Bug-Debian: https://bugs.debian.org/570423
+Forwarded: no
+Last-Update: 2015-01-16
+Index: cron/do_command.c
+===================================================================
+--- cron.orig/do_command.c
++++ cron/do_command.c
+@@ -537,7 +537,8 @@ child_process(e, u)
+ 	fprintf(mail, "From: root (Cron Daemon)\n");
+ 	fprintf(mail, "To: %s\n", mailto);
+ 	fprintf(mail, "Subject: Cron <%s@%s> %s%s\n",
+-			usernm, first_word(hostname, "."),
++			usernm,
++			fqdn_in_subject ? hostname : first_word(hostname, "."),
+ 			e->cmd, status?" (failed)":"");
+ # if defined(MAIL_DATE)
+ 	fprintf(mail, "Date: %s\n",
+Index: cron/cron.c
+===================================================================
+--- cron.orig/cron.c
++++ cron/cron.c
+@@ -448,9 +448,9 @@ sighup_handler(int x) {
+ 
+ 
+ #if DEBUGGING
+-const char *getoptarg = "flL:x:";
++const char *getoptarg = "flL:nx:";
+ #else
+-const char *getoptarg = "flL:";
++const char *getoptarg = "flL:n";
+ #endif
+ 
+ static void
+@@ -463,6 +463,7 @@ parse_args(argc, argv)
+ 	stay_foreground = 0;
+ 	lsbsysinit_mode = 0;
+ 	log_level = 1;
++	fqdn_in_subject = 0;
+ 
+ 	while (EOF != (argch = getopt(argc, argv, getoptarg))) {
+ 		switch (argch) {
+@@ -477,6 +478,9 @@ parse_args(argc, argv)
+ 		case 'L':
+ 			log_level = atoi(optarg);
+ 			break;
++		case 'n':
++			fqdn_in_subject = 1;
++			break;
+ #if DEBUGGING
+ 		case 'x':
+ 			if (!set_debug_flags(optarg))
+Index: cron/cron.h
+===================================================================
+--- cron.orig/cron.h
++++ cron/cron.h
+@@ -308,6 +308,7 @@ static long GMToff;
+ int	stay_foreground;
+ int	lsbsysinit_mode;
+ int	log_level;
++int	fqdn_in_subject;
+ 
+ char	cron_default_mail_charset[MAX_ENVSTR] = "";
+ 
+@@ -325,6 +326,7 @@ extern	char	*copyright[],
+ 		*ProgramName;
+ extern	int	lsbsysinit_mode;
+ extern	int	log_level;
++extern	int	fqdn_in_subject;
+ extern	int	LineNumber;
+ extern	time_t	StartTime;
+ extern  time_min timeRunning;
+Index: cron/cron.8
+===================================================================
+--- cron.orig/cron.8
++++ cron/cron.8
+@@ -41,6 +41,10 @@ Enable LSB compliant names for /etc/cron
+ not affect the parsing of files under /etc/cron.hourly, /etc/cron.daily,
+ /etc/cron.weekly or /etc/cron.monthly.
+ .TP
++.B \-n
++Include the FQDN in the subject when sending mails.  By default, cron will
++abbreviate the hostname.
++.TP
+ .B \-L loglevel
+ Tell cron what to log about \fBjobs\fR (errors are logged regardless of this
+ value) as the sum of the following values:

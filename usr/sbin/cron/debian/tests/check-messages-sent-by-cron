@@ -1,0 +1,61 @@
+#! /bin/sh
+set -e
+
+dir=$(pwd)/debian/tests
+. $dir/textutils.sh
+
+frame "Here are all the tests to check messages eventually sent by cron." \
+      "A dummy user is created, and a crontab is created for this user;" \
+      "when commands from the crontab happen to fail, a message is sent" \
+      "and emails got by the dummy user are tested."
+
+echo "============ enable pam_group for cron ====================="
+echo "auth       optional   pam_group.so" >> /etc/pam.d/cron
+
+echo "================= adding user 'dummy' ====================="
+getent passwd dummy || adduser --disabled-password --gecos "" dummy
+
+echo "====== adding the group 'plugdev' with group.conf ========="
+echo "*;*;dummy;Al0000-2400;plugdev" > /etc/security/group.conf
+
+echo "======== create a crontab for user dummy =================="
+crontab -u dummy - <<EOF
+MAILTO=dummy@mylocalhost
+MAILFROM=dummy@mylocalhost
+* * * * * ls -l / && false
+* * * * * id && false
+EOF
+
+echo "=========== wait longer than one minute ==================="
+sleep 90
+echo "========== check e-mails got by user dummy ================"
+echo "type *" | (su - dummy -c mail) > e-mails
+echo "========== e-mails content: ==============================="
+cat e-mails
+
+frame "the goal of the first test is to check whether environment variables" \
+      "MAILFROM and MAILTO are correctly taken in account"
+
+echo "==========================================================="
+grep 'From: dummy@mylocalhost' e-mails || abort "test failed"
+grep 'To: dummy@mylocalhost' e-mails || abort "test failed"
+
+frame "OK, this is great: MAILFROM and MAILTO variables are honored"
+
+frame "the goal of the next test is to check whether pam_groups is honored" \
+      "when a cron job is spawned." \
+      "---------------------------------------------------------------" \
+      "this test is about bug #1917350 and the patch" \
+      "debian/patches/fixes/Pam-group-after-fork.patch"
+
+echo "======= cat /etc/security/group.conf yields: =============="
+cat /etc/security/group.conf
+
+echo "========= does /etc/pam.d/login call pam_group? ==========="
+grep -B2 pam_group /etc/pam.d/login
+
+grep -q "plugdev" e-mails || abort "test failed"
+
+frame "OK, this is great: dummy user is member of plugdev group"
+
+exit 0

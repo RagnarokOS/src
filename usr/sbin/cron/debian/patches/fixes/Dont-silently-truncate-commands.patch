@@ -1,0 +1,65 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Sat, 26 Dec 2015 19:03:24 +0100
+Subject: Don't silently truncate commands
+
+Commands have a maximum length. When hitting this maximum, generate an error
+instead of silently truncated the command.
+
+Bug-Debian: https://bugs.debian.org/686223
+Forwarded: no
+Last-Update: 2015-12-26
+Index: cron/crontab.5
+===================================================================
+--- cron.orig/crontab.5
++++ cron/crontab.5
+@@ -112,7 +112,8 @@ followed by a command, followed by a new
+ The system crontab (/etc/crontab) uses the same format, except that
+ the username for the command is specified after the time and
+ date fields and before the command.  The fields may be separated
+-by spaces or tabs.
++by spaces or tabs.  The maximum permitted length for the command field is
++998 characters.
+ .PP
+ Commands are executed by
+ .IR cron (8)
+Index: cron/entry.c
+===================================================================
+--- cron.orig/entry.c
++++ cron/entry.c
+@@ -31,7 +31,7 @@ static char rcsid[] = "$Id: entry.c,v 2.
+ 
+ typedef	enum ecode {
+ 	e_none, e_minute, e_hour, e_dom, e_month, e_dow,
+-	e_cmd, e_timespec, e_username
++	e_cmd, e_timespec, e_username, e_cmd_len
+ } ecode_e;
+ 
+ static char	get_list __P((bitstr_t *, int, int, char *[], int, FILE *)),
+@@ -50,6 +50,7 @@ static char *ecodes[] =
+ 		"bad command",
+ 		"bad time specifier",
+ 		"bad username",
++		"command too long",
+ 	};
+ 
+ 
+@@ -311,9 +312,18 @@ load_entry(file, error_func, pw, envp)
+ 	/* Everything up to the next \n or EOF is part of the command...
+ 	 * too bad we don't know in advance how long it will be, since we
+ 	 * need to malloc a string for it... so, we limit it to MAX_COMMAND.
++	 *
++	 * To err on the side of caution, if the command string length is
++	 * equal to MAX_COMMAND, we will assume that the command has been
++	 * truncated and generate an error.
++	 *
+ 	 * XXX - should use realloc().
+-	 */ 
++	 */
+ 	ch = get_string(cmd, MAX_COMMAND, file, "\n");
++	if (strnlen(cmd, MAX_COMMAND) == MAX_COMMAND - 1) {
++		ecode = e_cmd_len;
++		goto eof;
++	}
+ 
+ 	/* a file without a \n before the EOF is rude, so we'll complain...
+ 

@@ -1,0 +1,231 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Sun, 10 Jan 2016 01:03:51 +0100
+Subject: Make crontab SGID crontab
+
+Improve security by making crontab(1) SGID crontab instead of SUID root.
+
+Specifically:
+  * Drop the call to set_cron_uid(), which is just a wrapper to seteuid()
+  * setgid() to the real group ID before exec'ing the editor
+  * Create spool dir with the expected permissions
+
+Nevertheless, Tomi Miettinen's advice in #18333 of not SETing at all, and
+using sockets instead should be taken into consideration.
+
+Bug-Debian: https://bugs.debian.org/18333
+Forwarded: no
+Last-Update: 2016-01-10
+Index: cron/crontab.c
+===================================================================
+--- cron.orig/crontab.c
++++ cron/crontab.c
+@@ -110,7 +110,6 @@ main(argc, argv)
+ 		argv[1] = "-";
+ 	}
+ 	parse_args(argc, argv);		/* sets many globals, opens a file */
+-	set_cron_uid();
+ 	set_cron_cwd();
+ 	if (!allowed(User)) {
+ 		if (getuid() != 0) {
+@@ -373,12 +372,6 @@ create_tmp_crontab()
+ 		return -1;
+ 	}
+ 
+-	if (chown(Directory, getuid(), getgid()) < 0) {
+-		perror(Directory);
+-		Directory[0] = '\0';
+-		return -1;
+-	}
+-
+ 	/* Now create the actual temporary crontab file */
+ 	if (snprintf(Filename, MAX_FNAME, "%s/crontab", Directory) >= MAX_FNAME) {
+ 		fprintf(stderr, "Temporary filename too long - aborting\n");
+@@ -413,7 +406,7 @@ open_tmp_crontab(fsbuf)
+ 		perror("fstat");
+ 		return -1;
+ 	}
+-	if (statbuf.st_uid != getuid() || statbuf.st_gid != getgid()) {
++	if (statbuf.st_uid != getuid()) {
+ 		fprintf(stderr, "Temporary crontab no longer owned by you.\n");
+ 		return -1;;
+ 	}
+@@ -582,6 +575,10 @@ again: /* Loop point for retrying edit a
+ 		goto fatal;
+ 	case 0:
+ 		/* child */
++		if (setgid(getgid()) < 0) {
++			perror("setgid(getgid())");
++			exit(ERROR_EXIT);
++		}
+ 		if (setuid(getuid()) < 0) {
+ 			perror("setuid(getuid())");
+ 			exit(ERROR_EXIT);
+@@ -816,16 +813,6 @@ replace_cmd() {
+ 		return (-1);
+ 	}
+ 
+-#ifdef HAS_FCHOWN
+-	if (fchown(fileno(tmp), ROOT_UID, -1) < OK)
+-#else
+-	if (chown(tn, ROOT_UID, -1) < OK)
+-#endif
+-	{
+-		perror("chown");
+-		fclose(tmp);  unlink(tn);
+-		return (-2);
+-	}
+ 
+ #ifdef HAS_FCHMOD
+ 	if (fchmod(fileno(tmp), 0600) < OK)
+@@ -844,6 +831,15 @@ replace_cmd() {
+ 		return (-2);
+ 	}
+ 
++	/* Root on behalf of another user must set file owner to that user */
++	if (getuid() == ROOT_UID && strcmp(User, RealUser) != 0) {
++		if (chown(tn, pw->pw_uid, -1) != 0) {
++			perror("chown");
++			unlink(tn);
++			return -2;
++		}
++	}
++
+ 	(void) snprintf(n, sizeof(n), CRON_TAB(User));
+ 	if (rename(tn, n)) {
+ 		fprintf(stderr, "%s: %s: rename: %s\n",
+Index: cron/misc.c
+===================================================================
+--- cron.orig/misc.c
++++ cron/misc.c
+@@ -35,6 +35,7 @@ static char rcsid[] = "$Id: misc.c,v 2.9
+ #include <errno.h>
+ #include <string.h>
+ #include <fcntl.h>
++#include <grp.h>
+ #ifdef WITH_AUDIT
+ #include <libaudit.h>
+ #endif
+@@ -198,18 +199,28 @@ void
+ set_cron_cwd()
+ {
+ 	struct stat	sb;
++	mode_t		um;
++	struct group	*gr;
+ 
+ 	/* first check for CRONDIR ("/var/cron" or some such)
+ 	 */
+ 	if (stat(CRONDIR, &sb) < OK && errno == ENOENT) {
+ 		perror(CRONDIR);
+-		if (OK == mkdir(CRONDIR, 0700)) {
++
++		/* crontab(1) running SGID crontab shouldn't attempt to create
++		 * directories */
++		if (getuid() != 0)
++			exit(ERROR_EXIT);
++
++		um = umask(000);
++		if (OK == mkdir(CRONDIR, CRONDIR_MODE)) {
+ 			fprintf(stderr, "%s: created\n", CRONDIR);
+ 			stat(CRONDIR, &sb);
+ 		} else {
+ 			fprintf(stderr, "%s: mkdir: %s\n", CRONDIR, strerror(errno));
+ 			exit(ERROR_EXIT);
+ 		}
++		(void) umask(um);
+ 	}
+ 	if (!(sb.st_mode & S_IFDIR)) {
+ 		fprintf(stderr, "'%s' is not a directory, bailing out.\n",
+@@ -225,11 +236,33 @@ set_cron_cwd()
+ 	 */
+ 	if (stat(SPOOL_DIR, &sb) < OK && errno == ENOENT) {
+ 		perror(SPOOL_DIR);
+-		if (OK == mkdir(SPOOL_DIR, 0700)) {
++
++		/* crontab(1) running SGID crontab shouldn't attempt to create
++		 * directories */
++		if (getuid() != 0 )
++			exit(ERROR_EXIT);
++
++		um = umask(000);
++		if (OK == mkdir(SPOOL_DIR, SPOOL_DIR_MODE)) {
+ 			fprintf(stderr, "%s: created\n", SPOOL_DIR);
+-			stat(SPOOL_DIR, &sb);
+ 		} else {
+-			fprintf(stderr, "%s: mkdir: %s\n", SPOOL_DIR, strerror(errno));
++			fprintf(stderr, "%s: mkdir: %s\n", SPOOL_DIR,
++				strerror(errno));
++			exit(ERROR_EXIT);
++		}
++		(void) umask(um);
++
++		if (!(gr = getgrnam(SPOOL_DIR_GROUP))) {
++			fprintf(stderr, "%s: getgrnam: %s\n", SPOOL_DIR,
++				strerror(errno));
++			exit(ERROR_EXIT);
++		}
++		if (OK == chown(SPOOL_DIR, -1, gr->gr_gid)) {
++			fprintf(stderr, "%s: chowned\n", SPOOL_DIR);
++				stat(SPOOL_DIR, &sb);
++		} else {
++			fprintf(stderr, "%s: chown: %s\n", SPOOL_DIR,
++			strerror(errno));
+ 			exit(ERROR_EXIT);
+ 		}
+ 	}
+Index: cron/pathnames.h
+===================================================================
+--- cron.orig/pathnames.h
++++ cron/pathnames.h
+@@ -81,3 +81,23 @@
+ #ifndef REBOOT_FILE
+ # define REBOOT_FILE "/run/crond.reboot"
+ #endif
++
++
++#ifndef CRONDIR_MODE
++			/* Create mode for CRONDIR; must be in sync with
++			 * packaging
++			 */
++#define CRONDIR_MODE 0755
++#endif
++#ifndef SPOOL_DIR_MODE
++			/* Create mode for SPOOL_DIR; must be in sync with
++			 * packaging
++			 */
++#define SPOOL_DIR_MODE 01730
++#endif
++#ifndef SPOOL_DIR_GROUP
++			/* Chown SPOOL_DIR to this group (needed by Debian's
++			 * SGID crontab feature)
++			 */
++#define SPOOL_DIR_GROUP "crontab"
++#endif
+Index: cron/cron.8
+===================================================================
+--- cron.orig/cron.8
++++ cron/cron.8
+@@ -180,6 +180,8 @@ auditlog support,
+ .IP \(em
+ DST and other time-related changes/fixes,
+ .IP \(em
++SGID crontab(1) instead of SUID root,
++.IP \(em
+ Debian-specific file locations and commands,
+ .IP \(em
+ Debian-specific configuration (/etc/default/cron),
+Index: cron/crontab.1
+===================================================================
+--- cron.orig/crontab.1
++++ cron/crontab.1
+@@ -118,6 +118,11 @@ There is one file for each user's cronta
+ directory.  Users are not allowed to edit the files under that directory
+ directly to ensure that only users allowed by the system to run periodic tasks
+ can add them, and only syntactically correct crontabs will be written there.
++This is enforced by having the directory writable only by the
++.I crontab
++group and configuring
++.I crontab
++command with the setgid bid set for that specific group.
+ .SH STANDARDS
+ The
+ .I crontab

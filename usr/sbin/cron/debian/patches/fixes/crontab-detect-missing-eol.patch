@@ -1,0 +1,46 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Tue, 22 Dec 2015 15:55:38 +0100
+Subject: crontab: warn about missing newline
+
+Make crontab(1) refuse to add/replace a crontab with a missing newline before
+EOF. The daemon will either not execute the last entry, or refuse to execute
+the entire crontab (depending on the implementation).
+
+Bug-Debian: https://bugs.debian.org/79037
+Forwarded: no
+Last-Update: 2015-12-22
+Index: cron/crontab.c
+===================================================================
+--- cron.orig/crontab.c
++++ cron/crontab.c
+@@ -509,6 +509,7 @@ replace_cmd() {
+ 	char	n[MAX_FNAME], envstr[MAX_ENVSTR], tn[MAX_FNAME];
+ 	FILE	*tmp;
+ 	int	ch, eof;
++	int	nl = FALSE;
+ 	entry	*e;
+ 	time_t	now = time(NULL);
+ 	char	**envp = env_init();
+@@ -560,6 +561,8 @@ replace_cmd() {
+ 		switch (load_env(envstr, tmp)) {
+ 		case ERR:
+ 			eof = TRUE;
++			if (envstr[0] == '\0')
++				nl = TRUE;
+ 			break;
+ 		case FALSE:
+ 			e = load_entry(tmp, check_error, pw, envp);
+@@ -576,6 +579,13 @@ replace_cmd() {
+ 		fclose(tmp);  unlink(tn);
+ 		return (-1);
+ 	}
++
++	if (nl == FALSE) {
++		fprintf(stderr, "new crontab file is missing newline before "
++				"EOF, can't install.\n");
++		fclose(tmp);  unlink(tn);
++		return (-1);
++	}
+ 
+ #ifdef HAS_FCHOWN
+ 	if (fchown(fileno(tmp), ROOT_UID, -1) < OK)

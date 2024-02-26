@@ -1,0 +1,100 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Sat, 09 Jan 2016 00:11:10 +0100
+Subject: crontab allow/deny logic fix
+
+Looking at config.h and pathnames.h, it is evident that the intention was to
+always allow root to execute jobs. Furthermore, the conditional tests for the
+ALLOW and DENY files were incorrect.
+
+Fix provided by Steve Grubb as part of another patch, then further improved by
+Javier Fernández-Sanguino Peña <jfs@debian.org> and Christian Kastner.
+
+Bug-Debian: https://bugs.debian.org/383741
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/1813833
+Forwarded: no
+Last-Update: 2019-03-23
+Index: cron/misc.c
+===================================================================
+--- cron.orig/misc.c
++++ cron/misc.c
+@@ -432,12 +432,38 @@ allowed(username)
+ {
+ 	static int	init = FALSE;
+ 	static FILE	*allow, *deny;
++	int		isallowed;
+ 
++	/* Root cannot be denied execution of cron jobs even if in the
++	 * 'DENY_FILE' so we return inmediately */
++	if (strcmp(username, ROOT_USER) == 0)
++		return (TRUE);
++
++	isallowed = FALSE;
++#if defined(ALLOW_ONLY_ROOT)
++	Debug(DMISC, "only root access is allowed")
++#else
+ 	if (!init) {
+ 		init = TRUE;
+ #if defined(ALLOW_FILE) && defined(DENY_FILE)
+ 		allow = fopen(ALLOW_FILE, "r");
++		if (allow == NULL) {
++			/* Only if the file does not exist do we ignore the
++			 * error. Otherwise, we deny by default.
++			 */
++			if (errno != ENOENT) {
++				perror(ALLOW_FILE);
++				return FALSE;
++			}
++		}
+ 		deny = fopen(DENY_FILE, "r");
++		if (allow == NULL) {
++			/* See above */
++			if (errno != ENOENT) {
++				perror(DENY_FILE);
++				return FALSE;
++			}
++		}
+ 		Debug(DMISC, ("allow/deny enabled, %d/%d\n", !!allow, !!deny))
+ #else
+ 		allow = NULL;
+@@ -446,15 +472,14 @@ allowed(username)
+ 	}
+ 
+ 	if (allow)
+-		return (in_file(username, allow));
+-	if (deny)
+-		return (!in_file(username, deny));
+-
+-#if defined(ALLOW_ONLY_ROOT)
+-	return (strcmp(username, ROOT_USER) == 0);
+-#else
+-	return TRUE;
++		isallowed = in_file(username, allow);
++	else
++		isallowed = TRUE; /* Allow access if ALLOW_FILE does not exist */
++	if (deny && !allow)
++		isallowed = !in_file(username, deny);
+ #endif
++
++	return isallowed;
+ }
+ 
+ 
+Index: cron/crontab.1
+===================================================================
+--- cron.orig/crontab.1
++++ cron/crontab.1
+@@ -102,6 +102,14 @@ crontab(5), cron(8)
+ /var/cron/crontabs
+ .fi
+ .PP
++The files
++.I /etc/cron.allow
++and
++.I /etc/cron.deny
++if, they exist, must be either world-readable, or readable by group
++``crontab''. If they are not, then cron will deny access to all users until the
++permissions are fixed.
++.PP
+ There is one file for each user's crontab under the /var/cron/crontabs
+ directory.  Users are not allowed to edit the files under that directory
+ directly to ensure that only users allowed by the system to run periodic tasks

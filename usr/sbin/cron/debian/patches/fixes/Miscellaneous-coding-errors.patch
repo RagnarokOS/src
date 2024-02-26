@@ -1,0 +1,364 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Sun, 20 Dec 2015 13:22:36 +0100
+Subject: Miscellaneous code errors
+
+These are mostly one-line fixes of obvious errors such as running into
+undefined behaviour, missing arguments to functions, typos, name mix-ups, etc.
+Creating separate patches for them would be overkill.
+
+Originally by Steve Greenland <stevegr@debian.org>, occasionally modified to
+match what upstream eventually did for ISC cron v4.1.
+
+Forwarded: no
+Last-Update: 2015-12-20
+Index: cron/compat.c
+===================================================================
+--- cron.orig/compat.c
++++ cron/compat.c
+@@ -227,7 +227,7 @@ setenv(name, value, overwrite)
+ 		return -1;
+ 	}
+ 
+-	sprintf("%s=%s", name, value);
++	sprintf(tmp, "%s=%s", name, value);
+ 	return putenv(tmp);	/* intentionally orphan 'tmp' storage */
+ }
+ #endif
+Index: cron/crontab.c
+===================================================================
+--- cron.orig/crontab.c
++++ cron/crontab.c
+@@ -57,7 +57,7 @@ static char	*Options[] = { "???", "list"
+ static	PID_T		Pid;
+ static	char		User[MAX_UNAME], RealUser[MAX_UNAME];
+ static	char		Filename[MAX_FNAME];
+-static	FILE		*NewCrontab;
++static	FILE		*NewCrontab = NULL;
+ static	int		CheckErrorCount;
+ static	enum opt_t	Option;
+ static	struct passwd	*pw;
+@@ -124,8 +124,14 @@ main(argc, argv)
+ 	case opt_replace:	if (replace_cmd() < 0)
+ 					exitstatus = ERROR_EXIT;
+ 				break;
++				/* The following was added to shut
++				 -Wall up, but it will never be hit,
++				 because the option parser will catch
++				 it */
++	case opt_unknown: usage("unknown option specified");
++	                  break;
+ 	}
+-	exit(0);
++	exit(exitstatus);
+ 	/*NOTREACHED*/
+ }
+ 	
+@@ -227,7 +233,7 @@ parse_args(argc, argv)
+ 				perror(Filename);
+ 				exit(ERROR_EXIT);
+ 			}
+-			if (swap_uids() < OK) {
++			if (swap_uids_back() < OK) {
+ 				perror("swapping uids back");
+ 				exit(ERROR_EXIT);
+ 			}
+@@ -473,7 +479,8 @@ edit_cmd() {
+ 			ProgramName, Filename);
+ 		goto done;
+ 	default:
+-		fprintf(stderr, "%s: panic: bad switch() in replace_cmd()\n");
++		fprintf(stderr, "%s: panic: bad switch() in replace_cmd()\n",
++			ProgramName);
+ 		goto fatal;
+ 	}
+  remove:
+@@ -517,7 +524,6 @@ replace_cmd() {
+ 	Set_LineNum(1)
+ 	while (EOF != (ch = get_char(NewCrontab)))
+ 		putc(ch, tmp);
+-	ftruncate(fileno(tmp), ftell(tmp));
+ 	fflush(tmp);  rewind(tmp);
+ 
+ 	if (ferror(tmp)) {
+@@ -574,7 +580,7 @@ replace_cmd() {
+ 	if (chmod(tn, 0600) < OK)
+ #endif
+ 	{
+-		perror("chown");
++		perror("chmod");
+ 		fclose(tmp);  unlink(tn);
+ 		return (-2);
+ 	}
+Index: cron/misc.c
+===================================================================
+--- cron.orig/misc.c
++++ cron/misc.c
+@@ -44,6 +44,10 @@ static char rcsid[] = "$Id: misc.c,v 2.9
+ #define LOG_CRON LOG_DAEMON
+ #endif
+ 
++#if defined(SYSLOG)
++	static int		syslog_open = 0;
++#endif
++
+ 
+ static int		LogFD = ERR;
+ 
+@@ -468,10 +472,6 @@ log_it(username, xpid, event, detail)
+ 	register struct tm	*t = localtime(&now);
+ #endif /*LOG_FILE*/
+ 
+-#if defined(SYSLOG)
+-	static int		syslog_open = 0;
+-#endif
+-
+ #if defined(LOG_FILE)
+ 	/* we assume that MAX_TEMPSTR will hold the date, time, &punctuation.
+ 	 */
+@@ -514,11 +514,7 @@ log_it(username, xpid, event, detail)
+ 
+ #if defined(SYSLOG)
+ 	if (!syslog_open) {
+-		/* we don't use LOG_PID since the pid passed to us by
+-		 * our client may not be our own.  therefore we want to
+-		 * print the pid ourselves.
+-		 */
+-# ifdef LOG_DAEMON
++# ifdef LOG_CRON
+ 		openlog(ProgramName, LOG_PID, LOG_CRON);
+ # else
+ 		openlog(ProgramName, LOG_PID);
+@@ -526,14 +522,14 @@ log_it(username, xpid, event, detail)
+ 		syslog_open = TRUE;		/* assume openlog success */
+ 	}
+ 
+-	syslog(LOG_INFO, "(%s) %s (%s)\n", username, event, detail);
++	syslog(LOG_INFO, "(%s) %s (%s)", username, event, detail);
+ 
+ #endif /*SYSLOG*/
+ 
+ #if DEBUGGING
+ 	if (DebugFlags) {
+ 		fprintf(stderr, "log_it: (%s %d) %s (%s)\n",
+-			username, pid, event, detail);
++			username, xpid, event, detail);
+ 	}
+ #endif
+ }
+@@ -541,10 +537,16 @@ log_it(username, xpid, event, detail)
+ 
+ void
+ log_close() {
++#if defined(LOG_FILE)
+ 	if (LogFD != ERR) {
+ 		close(LogFD);
+ 		LogFD = ERR;
+ 	}
++#endif
++#if defined(SYSLOG)
++	closelog();
++	syslog_open = FALSE;
++#endif
+ }
+ 
+ 
+@@ -654,7 +656,7 @@ arpadate(clock)
+ #endif /*MAIL_DATE*/
+ 
+ 
+-#ifdef HAVE_SAVED_SUIDS
++#ifdef HAVE_SAVED_UIDS
+ static int save_euid;
+ int swap_uids() { save_euid = geteuid(); return seteuid(getuid()); }
+ int swap_uids_back() { return seteuid(save_euid); }
+Index: cron/env.c
+===================================================================
+--- cron.orig/env.c
++++ cron/env.c
+@@ -39,6 +39,9 @@ env_free(envp)
+ {
+ 	char	**p;
+ 
++	if(!envp)
++		return;
++
+ 	for (p = envp;  *p;  p++)
+ 		free(*p);
+ 	free(envp);
+@@ -168,7 +171,7 @@ env_get(name, envp)
+ 	register int	len = strlen(name);
+ 	register char	*p, *q;
+ 
+-	while (p = *envp++) {
++	while ((p = *envp++) != NULL) {
+ 		if (!(q = strchr(p, '=')))
+ 			continue;
+ 		if ((q - p) == len && !strncmp(p, name, len))
+Index: cron/popen.c
+===================================================================
+--- cron.orig/popen.c
++++ cron/popen.c
+@@ -58,7 +58,7 @@ cron_popen(program, type)
+ 	extern char **glob(), **copyblk();
+ #endif
+ 
+-	if (*type != 'r' && *type != 'w' || type[1])
++	if ((*type != 'r' && *type != 'w') || type[1])
+ 		return(NULL);
+ 
+ 	if (!pids) {
+@@ -93,7 +93,7 @@ cron_popen(program, type)
+ #endif
+ 
+ 	iop = NULL;
+-	switch(pid = vfork()) {
++	switch(pid = fork()) {
+ 	case -1:			/* error */
+ 		(void)close(pdes[0]);
+ 		(void)close(pdes[1]);
+Index: cron/do_command.c
+===================================================================
+--- cron.orig/do_command.c
++++ cron/do_command.c
+@@ -99,10 +99,10 @@ child_process(e, u)
+ #ifdef USE_SIGCHLD
+ 	/* our parent is watching for our death by catching SIGCHLD.  we
+ 	 * do not care to watch for our children's deaths this way -- we
+-	 * use wait() explictly.  so we have to disable the signal (which
++	 * use wait() explictly.  so we have to reset the signal (which
+ 	 * was inherited from the parent).
+ 	 */
+-	(void) signal(SIGCHLD, SIG_IGN);
++	(void) signal(SIGCHLD, SIG_DFL);
+ #else
+ 	/* on system-V systems, we are ignoring SIGCLD.  we have to stop
+ 	 * ignoring it now or the wait() in cron_pclose() won't work.
+@@ -146,13 +146,13 @@ child_process(e, u)
+ 
+ 	/* fork again, this time so we can exec the user's command.
+ 	 */
+-	switch (vfork()) {
++	switch (fork()) {
+ 	case -1:
+-		log_it("CRON",getpid(),"error","can't vfork");
++		log_it("CRON",getpid(),"error","can't fork");
+ 		exit(ERROR_EXIT);
+ 		/*NOTREACHED*/
+ 	case 0:
+-		Debug(DPROC, ("[%d] grandchild process Vfork()'ed\n",
++		Debug(DPROC, ("[%d] grandchild process fork()'ed\n",
+ 			      getpid()))
+ 
+ 		/* write a log message.  we've waited this long to do it
+@@ -169,9 +169,7 @@ child_process(e, u)
+ 
+ 		/* that's the last thing we'll log.  close the log files.
+ 		 */
+-#ifdef SYSLOG
+-		closelog();
+-#endif
++		log_close();
+ 
+ 		/* get new pgrp, void tty, etc.
+ 		 */
+@@ -189,9 +187,9 @@ child_process(e, u)
+ 		/* grandchild process.  make std{in,out} be the ends of
+ 		 * pipes opened by our daddy; make stderr go to stdout.
+ 		 */
+-		close(STDIN);	dup2(stdin_pipe[READ_PIPE], STDIN);
+-		close(STDOUT);	dup2(stdout_pipe[WRITE_PIPE], STDOUT);
+-		close(STDERR);	dup2(STDOUT, STDERR);
++		dup2(stdin_pipe[READ_PIPE], STDIN);
++		dup2(stdout_pipe[WRITE_PIPE], STDOUT);
++		dup2(STDOUT, STDERR);
+ 
+ 		/* close the pipes we just dup'ed.  The resources will remain.
+ 		 */
+@@ -331,7 +329,7 @@ child_process(e, u)
+ 		register int	ch = getc(in);
+ 
+ 		if (ch != EOF) {
+-			register FILE	*mail;
++			register FILE	*mail = NULL;
+ 			register int	bytes = 1;
+ 			int		status = 0;
+ 
+Index: cron/cron.h
+===================================================================
+--- cron.orig/cron.h
++++ cron/cron.h
+@@ -105,7 +105,7 @@
+ 
+ #if DEBUGGING
+ # define Debug(mask, message) \
+-			if ( (DebugFlags & (mask) ) == (mask) ) \
++			if ( (DebugFlags & (mask) )  ) \
+ 				printf message;
+ #else /* !DEBUGGING */
+ # define Debug(mask, message) \
+@@ -205,6 +205,7 @@ int		job_runqueue __P((void)),
+ 		get_char __P((FILE *)),
+ 		get_string __P((char *, int, FILE *, char *)),
+ 		swap_uids __P((void)),
++		swap_uids_back __P((void)),
+ 		load_env __P((char *, FILE *)),
+ 		cron_pclose __P((FILE *)),
+ 		strcmp_until __P((char *, char *, int)),
+@@ -220,7 +221,7 @@ char		*env_get __P((char *, char **)),
+ 		**env_set __P((char **, char *));
+ 
+ user		*load_user __P((int, struct passwd *, char *)),
+-		*find_user __P((cron_db *, char *));
++		*find_user __P((cron_db *, const char *));
+ 
+ entry		*load_entry __P((FILE *, void (*)(),
+ 				 struct passwd *, char **));
+Index: cron/database.c
+===================================================================
+--- cron.orig/database.c
++++ cron/database.c
+@@ -189,8 +189,8 @@ unlink_user(db, u)
+ 
+ user *
+ find_user(db, name)
+-	cron_db	*db;
+-	char	*name;
++	cron_db		*db;
++	const char	*name;
+ {
+ 	char	*env_get();
+ 	user	*u;
+Index: cron/cron.c
+===================================================================
+--- cron.orig/cron.c
++++ cron/cron.c
+@@ -246,7 +246,7 @@ cron_sleep() {
+ 
+ #ifdef USE_SIGCHLD
+ static void
+-sigchld_handler(x) {
++sigchld_handler(int x) {
+ 	WAIT_T		waiter;
+ 	PID_T		pid;
+ 
+@@ -276,7 +276,7 @@ sigchld_handler(x) {
+ 
+ 
+ static void
+-sighup_handler(x) {
++sighup_handler(int x) {
+ 	log_close();
+ }
+ 
+Index: cron/user.c
+===================================================================
+--- cron.orig/user.c
++++ cron/user.c
+@@ -75,6 +75,7 @@ load_user(crontab_fd, pw, name)
+ 	/*
+ 	 * load the crontab
+ 	 */
++	Set_LineNum(1)
+ 	while ((status = load_env(envstr, file)) >= OK) {
+ 		switch (status) {
+ 		case ERR:

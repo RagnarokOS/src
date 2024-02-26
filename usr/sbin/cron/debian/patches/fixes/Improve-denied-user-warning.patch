@@ -1,0 +1,41 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Fri, 15 Jan 2016 21:59:57 +0100
+Subject: Improve denied user warning
+
+Produce a different error message when root invokes -u for a user who was
+denied cron access, and don't log a message.
+
+Contributed by Javier Fernández-Sanguino Peña <jfs@debian.org>.
+
+Bug-Debian: https://bugs.debian.org/505288
+Forwarded: no
+Last-Update: 2016-01-15
+Index: cron/crontab.c
+===================================================================
+--- cron.orig/crontab.c
++++ cron/crontab.c
+@@ -110,11 +110,19 @@ main(argc, argv)
+ 	set_cron_uid();
+ 	set_cron_cwd();
+ 	if (!allowed(User)) {
+-		fprintf(stderr,
+-			"You (%s) are not allowed to use this program (%s)\n",
+-			User, ProgramName);
+-		fprintf(stderr, "See crontab(1) for more information\n");
+-		log_it(RealUser, Pid, "AUTH", "crontab command not allowed");
++		if (getuid() != 0) {
++			fprintf(stderr,
++				"You (%s) are not allowed to use this program (%s)\n",
++				User, ProgramName);
++			fprintf(stderr, "See crontab(1) for more information\n");
++			log_it(RealUser, Pid, "AUTH", "crontab command not allowed");
++		} else {
++		/* If the user is not allowed but root is running the
++		* program warn but do not log */
++			fprintf(stderr,
++				"The user %s cannot use this program (%s)\n",
++				User, ProgramName);
++		}
+ 		exit(ERROR_EXIT);
+ 	}
+ 	exitstatus = OK_EXIT;

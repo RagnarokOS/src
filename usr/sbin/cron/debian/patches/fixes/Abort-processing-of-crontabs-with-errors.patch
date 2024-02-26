@@ -1,0 +1,48 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Sun, 20 Dec 2015 19:27:15 +0100
+Subject: Abort processing of crontabs with errors
+
+Discard crontabs with syntax errors, and log an error.
+
+Discarding the entire crontab might seem harsh, but crontabs can be used as an
+attack vector, as evident by the gluck.debian.org compromise in 2006. Granted,
+that attack exploited the /etc/cron.d package directory feature, but it would
+seem prudent to err on the side of caution in this case.
+
+The initial fix was originally provided by Faidon Liambotis, and has been
+slightly extended.
+
+Bug-Debian: https://bugs.debian.org/378153
+Forwarded: no
+Last-Update: 2015-12-20
+Index: cron/user.c
+===================================================================
+--- cron.orig/user.c
++++ cron/user.c
+@@ -99,7 +99,10 @@ load_user(crontab_fd, pw, name)
+ 			 */
+ 			if (envstr[0] != '\0') {
+ 				log_it(u->name, getpid(), "ERROR", "Missing "
+-				"newline before EOF");
++				"newline before EOF, this crontab file will be "
++				"ignored");
++				free_user(u);
++				u = NULL;
+ 			}
+ 			goto done;
+ 		case FALSE:
+@@ -107,6 +110,14 @@ load_user(crontab_fd, pw, name)
+ 			if (e) {
+ 				e->next = u->crontab;
+ 				u->crontab = e;
++			} else {
++				/* stop processing on syntax error */
++				log_it(u->name, getpid(), "ERROR", "Syntax "
++					"error, this crontab file will be "
++					"ignored");
++				free_user(u);
++				u = NULL;
++				goto done;
+ 			}
+ 			break;
+ 		case TRUE:

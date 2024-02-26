@@ -1,0 +1,25 @@
+#! /bin/sh
+
+set -e
+
+dir=$(pwd)/debian/tests
+. $dir/textutils.sh
+
+frame "This test is to check that installing cron (and cron-daemon-common)" \
+      "keep enventually a previous version of crontab without changes."
+
+echo "================= purge cron and cron-daemon-common ================="
+apt-get --yes purge cron cron-daemon-common
+echo "========== create the file /etc/crontab with fancy contents ========="
+
+cat > /etc/crontab <<EOF
+# Hello, here is a fancy header for an "older" crontab
+# Let us see whether an install of packages cron-daemon-common and cron
+#   will preserve the original file ...
+EOF
+
+echo '=== install cron, reply "N" when prompted to replace /etc/crontab ==='
+echo "N" | apt-get --yes install cron 2>/dev/null
+
+grep -q "Hello, here is a fancy header for an \"older\" crontab" /etc/crontab
+echo "===== cron-daemon-common did preserve older configuration files ====="

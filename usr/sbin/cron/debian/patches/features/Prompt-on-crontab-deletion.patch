@@ -1,0 +1,121 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Fri, 15 Jan 2016 21:47:32 +0100
+Subject: Prompt on crontab deletion
+
+Add an option -i that modifies the -r option to prompt the user for a y/n
+response before actually deleting the crontab.
+
+Contributed by Javier Fernández-Sanguino Peña <jfs@debian.org>.
+
+Bug-Debian: https://bugs.debian.org/513379
+Forwarded: no
+Last-Update: 2016-01-15
+Index: cron/crontab.c
+===================================================================
+--- cron.orig/crontab.c
++++ cron/crontab.c
+@@ -59,6 +59,7 @@ static	char		Filename[MAX_FNAME];
+ static	char		Directory[MAX_FNAME];
+ static	FILE		*NewCrontab = NULL;
+ static	int		CheckErrorCount;
++static	int		PromptOnDelete;
+ static	enum opt_t	Option;
+ static	struct passwd	*pw;
+ static	void		list_cmd __P((void)),
+@@ -80,11 +81,12 @@ usage(msg)
+ {
+ 	fprintf(stderr, "%s: usage error: %s\n", ProgramName, msg);
+ 	fprintf(stderr, "usage:\t%s [-u user] file\n", ProgramName);
+-	fprintf(stderr, "\t%s [-u user] { -e | -l | -r }\n", ProgramName);
++	fprintf(stderr, "\t%s [ -u user ] [ -i ] { -e | -l | -r }\n", ProgramName);
+ 	fprintf(stderr, "\t\t(default operation is replace, per 1003.2)\n");
+ 	fprintf(stderr, "\t-e\t(edit user's crontab)\n");
+ 	fprintf(stderr, "\t-l\t(list user's crontab)\n");
+ 	fprintf(stderr, "\t-r\t(delete user's crontab)\n");
++	fprintf(stderr, "\t-i\t(prompt before deleting user's crontab)\n");
+ 	exit(ERROR_EXIT);
+ }
+ 
+@@ -176,6 +178,7 @@ parse_args(argc, argv)
+ 	}
+ 	Filename[0] = '\0';
+ 	Option = opt_unknown;
++	PromptOnDelete = 0;
+ 
+ 	while (EOF != (argch = getopt(argc, argv, getoptarg))) {
+ 		switch (argch) {
+@@ -220,6 +223,9 @@ parse_args(argc, argv)
+ 				usage("only one operation permitted");
+ 			Option = opt_edit;
+ 			break;
++		case 'i':
++			PromptOnDelete = 1;
++			break;
+ 		default:
+ 			usage("unrecognized option");
+ 		}
+@@ -345,9 +351,39 @@ list_cmd() {
+ static void
+ delete_cmd() {
+ 	char	n[MAX_FNAME];
++	char	q[MAX_TEMPSTR];
++	int	ans;
++	struct stat fsbuf;
+ 
+-	log_it(RealUser, Pid, "DELETE", User);
++	/* Check if the user has a crontab file first */
+ 	(void) snprintf(n, MAX_FNAME, CRON_TAB(User));
++	if (stat(n, &fsbuf) < 0) {
++		fprintf(stderr, "no crontab for %s\n", User);
++		exit(ERROR_EXIT);
++	}
++
++	if (PromptOnDelete == 1) {
++		printf("crontab: really delete %s's crontab? (y/n) ", User);
++		fflush(stdout);
++		ans = 0;
++		q[0] = '\0';
++		while ( ans == 0 ) {
++			(void) fgets(q, sizeof q, stdin);
++			switch (islower(q[0]) ? q[0] : tolower(q[0])) {
++			case 'y':
++			case 'n':
++				ans = 1;
++				break;
++			default:
++				fprintf(stderr, "Please enter Y or N: ");
++			}
++		}
++		if ((q[0] == 'N') || (q[0] == 'n')) {
++			exit(OK_EXIT);
++		}
++	}
++
++	log_it(RealUser, Pid, "DELETE", User);
+ 	if (unlink(n)) {
+ 		if (errno == ENOENT)
+ 			fprintf(stderr, "no crontab for %s\n", User);
+Index: cron/crontab.1
+===================================================================
+--- cron.orig/crontab.1
++++ cron/crontab.1
+@@ -24,7 +24,7 @@ crontab \- maintain crontab files for in
+ .SH SYNOPSIS
+ crontab [ \-u user ] file
+ .br
+-crontab [ \-u user ] [ \-e ] { \-l | \-r }
++crontab [ \-u user ] [ \-i ] { \-e | \-l | \-r }
+ .SH DESCRIPTION
+ .I crontab
+ is the program used to install, deinstall or list the tables
+@@ -100,6 +100,10 @@ from the editor, the modified crontab wi
+ neither of the environment variables is defined, then the
+ default editor /usr/bin/editor is used.
+ .PP
++The
++.I \-i
++option modifies the \-r option to prompt the user for a 'y/Y' response
++before actually removing the crontab.
+ .SH DEBIAN SPECIFIC
+ The "out-of-the-box" behaviour for
+ .I crontab \-l

@@ -1,0 +1,47 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Fri, 25 Dec 2015 23:57:47 +0100
+Subject: Don't die on missing spool dir
+
+The daemon shouldn't just die when spool dir is missing, for example when
+/var/spool is being moved around. This a recoverable situation.
+
+Fix provided by Justin Pryzby <justinpryzby@users.sourceforge.net>.
+
+Bug-Debian: https://bugs.debian.org/470564
+Forwarded: no
+Last-Update: 2015-12-25
+Index: cron/database.c
+===================================================================
+--- cron.orig/database.c
++++ cron/database.c
+@@ -68,7 +68,7 @@ load_database(old_db)
+ 	 */
+ 	if (stat(SPOOL_DIR, &statbuf) < OK) {
+ 		log_it("CRON", getpid(), "STAT FAILED", SPOOL_DIR);
+-		(void) exit(ERROR_EXIT);
++		statbuf.st_mtime = 0;
+ 	}
+ 
+ 	/* track system crontab file
+@@ -109,10 +109,9 @@ load_database(old_db)
+ 	 */
+ 	if (!(dir = opendir(SPOOL_DIR))) {
+ 		log_it("CRON", getpid(), "OPENDIR FAILED", SPOOL_DIR);
+-		(void) exit(ERROR_EXIT);
+ 	}
+ 
+-	while (NULL != (dp = readdir(dir))) {
++	while (dir != NULL && NULL != (dp = readdir(dir))) {
+ 		char	fname[MAXNAMLEN+1],
+ 			tabname[PATH_MAX+1];
+ 
+@@ -130,7 +129,8 @@ load_database(old_db)
+ 		process_crontab(fname, fname, tabname,
+ 				&statbuf, &new_db, old_db);
+ 	}
+-	closedir(dir);
++	if (dir)
++		closedir(dir);
+ 
+ 	/* if we don't do this, then when our children eventually call
+ 	 * getpwnam() in do_command.c's child_process to verify MAILTO=,

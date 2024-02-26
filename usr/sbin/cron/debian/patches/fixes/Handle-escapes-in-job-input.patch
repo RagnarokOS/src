@@ -1,0 +1,54 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Tue, 22 Dec 2015 22:14:53 +0100
+Subject: Handle escapes in job input
+
+Certain escape sequences are not handled correctly. Fix supplied by Topi
+Miettinen, with OpenBSD indicated as the original source of it.
+
+Bug-Debian: https://bugs.debian.org/8499
+Forwarded: no
+Last-Update: 2015-12-22
+Index: cron/do_command.c
+===================================================================
+--- cron.orig/do_command.c
++++ cron/do_command.c
+@@ -123,13 +123,21 @@ child_process(e, u)
+ 	 * command, and subsequent characters are the additional input to
+ 	 * the command.  Subsequent %'s will be transformed into newlines,
+ 	 * but that happens later.
++	 *
++	 * If there are escaped %'s, remove the escape character.
+ 	 */
+ 	/*local*/{
+ 		register int escaped = FALSE;
+ 		register int ch;
++		register char *p;
+ 
+-		for (input_data = e->cmd;  ch = *input_data;  input_data++) {
++		for (input_data = p = e->cmd; (ch = *input_data);
++		    input_data++, p++) {
++			if (p != input_data)
++				*p = ch;
+ 			if (escaped) {
++				if (ch == '%' || ch == '\\')
++					*--p = ch;
+ 				escaped = FALSE;
+ 				continue;
+ 			}
+@@ -142,6 +150,7 @@ child_process(e, u)
+ 				break;
+ 			}
+ 		}
++		*p = '\0';
+ 	}
+ 
+ 	/* fork again, this time so we can exec the user's command.
+@@ -298,7 +307,7 @@ child_process(e, u)
+ 		 *	%  -> \n
+ 		 *	\x -> \x	for all x != %
+ 		 */
+-		while (ch = *input_data++) {
++		while ((ch = *input_data++) != '\0') {
+ 			if (escaped) {
+ 				if (ch != '%')
+ 					putc('\\', out);

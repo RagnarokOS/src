@@ -1,0 +1,26 @@
+Description: Runs PAM_REINITIALIZE_CRED after fork to apply correct rights to child process.
+Author: Jorge Rocha Gualtieri <jorge@jrg.com.br>
+Last-Update: 2021-03-01
+Bug-Debian: https://bugs.debian.org/983817
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/1917350
+
+The feature provided by this patch is tested with the script
+debian/tests/check-messages-sent-by-cron (second part of the script)
+
+Index: cron/do_command.c
+===================================================================
+--- cron.orig/do_command.c
++++ cron/do_command.c
+@@ -231,6 +231,12 @@ child_process(e, u)
+ 		  exit(ERROR_EXIT);
+ 		}
+ # endif
++
++#if defined(USE_PAM)
++                if (pamh != NULL) {
++                        pam_setcred(pamh, PAM_REINITIALIZE_CRED | PAM_SILENT);
++                }
++#endif
+ 		if (setuid(e->uid) !=0) { /* we aren't root after this... */
+ 			char msg[256];
+ 			snprintf(msg, 256, "do_command:setuid(%lu) failed: %s",

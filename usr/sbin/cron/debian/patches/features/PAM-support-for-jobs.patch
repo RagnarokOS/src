@@ -1,0 +1,112 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Thu, 07 Jan 2016 23:02:33 +0100
+Subject: PAM support for jobs
+
+Add support for PAM for job execution.
+
+Contributed by Topi Miettinen <Topi.Miettinen@nic.fi>.
+
+Bug-Debian: https://bugs.debian.org/68366
+Bug-Debian: https://bugs.debian.org/67586
+Forwarded: no
+Last-Update: 2016-01-07
+Index: cron/Makefile
+===================================================================
+--- cron.orig/Makefile
++++ cron/Makefile
+@@ -55,7 +55,7 @@ DESTMAN		=	$(DESTROOT)/share/man
+ INCLUDE		=	-I.
+ #INCLUDE	=
+ #<<need getopt()>>
+-LIBS		=
++LIBS		= $(PAM_LIBS)
+ #<<optimize or debug?>>
+ #OPTIM		=	-O
+ OPTIM		=	-g
+@@ -73,7 +73,7 @@ LINTFLAGS	=	-hbxa $(INCLUDE) $(COMPAT) $
+ #<<manifest defines>>
+ # Allow override from command line
+ DEBUG_DEFS	?= -DDEBUGGING=0
+-DEFS		= $(DEBUG_DEFS)
++DEFS		= $(DEBUG_DEFS) $(PAM_DEFS)
+ #(SGI IRIX systems need this)
+ #DEFS		=	-D_BSD_SIGNALS -Dconst=
+ #<<the name of the BSD-like install program>>
+Index: cron/do_command.c
+===================================================================
+--- cron.orig/do_command.c
++++ cron/do_command.c
+@@ -29,6 +29,18 @@ static char rcsid[] = "$Id: do_command.c
+ #if defined(SYSLOG)
+ # include <syslog.h>
+ #endif
++#if defined(USE_PAM)
++#include <security/pam_appl.h>
++static pam_handle_t *pamh = NULL;
++static const struct pam_conv conv = {
++	NULL
++};
++#define PAM_FAIL_CHECK if (retcode != PAM_SUCCESS) { \
++	fprintf(stderr,"\n%s\n",pam_strerror(pamh, retcode)); \
++	syslog(LOG_ERR,"%s",pam_strerror(pamh, retcode)); \
++	pam_end(pamh, retcode); exit(1); \
++	}
++#endif
+ 
+ 
+ static void		child_process __P((entry *, user *)),
+@@ -78,6 +90,9 @@ child_process(e, u)
+ 	register char	*input_data;
+ 	char		*usernm, *mailto;
+ 	int		children = 0;
++#if defined(USE_PAM)
++	int		retcode = 0;
++#endif
+ 
+ 	Debug(DPROC, ("[%d] child_process('%s')\n", getpid(), e->cmd))
+ 
+@@ -153,6 +168,19 @@ child_process(e, u)
+ 		*p = '\0';
+ 	}
+ 
++#if defined(USE_PAM)
++	retcode = pam_start("cron", usernm, &conv, &pamh);
++	PAM_FAIL_CHECK;
++	retcode = pam_set_item(pamh, PAM_TTY, "cron");
++	PAM_FAIL_CHECK;
++	retcode = pam_acct_mgmt(pamh, PAM_SILENT);
++	PAM_FAIL_CHECK;
++	retcode = pam_setcred(pamh, PAM_ESTABLISH_CRED | PAM_SILENT);
++	PAM_FAIL_CHECK;
++	retcode = pam_open_session(pamh, PAM_SILENT);
++	PAM_FAIL_CHECK;
++#endif
++
+ 	/* fork again, this time so we can exec the user's command.
+ 	 */
+ 	switch (fork()) {
+@@ -495,6 +523,11 @@ child_process(e, u)
+ 			Debug(DPROC, (", dumped core"))
+ 		Debug(DPROC, ("\n"))
+ 	}
++#if defined(USE_PAM)
++	pam_setcred(pamh, PAM_DELETE_CRED | PAM_SILENT);
++	retcode = pam_close_session(pamh, PAM_SILENT);
++	pam_end(pamh, retcode);
++#endif
+ }
+ 
+ 
+Index: cron/cron.8
+===================================================================
+--- cron.orig/cron.8
++++ cron/cron.8
+@@ -116,6 +116,8 @@ changes introduced are:
+ .IP \(em
+ Support for /etc/cron.{hourly,daily,weekly,monthly} via /etc/crontab,
+ .IP \(em
++PAM support,
++.IP \(em
+ Debian-specific file locations and commands,
+ .IP \(em
+ Debian-specific configuration (/etc/default/cron),

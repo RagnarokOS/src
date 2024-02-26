@@ -1,0 +1,311 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Sun, 20 Dec 2015 14:04:46 +0100
+Subject: Memory allocation issues
+
+Check the results of malloc(), strdup(), etc., and don't forget to free memory.
+
+Fixes provided by Steve Greenland <stevegr@debian.org> and extended for
+CVE-2019-9704.
+
+Bug-Debian: https://bugs.debian.org/264320
+Forwarded: no
+Last-Update: 2019-03-23
+Index: cron/compat.c
+===================================================================
+--- cron.orig/compat.c
++++ cron/compat.c
+@@ -53,7 +53,10 @@ strdup(str)
+ {
+ 	char	*temp;
+ 
+-	temp = malloc(strlen(str) + 1);
++	if ((temp = malloc(strlen(str) + 1)) == NULL) {
++		errno = ENOMEM;
++		return NULL;
++	}
+ 	(void) strcpy(temp, str);
+ 	return temp;
+ }
+Index: cron/env.c
+===================================================================
+--- cron.orig/env.c
++++ cron/env.c
+@@ -28,7 +28,8 @@ env_init()
+ {
+ 	register char	**p = (char **) malloc(sizeof(char **));
+ 
+-	p[0] = NULL;
++	if (p)
++		p[0] = NULL;
+ 	return (p);
+ }
+ 
+@@ -58,8 +59,18 @@ env_copy(envp)
+ 	for (count = 0;  envp[count] != NULL;  count++)
+ 		;
+ 	p = (char **) malloc((count+1) * sizeof(char *));  /* 1 for the NULL */
++	if (p == NULL) {
++		errno = ENOMEM;
++		return NULL;
++	}
+ 	for (i = 0;  i < count;  i++)
+-		p[i] = strdup(envp[i]);
++		if ((p[i] = strdup(envp[i])) == NULL) {
++			while (--i >= 0)
++				(void) free(p[i]);
++			free(p);
++			errno = ENOMEM;
++			return NULL;
++		}
+ 	p[count] = NULL;
+ 	return (p);
+ }
+@@ -90,7 +101,11 @@ env_set(envp, envstr)
+ 		 * save our new one there, and return the existing array.
+ 		 */
+ 		free(envp[found]);
+-		envp[found] = strdup(envstr);
++		if ((envp[found] = strdup(envstr)) == NULL) {
++			envp[found] = "";
++			errno = ENOMEM;
++			return NULL;
++		}
+ 		return (envp);
+ 	}
+ 
+@@ -101,8 +116,15 @@ env_set(envp, envstr)
+ 	 */
+ 	p = (char **) realloc((void *) envp,
+ 			      (unsigned) ((count+1) * sizeof(char **)));
++	if (p == NULL) 	{
++		errno = ENOMEM;
++		return NULL;
++	}
+ 	p[count] = p[count-1];
+-	p[count-1] = strdup(envstr);
++	if ((p[count-1] = strdup(envstr)) == NULL) {
++		errno = ENOMEM;
++		return NULL;
++	}
+ 	return (p);
+ }
+ 
+Index: cron/job.c
+===================================================================
+--- cron.orig/job.c
++++ cron/job.c
+@@ -45,7 +45,8 @@ job_add(e, u)
+ 		if (j->e == e && j->u == u) { return; }
+ 
+ 	/* build a job queue element */
+-	j = (job*)malloc(sizeof(job));
++	if ((j = (job*)malloc(sizeof(job))) == NULL)
++		return;
+ 	j->next = (job*) NULL;
+ 	j->e = e;
+ 	j->u = u;
+Index: cron/misc.c
+===================================================================
+--- cron.orig/misc.c
++++ cron/misc.c
+@@ -479,7 +479,12 @@ log_it(username, xpid, event, detail)
+ 		     + strlen(event)
+ 		     + strlen(detail)
+ 		     + MAX_TEMPSTR);
+-
++	if (msg == NULL) {
++		/* damn, out of mem and we did not test that before... */
++		fprintf(stderr, "%s: Run OUT OF MEMORY while %s\n",
++		    ProgramName, __FUNCTION__);
++	    return;
++	}
+ 	if (LogFD < OK) {
+ 		LogFD = open(LOG_FILE, O_WRONLY|O_APPEND|O_CREAT, 0600);
+ 		if (LogFD < OK) {
+@@ -624,7 +629,8 @@ mkprints(src, len)
+ {
+ 	register char *dst = malloc(len*4 + 1);
+ 
+-	mkprint(dst, src, len);
++	if (dst)
++		mkprint(dst, src, len);
+ 
+ 	return dst;
+ }
+Index: cron/user.c
+===================================================================
+--- cron.orig/user.c
++++ cron/user.c
+@@ -52,7 +52,7 @@ load_user(crontab_fd, pw, name)
+ 	user	*u;
+ 	entry	*e;
+ 	int	status;
+-	char	**envp;
++	char	**envp, **tenvp;
+ 
+ 	if (!(file = fdopen(crontab_fd, "r"))) {
+ 		perror("fdopen on crontab_fd in load_user");
+@@ -63,14 +63,25 @@ load_user(crontab_fd, pw, name)
+ 
+ 	/* file is open.  build user entry, then read the crontab file.
+ 	 */
+-	u = (user *) malloc(sizeof(user));
+-	u->name = strdup(name);
++	if ((u = (user *) malloc(sizeof(user))) == NULL) {
++		errno = ENOMEM;
++		return NULL;
++	}
++	if ((u->name = strdup(name)) == NULL) {
++		free(u);
++		errno = ENOMEM;
++		return NULL;
++	}
+ 	u->crontab = NULL;
+ 
+ 	/* 
+ 	 * init environment.  this will be copied/augmented for each entry.
+ 	 */
+-	envp = env_init();
++	if ((envp = env_init()) == NULL) {
++		free(u->name);
++		free(u);
++		return NULL;
++	}
+ 
+ 	/*
+ 	 * load the crontab
+@@ -90,7 +101,13 @@ load_user(crontab_fd, pw, name)
+ 			}
+ 			break;
+ 		case TRUE:
+-			envp = env_set(envp, envstr);
++			if ((tenvp = env_set(envp, envstr))) {
++				envp = tenvp;
++			} else {
++				free_user(u);
++				u = NULL;
++				goto done;
++			}
+ 			break;
+ 		}
+ 	}
+Index: cron/entry.c
+===================================================================
+--- cron.orig/entry.c
++++ cron/entry.c
+@@ -91,6 +91,7 @@ load_entry(file, error_func, pw, envp)
+ 	int	ch;
+ 	char	cmd[MAX_COMMAND];
+ 	char	envstr[MAX_ENVSTR];
++	char	**tenvp;
+ 
+ 	Debug(DPARS, ("load_entry()...about to eat comments\n"))
+ 
+@@ -106,6 +107,10 @@ load_entry(file, error_func, pw, envp)
+ 	 */
+ 
+ 	e = (entry *) calloc(sizeof(entry), sizeof(char));
++	if (e == NULL) {
++		log_it("CRON", getpid(), "OOM", "Out of memory parsing crontab");
++		return NULL;
++	}
+ 
+ 	if (ch == '@') {
+ 		/* all of these should be flagged and load-limited; i.e.,
+@@ -247,24 +252,52 @@ load_entry(file, error_func, pw, envp)
+ 	/* copy and fix up environment.  some variables are just defaults and
+ 	 * others are overrides.
+ 	 */
+-	e->envp = env_copy(envp);
++	if ((e->envp = env_copy(envp)) == NULL) {
++		ecode = e_none;
++		goto eof;
++	}
+ 	if (!env_get("SHELL", e->envp)) {
+ 		sprintf(envstr, "SHELL=%s", _PATH_BSHELL);
+-		e->envp = env_set(e->envp, envstr);
++		if ((tenvp = env_set(e->envp, envstr))) {
++			e->envp = tenvp;
++		} else {
++			ecode = e_none;
++			goto eof;
++		}
+ 	}
+ 	if (!env_get("HOME", e->envp)) {
+ 		sprintf(envstr, "HOME=%s", pw->pw_dir);
+-		e->envp = env_set(e->envp, envstr);
++		if ((tenvp = env_set(e->envp, envstr))) {
++			e->envp = tenvp;
++		} else {
++			ecode = e_none;
++			goto eof;
++		}
+ 	}
+ 	if (!env_get("PATH", e->envp)) {
+ 		sprintf(envstr, "PATH=%s", _PATH_DEFPATH);
+-		e->envp = env_set(e->envp, envstr);
++		if ((tenvp = env_set(e->envp, envstr))) {
++			e->envp = tenvp;
++		} else {
++			ecode = e_none;
++			goto eof;
++		}
+ 	}
+ 	sprintf(envstr, "%s=%s", "LOGNAME", pw->pw_name);
+-	e->envp = env_set(e->envp, envstr);
++	if ((tenvp = env_set(e->envp, envstr))) {
++		e->envp = tenvp;
++	} else {
++		ecode = e_none;
++		goto eof;
++	}
+ #if defined(BSD)
+ 	sprintf(envstr, "%s=%s", "USER", pw->pw_name);
+-	e->envp = env_set(e->envp, envstr);
++	if ((tenvp = env_set(e->envp, envstr))) {
++		e->envp = tenvp;
++	} else {
++		ecode = e_none;
++		goto eof;
++	}
+ #endif
+ 
+ 	Debug(DPARS, ("load_entry()...about to parse command\n"))
+@@ -285,7 +318,10 @@ load_entry(file, error_func, pw, envp)
+ 
+ 	/* got the command in the 'cmd' string; save it in *e.
+ 	 */
+-	e->cmd = strdup(cmd);
++	if ((e->cmd = strdup(cmd)) == NULL) {
++		ecode = e_none;
++		goto eof;
++	}
+ 
+ 	Debug(DPARS, ("load_entry()...returning successfully\n"))
+ 
+@@ -294,6 +330,10 @@ load_entry(file, error_func, pw, envp)
+ 	return e;
+ 
+  eof:
++	if (e->envp)
++		env_free(e->envp);
++	if (e->cmd)
++		free(e->cmd);
+ 	free(e);
+ 	if (ecode != e_none && error_func)
+ 		(*error_func)(ecodes[(int)ecode]);
+Index: cron/crontab.c
+===================================================================
+--- cron.orig/crontab.c
++++ cron/crontab.c
+@@ -503,6 +503,10 @@ replace_cmd() {
+ 	time_t	now = time(NULL);
+ 	char	**envp = env_init();
+ 
++	if (envp == NULL) {
++		fprintf(stderr, "%s: Cannot allocate memory.\n", ProgramName);
++		return (-2);
++	}
+ 	(void) sprintf(n, "tmp.%d", Pid);
+ 	(void) sprintf(tn, CRON_TAB(n));
+ 	if (!(tmp = fopen(tn, "w+"))) {

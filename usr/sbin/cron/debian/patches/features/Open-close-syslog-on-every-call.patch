@@ -1,0 +1,61 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Thu, 07 Mar 2019 11:00:48 +0100
+Subject: Open/close syslog on every call
+
+Open and close syslog on every call to log_it().
+
+This ancient change seems to stem from a time when there were various conflicts
+with PAM -- for example PAM apparently changed the facility from LOG_CRON to
+LOG_AUTH.
+
+I could not reproduce this and other issues alluded to, and this fix is not
+present in other Vixie cron derivatives. However, those other derivatives are
+based on 4.1, so it might be possible that this fix is still needed for 3.0,
+which is why I'm keeping it for now.
+
+Contributed by Steve Greenland <stevegr@debian.org>.
+
+Forwarded: no
+Last-Update: 2019-03-07
+Index: cron/misc.c
+===================================================================
+--- cron.orig/misc.c
++++ cron/misc.c
+@@ -48,10 +48,6 @@ static char rcsid[] = "$Id: misc.c,v 2.9
+ #define LOG_CRON LOG_DAEMON
+ #endif
+ 
+-#if defined(SYSLOG)
+-	static int		syslog_open = 0;
+-#endif
+-
+ 
+ static int		LogFD = ERR;
+ 
+@@ -584,15 +580,12 @@ log_it(username, xpid, event, detail)
+ #endif /*LOG_FILE*/
+ 
+ #if defined(SYSLOG)
+-	if (!syslog_open) {
+ # ifdef LOG_CRON
+-		openlog(ProgramName, LOG_PID, LOG_CRON);
++	openlog(ProgramName, LOG_PID, LOG_CRON);
+ # else
+-		openlog(ProgramName, LOG_PID);
++	openlog(ProgramName, LOG_PID);
+ # endif
+-		syslog_open = TRUE;		/* assume openlog success */
+-	}
+-
++
+ 	syslog(LOG_INFO, "(%s) %s (%s)", username, event, detail);
+ 
+ #endif /*SYSLOG*/
+@@ -616,7 +609,6 @@ log_close() {
+ #endif
+ #if defined(SYSLOG)
+ 	closelog();
+-	syslog_open = FALSE;
+ #endif
+ }
+ 

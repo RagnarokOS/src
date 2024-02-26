@@ -1,0 +1,310 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Mon, 28 Dec 2015 01:35:31 +0100
+Subject: Debian manpage and doc updates
+
+A collection of various corrections, clarifications, and additions to the
+manpages cron.8, crontab.1, and crontab.5 which are not specific to Debian's
+version of vixie cron.
+
+Fixes mostly provided originally by Steve Greenland <stevegr@debian.org>, with
+numerous smaller contributions by others.
+
+Forwarded: not-needed
+Last-Update: 2016-01-16
+Index: cron/README
+===================================================================
+--- cron.orig/README
++++ cron/README
+@@ -24,6 +24,12 @@ December 27, 1993
+ [V1.0 was May 6, 1987]
+ Paul Vixie
+ 
++[Note from Debian cron maintainer: This is the original README from
++the the vixie-cron package. The location of many cron files has been
++changed in order to comply with Debian policy and common sense -- look
++in the cron(8), crontab(1) and crontab(5) man pages for more info, as
++well as the README.Debian file in this directory.]
++
+ This is a version of 'cron' that is known to run on BSD 4.[23] systems.  It
+ is functionally based on the SysV cron, which means that each user can have
+ their own crontab file (all crontab files are stored in a read-protected
+Index: cron/cron.8
+===================================================================
+--- cron.orig/cron.8
++++ cron/cron.8
+@@ -17,7 +17,7 @@
+ .\"
+ .\" $Id: cron.8,v 2.2 1993/12/28 08:34:43 vixie Exp $
+ .\"
+-.TH CRON 8 "20 December 1993"
++.TH CRON 8 "19 April 2010"
+ .UC 4
+ .SH NAME
+ cron \- daemon to execute scheduled commands (Vixie Cron)
+@@ -41,6 +41,12 @@ command should be used to access and upd
+ .I cron
+ also reads /etc/crontab, which is in a slightly different format (see
+ .IR crontab (5)).
++In Debian, the content of /etc/crontab is predefined
++to run programs under /etc/cron.hourly, /etc/cron.daily,
++/etc/cron.weekly and /etc/cron.monthly.  This configuration is specific to
++Debian, see the note under
++.B DEBIAN SPECIFIC
++below.
+ /etc/crontab must be owned by root, and must not
+ be group-or other-writable.
+ .I cron
+@@ -72,8 +78,78 @@ logs its action to the syslog facility '
+ controlled using the standard
+ .IR syslogd (8)
+ facility.
++.SH ENVIRONMENT
++If configured in
++.I /etc/default/cron
++in Debian systems, the
++.I cron
++daemon localisation settings environment can be managed through the use of
++.I /etc/environment
++or through the use of
++.I /etc/default/locale
++with values from the latter overriding values from the former.  These
++files are read and they will be used to setup the LANG, LC_ALL, and
++LC_CTYPE environment variables.  These variables are then used to set the
++charset of mails, which defaults to 'C'.
++.PP
++This does
++.B NOT
++affect the environment of tasks running under cron.  For more information
++on how to modify the environment of tasks, consult
++.IR crontab (5).
++.PP
++The daemon will use, if present, the definition from
++.I /etc/timezone
++for the timezone.
++.PP
++The environment can be redefined in user's crontab definitions but
++.I cron
++will only handle tasks in a single timezone.
++
++.SH DEBIAN SPECIFIC
++.PP
++Debian introduces some changes to
++.I cron
++that were not originally available upstream.  The most significant
++changes introduced are:
++
++.IP \(em
++Support for /etc/cron.{hourly,daily,weekly,monthly} via /etc/crontab,
++.IP \(em
++Debian-specific file locations and commands,
++.IP \(em
++Debian-specific configuration (/etc/default/cron),
++.IP \(em
++numerous other smaller features and fixes.
++
++.PP
++Support for /etc/cron.hourly, /etc/cron.daily, /etc/cron.weekly and
++/etc/cron.monthly is provided in Debian through the default setting
++of the /etc/crontab file (see the system-wide example in
++.IR crontab (5)).
++The default system-wide crontab contains four tasks: run every hour, every
++day, every week and every month.  Each of these tasks will execute
++.B run-parts
++providing each one of the directories as an argument.
++These tasks are disabled if
++.B anacron
++is installed (except for the hourly task) to prevent conflicts between
++both daemons.
++is controlled by
++.I /etc/default/cron
++which is read by the init.d script that launches the
++.I cron
++daemon.  This file determines whether
++.I cron
++will read the system's environment variables and makes it possible to add
++additional options to the
++.I cron
++program before it is executed.
+ .SH "SEE ALSO"
+ crontab(1), crontab(5)
+ .SH AUTHOR
+-.nf
+-Paul Vixie <paul@vix.com>
++Paul Vixie <paul@vix.com> is the author of
++.I cron
++and original creator of this manual page.  This page has also been modified for
++Debian by Steve Greenland, Javier Fernandez-Sanguino and Christian Kastner.
++
+Index: cron/crontab.1
+===================================================================
+--- cron.orig/crontab.1
++++ cron/crontab.1
+@@ -17,7 +17,7 @@
+ .\"
+ .\" $Id: crontab.1,v 2.4 1993/12/31 10:47:33 vixie Exp $
+ .\"
+-.TH CRONTAB 1 "29 December 1993"
++.TH CRONTAB 1 "19 April 2010"
+ .UC 4
+ .SH NAME
+ crontab \- maintain crontab files for individual users (Vixie Cron)
+@@ -58,7 +58,8 @@ is not considered and your user must be
+ in order to be able to use the crontab.
+ .PP
+ Regardless of the existence of any of these files, the root administrative
+-user is always allowed to setup a crontab.
++user is always allowed to setup a crontab.  For standard Debian systems, all
++users may use this command.
+ .PP
+ If the
+ .I \-u
+@@ -92,7 +93,10 @@ The
+ option is used to edit the current crontab using the editor specified by
+ the \s-1VISUAL\s+1 or \s-1EDITOR\s+1 environment variables.
+ After you exit
+-from the editor, the modified crontab will be installed automatically.
++from the editor, the modified crontab will be installed automatically.  If
++neither of the environment variables is defined, then the
++default editor /usr/bin/editor is used.
++.PP
+ .SH "SEE ALSO"
+ crontab(5), cron(8)
+ .SH FILES
+@@ -125,10 +129,22 @@ SVR3 syntax.
+ A fairly informative usage message appears if you run it with a bad command
+ line.
+ 
+-cron requires that each entry in a crontab end in a newline character. If the
++cron requires that each entry in a crontab end in a newline character.  If the
+ last entry in a crontab is missing the newline, cron will consider the crontab
+ (at least partially) broken and refuse to install it.
+ 
++The files under
++.I
++/var/spool/cron/crontabs
++are named based on the user's account name.
++Crontab jobs will not be run for users whose accounts have been
++renamed either due to changes in the local system or because they are
++managed through a central user database (external to the system, for
++example an LDAP directory).
++
++
+ .SH AUTHOR
+-.nf
+-Paul Vixie <paul@vix.com>
++Paul Vixie <paul@vix.com> is the author of
++.I cron
++and original creator of this manual page.  This page has also been modified for
++Debian by Steve Greenland, Javier Fernandez-Sanguino and Christian Kastner.
+Index: cron/crontab.5
+===================================================================
+--- cron.orig/crontab.5
++++ cron/crontab.5
+@@ -17,7 +17,7 @@
+ .\"
+ .\" $Id: crontab.5,v 2.4 1994/01/15 20:43:43 vixie Exp $
+ .\"
+-.TH CRONTAB 5 "24 January 1994"
++.TH CRONTAB 5 "19 April 2010"
+ .UC 4
+ .SH NAME
+ crontab \- tables for driving cron
+@@ -64,12 +64,13 @@ The
+ .I value
+ string is
+ .B not
+-parsed for environmental substitutions or replacement of variables, thus lines
+-like
++parsed for environmental substitutions or replacement of variables or
++tilde(~) expansion, thus lines like
+ .PP
+ .in +4n
+ .nf
+ PATH = $HOME/bin:$PATH
++PATH = ~/bin:/usr/bin:/bin
+ .fi
+ .in
+ .PP
+@@ -237,9 +238,28 @@ MAILTO=paul
+ 0 22 * * 1\-5    mail \-s "It's 10pm" joe%Joe,%%Where are your kids?%
+ 23 0\-23/2 * * * echo "run 23 minutes after midn, 2am, 4am ..., everyday"
+ 5 4 * * sun     echo "run at 5 after 4 every Sunday"
++0 */4 1 * mon   echo "run every 4th hour on the 1st and on every Monday"
++0 0 */2 * sun   echo "run at midn on every Sunday that's an uneven date"
+ # Run on every second Saturday of the month
+ 0 4 8\-14 * *    test $(date +\e%u) \-eq 6 && echo "2nd Saturday"
+ .fi
++
++.PP
++All the above examples run non-interactive programs.  If you wish to run a
++program that interacts with the user's desktop you have to make sure the proper
++environment variable
++.I DISPLAY
++is set.
++
++.\" Note: Based on some web searches, below example might not fully
++.\" work in all systems, as notify-send might require also
++.\" to have knowledge of the dbus session in use (through the environment)
++.\" However, adding that code here is an overkill
++.nf
++# Execute a program and run a notification every day at 10:00 am
++0 10 * * *  $HOME/bin/program | DISPLAY=:0 notify-send "Program run" "$(cat)"
++.fi
++
+ .SH EXAMPLE SYSTEM CRON FILE
+ 
+ The following lists the content of a regular system-wide crontab file.  Unlike a
+@@ -255,6 +275,13 @@ user's crontab, this file has the userna
+ SHELL=/bin/sh
+ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+ 
++# Example of job definition:
++# .---------------- minute (0 - 59)
++# |  .------------- hour (0 - 23)
++# |  |  .---------- day of month (1 - 31)
++# |  |  |  .------- month (1 - 12) OR jan,feb,mar,apr ...
++# |  |  |  |  .---- day of week (0 - 6) (Sunday=0 or 7) OR sun,mon,tue,wed,thu,fri,sat
++# |  |  |  |  |
+ # m h dom mon dow user	command
+ 17 * * * *  root  cd / && run-parts \-\-report /etc/cron.hourly
+ 25 6 * * *  root  test \-x /usr/sbin/anacron || ( cd / && run-parts \-\-report /etc/cron.daily )
+@@ -262,6 +289,12 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbi
+ 52 6 1 * *  root  test \-x /usr/sbin/anacron || ( cd / && run-parts \-\-report /etc/cron.monthly )
+ #
+ .fi
++
++Note that all the system-wide tasks will run, by default, from 6 am to 7 am.  In
++the case of systems that are not powered on during that period of time, only
++the hourly tasks will be executed unless the defaults above are changed.
++
++
+ .SH SEE ALSO
+ cron(8), crontab(1)
+ .SH EXTENSIONS
+@@ -298,6 +331,15 @@ environment variable in his
+ this will affect only the commands executed in the crontab, not the execution
+ of the crontab tasks themselves.
+ 
++POSIX specifies that the day of month and the day of week fields both need to
++match the current time if either of them
++.I is
++a *.  However, this implementation only checks if the
++.I first character
++is a *.  This is why "0 0 */2 * sun" runs every Sunday that's an
++uneven date while the POSIX standard would have it run every Sunday and on
++every uneven date.
++
+ The
+ .I crontab
+ syntax does not make it possible to define all possible periods one can
+@@ -329,5 +371,8 @@ cron will consider the crontab (at least
+ A warning will be written to syslog.
+ 
+ .SH AUTHOR
+-.nf
+-Paul Vixie <paul@vix.com>
++Paul Vixie <paul@vix.com> is the author of
++.I cron
++and original creator of this manual page.  This page has also been modified for
++Debian by Steve Greenland, Javier Fernandez-Sanguino, Christian Kastner and
++Christian Pekeler.

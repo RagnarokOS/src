@@ -1,0 +1,97 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Tue, 22 Dec 2015 18:42:49 +0100
+Subject: Drop privileges when sending mail
+
+Drop privileges when sending mail. It is unnecessary to send them as root.
+
+Extension of a fix originally provided by Steve Greenland <stevegr@debian.org>
+and extended by Javier Fernández-Sanguino Peña <jfs@debian.org>.
+
+Forwarded: no
+Last-Update: 2015-12-22
+Index: cron/cron.h
+===================================================================
+--- cron.orig/cron.h
++++ cron/cron.h
+@@ -226,7 +226,7 @@ user		*load_user __P((int, struct passwd
+ entry		*load_entry __P((FILE *, void (*)(),
+ 				 struct passwd *, char **));
+ 
+-FILE		*cron_popen __P((char *, char *));
++FILE		*cron_popen __P((char *, char *, entry *));
+ 
+ 
+ 				/* in the C tradition, we only create
+Index: cron/popen.c
+===================================================================
+--- cron.orig/popen.c
++++ cron/popen.c
+@@ -31,6 +31,10 @@ static char sccsid[] = "@(#)popen.c	5.7
+ #include "cron.h"
+ #include <signal.h>
+ 
++#if defined(BSD) || defined(POSIX)
++#  include <grp.h>
++#endif
++
+ 
+ #define MAX_ARGS 100
+ #define WANT_GLOBBING 0
+@@ -44,8 +48,9 @@ static PID_T *pids;
+ static int fds;
+ 
+ FILE *
+-cron_popen(program, type)
++cron_popen(program, type, e)
+ 	char *program, *type;
++	entry *e;
+ {
+ 	register char *cp;
+ 	FILE *iop;
+@@ -116,6 +121,33 @@ cron_popen(program, type)
+ 			}
+ 			(void)close(pdes[1]);
+ 		}
++		/* set our directory, uid and gid.  Set gid first, since once
++		 * we set uid, we've lost root privleges.
++		 */
++		if (setgid(e->gid) !=0) {
++			char msg[256];
++			snprintf(msg, 256, "popen:setgid(%lu) failed: %s",
++				(unsigned long) e->gid, strerror(errno));
++			log_it("CRON",getpid(),"error",msg);
++			exit(ERROR_EXIT);
++		}
++# if defined(BSD) || defined(POSIX)
++		if (initgroups(env_get("LOGNAME", e->envp), e->gid) !=0) {
++			char msg[256];
++			snprintf(msg, 256, "popen:initgroups(%lu) failed: %s",
++				(unsigned long) e->gid, strerror(errno));
++			log_it("CRON",getpid(),"error",msg);
++			exit(ERROR_EXIT);
++		}
++# endif
++		if (setuid(e->uid) !=0) {
++			char msg[256];
++			snprintf(msg, 256, "popen: setuid(%lu) failed: %s",
++				(unsigned long) e->uid, strerror(errno));
++			log_it("CRON",getpid(),"error",msg);
++			exit(ERROR_EXIT);
++		}
++		chdir(env_get("HOME", e->envp));
+ #if WANT_GLOBBING
+ 		execvp(gargv[0], gargv);
+ #else
+Index: cron/do_command.c
+===================================================================
+--- cron.orig/do_command.c
++++ cron/do_command.c
+@@ -385,7 +385,7 @@ child_process(e, u)
+ 				(void) gethostname(hostname, MAXHOSTNAMELEN);
+ 				(void) snprintf(mailcmd, sizeof(mailcmd),
+ 						MAILARGS, MAILCMD, mailto);
+-				if (!(mail = cron_popen(mailcmd, "w"))) {
++				if (!(mail = cron_popen(mailcmd, "w", e))) {
+ 					perror(MAILCMD);
+ 					(void) _exit(ERROR_EXIT);
+ 				}

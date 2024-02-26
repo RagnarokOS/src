@@ -1,0 +1,150 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Fri, 15 Jan 2016 23:19:34 +0100
+Subject: Debian paths and commands
+
+User pathnames and commands specific to Debian.
+
+Bug-Debian: https://bugs.debian.org/482284
+Forwarded: not-needed
+Last-Update: 2016-01-15
+Index: cron/pathnames.h
+===================================================================
+--- cron.orig/pathnames.h
++++ cron/pathnames.h
+@@ -28,7 +28,7 @@
+ 			 * to; SPOOL_DIR, ALLOW_FILE, DENY_FILE, and LOG_FILE
+ 			 * are all relative to this directory.
+ 			 */
+-#define CRONDIR		"/var/cron"
++#define CRONDIR		"/var/spool/cron"
+ #endif
+ 
+ 			/* SPOOLDIR is where the crontabs live.
+@@ -39,7 +39,7 @@
+ 			 * newer than they were last time around (or which
+ 			 * didn't exist last time around...)
+ 			 */
+-#define SPOOL_DIR	"tabs"
++#define SPOOL_DIR	"crontabs"
+ 
+ 			/* undefining these turns off their features.  note
+ 			 * that ALLOW_FILE and DENY_FILE must both be defined
+@@ -47,8 +47,8 @@
+ 			 * LOG_FILE or SYSLOG is defined, we don't log.  If
+ 			 * both are defined, we log both ways.
+ 			 */
+-#define	ALLOW_FILE	"allow"		/*-*/
+-#define DENY_FILE	"deny"		/*-*/
++#define	ALLOW_FILE	"/etc/cron.allow"		/*-*/
++#define DENY_FILE	"/etc/cron.deny"		/*-*/
+ #define LOG_FILE	"log"		/*-*/
+ 
+ 			/* where should the daemon stick its PID?
+@@ -58,7 +58,7 @@
+ #else
+ # define PIDDIR "/etc/"
+ #endif
+-#define PIDFILE		"%scron.pid"
++#define PIDFILE		"%scrond.pid"
+ 
+ 			/* 4.3BSD-style crontab */
+ #define SYSCRONTAB	"/etc/crontab"
+@@ -66,11 +66,7 @@
+ 			/* what editor to use if no EDITOR or VISUAL
+ 			 * environment variable specified.
+ 			 */
+-#if defined(_PATH_VI)
+-# define EDITOR _PATH_VI
+-#else
+-# define EDITOR "/usr/ucb/vi"
+-#endif
++#define EDITOR "/usr/bin/sensible-editor"
+ 
+ #ifndef _PATH_BSHELL
+ # define _PATH_BSHELL "/bin/sh"
+Index: cron/misc.c
+===================================================================
+--- cron.orig/misc.c
++++ cron/misc.c
+@@ -238,7 +238,7 @@ set_cron_cwd()
+ }
+ 
+ 
+-/* acquire_daemonlock() - write our PID into /etc/cron.pid, unless
++/* acquire_daemonlock() - write our PID into /etc/crond.pid, unless
+  *	another daemon is already running, which we detect here.
+  *
+  * note: main() calls us twice; once before forking, once after.
+Index: cron/cron.8
+===================================================================
+--- cron.orig/cron.8
++++ cron/cron.8
+@@ -30,7 +30,7 @@ runlevels.
+ .SH NOTES
+ .PP
+ .I cron
+-searches its spool area /var/cron/tabs for crontab
++searches its spool area (/var/spool/cron/crontabs) for crontab
+ files (which are named after accounts in
+ /etc/passwd); crontabs found are loaded into memory.  Note that
+ crontabs in this directory should not be accessed directly -
+Index: cron/crontab.1
+===================================================================
+--- cron.orig/crontab.1
++++ cron/crontab.1
+@@ -35,14 +35,14 @@ these are files in /var/spool/cron/cront
+ they are not intended to be edited directly.
+ .PP
+ If the
+-.I /var/cron/allow
++.I /etc/cron.allow
+ file exists, then you must be listed (one user per line) therein in order to be
+ allowed to use this command.  If the
+-.I /var/cron/allow
++.I /etc/cron.allow
+ file does not exist but the
+-.I /var/cron.deny
++.I /etc/cron.deny
+ file does exist, then you must \fBnot\fR be listed in the
+-.I /var/cron/cron.deny
++.I /etc/cron.deny
+ file in order to use this command.
+ .PP
+ If neither of these files exists, then depending on site-dependent
+@@ -50,11 +50,11 @@ configuration parameters, only the super
+ command, or all users will be able to use this command.
+ .PP
+ If both files exist then
+-.I /var/cron/allow
++.I /etc/cron.allow
+ takes precedence.  Which means that
+-.I /var/cron/deny
++.I /etc/cron.deny
+ is not considered and your user must be listed in
+-.I /var/cron/allow
++.I /etc/cron.allow
+ in order to be able to use the crontab.
+ .PP
+ Regardless of the existence of any of these files, the root administrative
+@@ -101,9 +101,9 @@ default editor /usr/bin/editor is used.
+ crontab(5), cron(8)
+ .SH FILES
+ .nf
+-/var/cron/allow
+-/var/cron/deny
+-/var/cron/crontabs
++/etc/cron.allow
++/etc/cron.deny
++/var/spool/cron/crontabs
+ .fi
+ .PP
+ The files
+@@ -114,7 +114,7 @@ if, they exist, must be either world-rea
+ ``crontab''. If they are not, then cron will deny access to all users until the
+ permissions are fixed.
+ .PP
+-There is one file for each user's crontab under the /var/cron/crontabs
++There is one file for each user's crontab under the /var/spool/cron/crontabs
+ directory.  Users are not allowed to edit the files under that directory
+ directly to ensure that only users allowed by the system to run periodic tasks
+ can add them, and only syntactically correct crontabs will be written there.

@@ -1,0 +1,142 @@
+Implement two switches:
+-n to make a "dry run" (syntax crontab -n foo)
+-h to display a help message
+
+Index: cron/crontab.c
+===================================================================
+--- cron.orig/crontab.c
++++ cron/crontab.c
+@@ -46,7 +46,7 @@ static char rcsid[] = "$Id: crontab.c,v
+ #endif
+ 
+ 
+-enum opt_t	{ opt_unknown, opt_list, opt_delete, opt_edit, opt_replace };
++enum opt_t	{ opt_unknown, opt_list, opt_delete, opt_edit, opt_replace, opt_help };
+ 
+ #if DEBUGGING
+ static char	*Options[] = { "???", "list", "delete", "edit", "replace" };
+@@ -60,6 +60,7 @@ static	char		Directory[MAX_FNAME];
+ static	FILE		*NewCrontab = NULL;
+ static	int		CheckErrorCount;
+ static	int		PromptOnDelete;
++static  int             dry_run;
+ static	enum opt_t	Option;
+ static	struct passwd	*pw;
+ static	void		list_cmd __P((void)),
+@@ -79,13 +80,17 @@ static void
+ usage(msg)
+ 	char *msg;
+ {
+-	fprintf(stderr, "%s: usage error: %s\n", ProgramName, msg);
+-	fprintf(stderr, "usage:\t%s [-u user] file\n", ProgramName);
+-	fprintf(stderr, "\t%s [ -u user ] [ -i ] { -e | -l | -r }\n", ProgramName);
+-	fprintf(stderr, "\t\t(default operation is replace, per 1003.2)\n");
++	if (strlen(msg) > 0)
++	    fprintf(stderr, "%s: usage error: %s\n", ProgramName, msg);
++	fprintf(stderr, "usage:\t%s [-u user] [-n] file\n", ProgramName);
++	fprintf(stderr, "\t%s [ -u user ] [ -i ] { -e | -l | -r }\n\n", ProgramName);
++	fprintf(stderr, "\t-h\t(displays this help message)\n\n");
++	fprintf(stderr, "\tfile\t(default operation is replace, per 1003.2)\n");
++	fprintf(stderr, "\t-n\t(dry run: checks the syntax, then bails out)\n");
++	fprintf(stderr, "\t-u user\t(choose the user whose crontab is touched)\n\n");
+ 	fprintf(stderr, "\t-e\t(edit user's crontab)\n");
+ 	fprintf(stderr, "\t-l\t(list user's crontab)\n");
+-	fprintf(stderr, "\t-r\t(delete user's crontab)\n");
++	fprintf(stderr, "\t-r\t(delete user's crontab)\n\n");
+ 	fprintf(stderr, "\t-i\t(prompt before deleting user's crontab)\n");
+ 	exit(ERROR_EXIT);
+ }
+@@ -133,6 +138,8 @@ main(argc, argv)
+ 	switch (Option) {
+ 	case opt_list:		list_cmd();
+ 				break;
++	case opt_help:          usage("");
++				break;
+ 	case opt_delete:	delete_cmd();
+ 				break;
+ 	case opt_edit:		edit_cmd();
+@@ -152,9 +159,9 @@ main(argc, argv)
+ }
+ 
+ #if DEBUGGING
+-const char *getoptarg = "u:lerix:";
++const char *getoptarg = "u:hnlerix:";
+ #else
+-const char *getoptarg = "u:leri";
++const char *getoptarg = "u:hnleri";
+ #endif
+ 
+ static void
+@@ -188,6 +195,14 @@ parse_args(argc, argv)
+ 				usage("bad debug option");
+ 			break;
+ #endif
++		case 'h':
++		  if (Option != opt_unknown)
++		    usage("only one operation permitted");
++		  Option = opt_help;
++		  break;
++		case 'n':
++		  dry_run = 1;
++		  break;
+ 		case 'u':
+ 			if (!(pw = getpwnam(optarg)))
+ 			{
+@@ -916,7 +931,14 @@ replace_cmd() {
+ 		return (-1);
+ 	}
+ 
+-
++	if (dry_run) {
++	    /* the option switch -n was used. Do not write the crontab file */
++	    /* instead display a pleasant message.                          */
++	    fprintf(stderr, "The syntax of the crontab file was successfully checked.\n");
++	    fclose(tmp); unlink(tn);
++	    return (0);
++	  }
++	
+ #ifdef HAS_FCHMOD
+ 	if (fchmod(fileno(tmp), 0600) < OK)
+ #else
+Index: cron/crontab.1
+===================================================================
+--- cron.orig/crontab.1
++++ cron/crontab.1
+@@ -22,7 +22,9 @@
+ .SH NAME
+ crontab \- maintain crontab files for individual users (Vixie Cron)
+ .SH SYNOPSIS
+-crontab [ \-u user ] file
++crontab [ \-h]
++.br
++crontab [ \-u user ] [\-n] file
+ .br
+ crontab [ \-u user ] [ \-i ] { \-e | \-l | \-r }
+ .SH DESCRIPTION
+@@ -62,6 +64,12 @@ user is always allowed to setup a cronta
+ users may use this command.
+ .PP
+ If the
++.I \-h
++option is given,
++.I crontab
++shows a help message and quits immediately.
++.PP
++If the
+ .I \-u
+ option is given, it specifies the name of the user whose crontab is to be
+ used (when listing) or modified (when editing).  If this option is not given,
+@@ -80,6 +88,13 @@ option for safety's sake.
+ The first form of this command is used to install a new crontab from some
+ named file or standard input if the pseudo-filename ``-'' is given.
+ .PP
++If the
++.I \-n
++option is given, it means "dry run":
++.I crontab
++examines "your" crontab for its syntax, and outputs a success message if
++this syntax is correct, but nothing is written to any crontab.
++.PP
+ The
+ .I \-l
+ option causes the current crontab to be displayed on standard output.  See

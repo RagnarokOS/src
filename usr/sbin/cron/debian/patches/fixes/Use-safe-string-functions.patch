@@ -1,0 +1,386 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Sun, 20 Dec 2015 16:22:49 +0100
+Subject: Use safe s string functions
+
+Use safe string functions instead of unsafe ones.
+
+Most of these fixes were originally taken from Red Hat's
+vixie-cron-3.0.1-24.src.rpm.
+
+Bug-Debian: https://bugs.debian.org/26705
+Bug-Debian: https://bugs.debian.org/26749
+Bug-Debian: https://bugs.debian.org/62268
+Bug-Debian: https://bugs.debian.org/89040
+Forwarded: no
+Last-Update: 2015-12-20
+Index: cron/compat.c
+===================================================================
+--- cron.orig/compat.c
++++ cron/compat.c
+@@ -76,7 +76,7 @@ strerror(error)
+ 		return sys_errlist[error];
+ 	}
+ 
+-	sprintf(buf, "Unknown error: %d", error);
++	snprintf(buf, 32, "Unknown error: %d", error);
+ 	return buf;
+ }
+ #endif
+@@ -221,16 +221,18 @@ setenv(name, value, overwrite)
+ 	int overwrite;
+ {
+ 	char *tmp;
++	int tmp_size;
+ 
+ 	if (overwrite && getenv(name))
+ 		return -1;
+ 
+-	if (!(tmp = malloc(strlen(name) + strlen(value) + 2))) {
++	tmp_size = strlen(name) + strlen(value) + 2;
++	if (!(tmp = malloc(tmp_size))) {
+ 		errno = ENOMEM;
+ 		return -1;
+ 	}
+ 
+-	sprintf(tmp, "%s=%s", name, value);
++	snprintf(tmp, tmp_size, "%s=%s", name, value);
+ 	return putenv(tmp);	/* intentionally orphan 'tmp' storage */
+ }
+ #endif
+Index: cron/crontab.c
+===================================================================
+--- cron.orig/crontab.c
++++ cron/crontab.c
+@@ -55,7 +55,7 @@ static char	*Options[] = { "???", "list"
+ 
+ 
+ static	PID_T		Pid;
+-static	char		User[MAX_UNAME], RealUser[MAX_UNAME];
++static	char		*User, *RealUser;
+ static	char		Filename[MAX_FNAME];
+ static	FILE		*NewCrontab = NULL;
+ static	int		CheckErrorCount;
+@@ -149,8 +149,11 @@ parse_args(argc, argv)
+ 		fprintf(stderr, "bailing out.\n");
+ 		exit(ERROR_EXIT);
+ 	}
+-	strcpy(User, pw->pw_name);
+-	strcpy(RealUser, User);
++	if (((User=strdup(pw->pw_name)) == NULL) ||
++			((RealUser=strdup(pw->pw_name)) == NULL)) {
++		fprintf(stderr, "Memory allocation error\n");
++		exit(ERROR_EXIT);
++	}
+ 	Filename[0] = '\0';
+ 	Option = opt_unknown;
+ 	while (EOF != (argch = getopt(argc, argv, "u:lerx:"))) {
+@@ -172,7 +175,11 @@ parse_args(argc, argv)
+ 					ProgramName, optarg);
+ 				exit(ERROR_EXIT);
+ 			}
+-			(void) strcpy(User, optarg);
++			free(User);
++			if ((User=strdup(pw->pw_name)) == NULL) {
++			        fprintf(stderr, "Memory allocation error\n");
++				exit(ERROR_EXIT);
++			}
+ 			break;
+ 		case 'l':
+ 			if (Option != opt_unknown)
+@@ -203,7 +210,9 @@ parse_args(argc, argv)
+ 	} else {
+ 		if (argv[optind] != NULL) {
+ 			Option = opt_replace;
+-			(void) strcpy (Filename, argv[optind]);
++			(void) strncpy (Filename, argv[optind], (sizeof Filename)-1);
++			Filename[(sizeof Filename)-1] = '\0';
++
+ 		} else {
+ 			usage("file name must be specified for replace");
+ 		}
+@@ -252,7 +261,7 @@ list_cmd() {
+ 	int	ch;
+ 
+ 	log_it(RealUser, Pid, "LIST", User);
+-	(void) sprintf(n, CRON_TAB(User));
++	(void) snprintf(n, MAX_FNAME, CRON_TAB(User));
+ 	if (!(f = fopen(n, "r"))) {
+ 		if (errno == ENOENT)
+ 			fprintf(stderr, "no crontab for %s\n", User);
+@@ -275,7 +284,7 @@ delete_cmd() {
+ 	char	n[MAX_FNAME];
+ 
+ 	log_it(RealUser, Pid, "DELETE", User);
+-	(void) sprintf(n, CRON_TAB(User));
++	(void) snprintf(n, MAX_FNAME, CRON_TAB(User));
+ 	if (unlink(n)) {
+ 		if (errno == ENOENT)
+ 			fprintf(stderr, "no crontab for %s\n", User);
+@@ -307,7 +316,7 @@ edit_cmd() {
+ 	PID_T		pid, xpid;
+ 
+ 	log_it(RealUser, Pid, "BEGIN EDIT", User);
+-	(void) sprintf(n, CRON_TAB(User));
++	(void) snprintf(n, MAX_FNAME, CRON_TAB(User));
+ 	if (!(f = fopen(n, "r"))) {
+ 		if (errno != ENOENT) {
+ 			perror(n);
+@@ -321,7 +330,8 @@ edit_cmd() {
+ 		}
+ 	}
+ 
+-	(void) sprintf(Filename, "/tmp/crontab.%d", Pid);
++	(void) snprintf(Filename, sizeof(Filename)-1, "/tmp/crontab.%d", Pid);
++	Filename[sizeof(Filename)-1] = '\0';
+ 	if (-1 == (t = open(Filename, O_CREAT|O_EXCL|O_RDWR, 0600))) {
+ 		perror(Filename);
+ 		goto fatal;
+@@ -415,7 +425,7 @@ edit_cmd() {
+ 				ProgramName);
+ 			exit(ERROR_EXIT);
+ 		}
+-		sprintf(q, "%s %s", editor, Filename);
++		snprintf(q, MAX_TEMPSTR, "%s %s", editor, Filename);
+ 		execlp(_PATH_BSHELL, _PATH_BSHELL, "-c", q, NULL);
+ 		perror(editor);
+ 		exit(ERROR_EXIT);
+@@ -507,8 +517,8 @@ replace_cmd() {
+ 		fprintf(stderr, "%s: Cannot allocate memory.\n", ProgramName);
+ 		return (-2);
+ 	}
+-	(void) sprintf(n, "tmp.%d", Pid);
+-	(void) sprintf(tn, CRON_TAB(n));
++	(void) snprintf(n, MAX_FNAME, "tmp.%d", Pid);
++	(void) snprintf(tn, MAX_FNAME, CRON_TAB(n));
+ 	if (!(tmp = fopen(tn, "w+"))) {
+ 		perror(tn);
+ 		return (-2);
+@@ -595,7 +605,7 @@ replace_cmd() {
+ 		return (-2);
+ 	}
+ 
+-	(void) sprintf(n, CRON_TAB(User));
++	(void) snprintf(n, sizeof(n), CRON_TAB(User));
+ 	if (rename(tn, n)) {
+ 		fprintf(stderr, "%s: error renaming %s to %s\n",
+ 			ProgramName, tn, n);
+Index: cron/cron.h
+===================================================================
+--- cron.orig/cron.h
++++ cron/cron.h
+@@ -66,8 +66,8 @@
+ #define	OK_EXIT		0	/* exit() with this is considered 'normal' */
+ #define	MAX_FNAME	100	/* max length of internally generated fn */
+ #define	MAX_COMMAND	1000	/* max length of internally generated cmd */
+-#define	MAX_ENVSTR	1000	/* max length of envvar=value\0 strings */
+-#define	MAX_TEMPSTR	100	/* obvious */
++#define	MAX_TEMPSTR	1000	/* max length of envvar=value\0 strings */
++#define	MAX_ENVSTR	MAX_TEMPSTR	/* DO NOT change - buffer overruns otherwise */
+ #define	MAX_UNAME	20	/* max length of username, should be overkill */
+ #define	ROOT_UID	0	/* don't change this, it really must be root */
+ #define	ROOT_USER	"root"	/* ditto */
+Index: cron/env.c
+===================================================================
+--- cron.orig/env.c
++++ cron/env.c
+@@ -140,15 +140,17 @@ load_env(envstr, f)
+ {
+ 	long	filepos;
+ 	int	fileline;
+-	char	name[MAX_TEMPSTR], val[MAX_ENVSTR];
++	char	name[MAX_ENVSTR], val[MAX_ENVSTR];
+ 	int	fields;
+ 
+ 	filepos = ftell(f);
+ 	fileline = LineNumber;
+ 	skip_comments(f);
+-	if (EOF == get_string(envstr, MAX_ENVSTR, f, "\n"))
++	if (EOF == get_string(envstr, MAX_ENVSTR - 1, f, "\n"))
+ 		return (ERR);
+ 
++    envstr[MAX_ENVSTR - 1] = '\0';
++
+ 	Debug(DPARS, ("load_env, read <%s>\n", envstr))
+ 
+ 	name[0] = val[0] = '\0';
+@@ -179,6 +181,8 @@ load_env(envstr, f)
+ 		}
+ 	}
+ 
++	if (strlen(name) + 1 + strlen(val) >= MAX_ENVSTR-1)
++		return (FALSE);
+ 	(void) sprintf(envstr, "%s=%s", name, val);
+ 	Debug(DPARS, ("load_env, <%s> <%s> -> <%s>\n", name, val, envstr))
+ 	return (TRUE);
+Index: cron/do_command.c
+===================================================================
+--- cron.orig/do_command.c
++++ cron/do_command.c
+@@ -365,8 +365,8 @@ child_process(e, u)
+ 				auto char	hostname[MAXHOSTNAMELEN];
+ 
+ 				(void) gethostname(hostname, MAXHOSTNAMELEN);
+-				(void) sprintf(mailcmd, MAILARGS,
+-					       MAILCMD, mailto);
++				(void) snprintf(mailcmd, sizeof(mailcmd),
++						MAILARGS, MAILCMD, mailto);
+ 				if (!(mail = cron_popen(mailcmd, "w"))) {
+ 					perror(MAILCMD);
+ 					(void) _exit(ERROR_EXIT);
+@@ -424,7 +424,7 @@ child_process(e, u)
+ 			if (mailto && status) {
+ 				char buf[MAX_TEMPSTR];
+ 
+-				sprintf(buf,
++				snprintf(buf, MAX_TEMPSTR,
+ 			"mailed %d byte%s of output but got status 0x%04x\n",
+ 					bytes, (bytes==1)?"":"s",
+ 					status);
+Index: cron/entry.c
+===================================================================
+--- cron.orig/entry.c
++++ cron/entry.c
+@@ -257,7 +257,7 @@ load_entry(file, error_func, pw, envp)
+ 		goto eof;
+ 	}
+ 	if (!env_get("SHELL", e->envp)) {
+-		sprintf(envstr, "SHELL=%s", _PATH_BSHELL);
++		snprintf(envstr, MAX_ENVSTR, "SHELL=%s", _PATH_BSHELL);
+ 		if ((tenvp = env_set(e->envp, envstr))) {
+ 			e->envp = tenvp;
+ 		} else {
+@@ -266,7 +266,7 @@ load_entry(file, error_func, pw, envp)
+ 		}
+ 	}
+ 	if (!env_get("HOME", e->envp)) {
+-		sprintf(envstr, "HOME=%s", pw->pw_dir);
++		snprintf(envstr, MAX_ENVSTR, "HOME=%s", pw->pw_dir);
+ 		if ((tenvp = env_set(e->envp, envstr))) {
+ 			e->envp = tenvp;
+ 		} else {
+@@ -275,7 +275,7 @@ load_entry(file, error_func, pw, envp)
+ 		}
+ 	}
+ 	if (!env_get("PATH", e->envp)) {
+-		sprintf(envstr, "PATH=%s", _PATH_DEFPATH);
++		snprintf(envstr, MAX_ENVSTR, "PATH=%s", _PATH_DEFPATH);
+ 		if ((tenvp = env_set(e->envp, envstr))) {
+ 			e->envp = tenvp;
+ 		} else {
+@@ -283,7 +283,7 @@ load_entry(file, error_func, pw, envp)
+ 			goto eof;
+ 		}
+ 	}
+-	sprintf(envstr, "%s=%s", "LOGNAME", pw->pw_name);
++	snprintf(envstr, MAX_ENVSTR, "%s=%s", "LOGNAME", pw->pw_name);
+ 	if ((tenvp = env_set(e->envp, envstr))) {
+ 		e->envp = tenvp;
+ 	} else {
+@@ -291,7 +291,7 @@ load_entry(file, error_func, pw, envp)
+ 		goto eof;
+ 	}
+ #if defined(BSD)
+-	sprintf(envstr, "%s=%s", "USER", pw->pw_name);
++	snprintf(envstr, MAX_ENVSTR, "%s=%s", "USER", pw->pw_name);
+ 	if ((tenvp = env_set(e->envp, envstr))) {
+ 		e->envp = tenvp;
+ 	} else {
+Index: cron/misc.c
+===================================================================
+--- cron.orig/misc.c
++++ cron/misc.c
+@@ -267,11 +267,11 @@ acquire_daemonlock(closeflag)
+ 		char	buf[MAX_TEMPSTR];
+ 		int	fd, otherpid;
+ 
+-		(void) sprintf(pidfile, PIDFILE, PIDDIR);
++		(void) snprintf(pidfile, MAX_FNAME, PIDFILE, PIDDIR);
+ 		if ((-1 == (fd = open(pidfile, O_RDWR|O_CREAT, 0644)))
+ 		    || (NULL == (fp = fdopen(fd, "r+")))
+ 		    ) {
+-			sprintf(buf, "can't open or create %s: %s",
++			snprintf(buf, MAX_TEMPSTR, "can't open or create %s: %s",
+ 				pidfile, strerror(errno));
+ 			fprintf(stderr, "%s: %s\n", ProgramName, buf);
+ 			log_it("CRON", getpid(), "DEATH", buf);
+@@ -282,7 +282,7 @@ acquire_daemonlock(closeflag)
+ 			int save_errno = errno;
+ 
+ 			fscanf(fp, "%d", &otherpid);
+-			sprintf(buf, "can't lock %s, otherpid may be %d: %s",
++			snprintf(buf, MAX_TEMPSTR, "can't lock %s, otherpid may be %d: %s",
+ 				pidfile, otherpid, strerror(save_errno));
+ 			fprintf(stderr, "%s: %s\n", ProgramName, buf);
+ 			log_it("CRON", getpid(), "DEATH", buf);
+@@ -470,15 +470,14 @@ log_it(username, xpid, event, detail)
+ 	char			*msg;
+ 	TIME_T			now = time((TIME_T) 0);
+ 	register struct tm	*t = localtime(&now);
++	int			msg_size;
+ #endif /*LOG_FILE*/
+ 
+ #if defined(LOG_FILE)
+ 	/* we assume that MAX_TEMPSTR will hold the date, time, &punctuation.
+ 	 */
+-	msg = malloc(strlen(username)
+-		     + strlen(event)
+-		     + strlen(detail)
+-		     + MAX_TEMPSTR);
++	msg_size = strlen(username) + strlen(event) + strlen(detail) + MAX_TEMPSTR;
++	msg = malloc(msg_size);
+ 	if (msg == NULL) {
+ 		/* damn, out of mem and we did not test that before... */
+ 		fprintf(stderr, "%s: Run OUT OF MEMORY while %s\n",
+@@ -496,16 +495,16 @@ log_it(username, xpid, event, detail)
+ 		}
+ 	}
+ 
+-	/* we have to sprintf() it because fprintf() doesn't always write
++	/* we have to snprintf() it because fprintf() doesn't always write
+ 	 * everything out in one chunk and this has to be atomically appended
+ 	 * to the log file.
+ 	 */
+-	sprintf(msg, "%s (%02d/%02d-%02d:%02d:%02d-%d) %s (%s)\n",
++	snprintf(msg, msg_size, "%s (%02d/%02d-%02d:%02d:%02d-%d) %s (%s)\n",
+ 		username,
+ 		t->tm_mon+1, t->tm_mday, t->tm_hour, t->tm_min, t->tm_sec, pid,
+ 		event, detail);
+ 
+-	/* we have to run strlen() because sprintf() returns (char*) on old BSD
++	/* we have to run strlen() because snprintf() returns (char*) on old BSD
+ 	 */
+ 	if (LogFD < OK || write(LogFD, msg, strlen(msg)) < OK) {
+ 		if (LogFD >= OK)
+@@ -611,7 +610,9 @@ mkprint(dst, src, len)
+ 			*dst++ = '^';
+ 			*dst++ = '?';
+ 		} else {			/* parity character */
+-			sprintf(dst, "\\%03o", ch);
++			/* well, the following snprintf is paranoid, but that will
++			 * keep grep happy */
++			snprintf(dst, 5, "\\%03o", ch);
+ 			dst += 4;
+ 		}
+ 	}
+@@ -648,7 +649,7 @@ arpadate(clock)
+ 	struct tm *tm = localtime(&t);
+ 	static char ret[30];	/* zone name might be >3 chars */
+ 	
+-	(void) sprintf(ret, "%s, %2d %s %2d %02d:%02d:%02d %s",
++	(void) snprintf(ret, 30, "%s, %2d %s %2d %02d:%02d:%02d %s",
+ 		       DowNames[tm->tm_wday],
+ 		       tm->tm_mday,
+ 		       MonthNames[tm->tm_mon],
+Index: cron/database.c
+===================================================================
+--- cron.orig/database.c
++++ cron/database.c
+@@ -125,7 +125,7 @@ load_database(old_db)
+ 			continue;
+ 
+ 		(void) strcpy(fname, dp->d_name);
+-		sprintf(tabname, CRON_TAB(fname));
++		snprintf(tabname, PATH_MAX+1, CRON_TAB(fname));
+ 
+ 		process_crontab(fname, fname, tabname,
+ 				&statbuf, &new_db, old_db);

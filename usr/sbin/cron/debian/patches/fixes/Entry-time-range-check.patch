@@ -1,0 +1,36 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Tue, 22 Dec 2015 15:59:51 +0100
+Subject: Entry time range check
+
+Explicitly check for sane values in time ranges. Certain invalid combinations
+of ranges and steps weren't being detected, eg:
+
+    5-64/30 * * * *  touch /dev/null
+
+contains an invalid minute "64".
+
+Bug-Debian: https://bugs.debian.org/533726
+Forwarded: no
+Last-Update: 2015-12-22
+Index: cron/entry.c
+===================================================================
+--- cron.orig/entry.c
++++ cron/entry.c
+@@ -479,6 +479,17 @@ get_range(bits, low, high, names, ch, fi
+ 		num3 = 1;
+ 	}
+ 
++	/* Explicitly check for sane values. Certain combinations of ranges and
++	 * steps which should return EOF don't get picked up by the code below,
++	 * eg:
++	 *      5-64/30 * * * *         touch /dev/null
++	 *
++	 * Code adapted from set_elements() where this error was probably intended
++	 * to be catched.
++	 */
++	if (num1 < low || num1 > high || num2 < low || num2 > high)
++		return EOF;
++
+ 	/* range. set all elements from num1 to num2, stepping
+ 	 * by num3.  (the step is a downward-compatible extension
+ 	 * proposed conceptually by bob@acornrc, syntactically

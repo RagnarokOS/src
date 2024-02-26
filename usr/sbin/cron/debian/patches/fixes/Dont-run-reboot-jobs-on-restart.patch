@@ -1,0 +1,62 @@
+From: Christian Kastner <ckk@kvr.at>
+Date: Sat, 26 Dec 2015 11:34:00 +0100
+Subject: Don't run reboot jobs on restart
+
+Don't run reboot jobs when restarting the cron daemon.
+
+Fix provided by Steve Greenland <stevegr@debian.org>.
+
+Bug-Debian: https://bugs.debian.org/74762
+Bug-Debian: https://bugs.debian.org/77563
+Forwarded: no
+Last-Update: 2015-12-26
+Index: cron/cron.c
+===================================================================
+--- cron.orig/cron.c
++++ cron/cron.c
+@@ -31,6 +31,7 @@ static char rcsid[] = "$Id: cron.c,v 2.1
+ # include <time.h>
+ #endif
+ 
++#include <sys/stat.h>
+ #include <sys/types.h>
+ #include <fcntl.h>
+ 
+@@ -148,7 +149,25 @@ run_reboot_jobs(db)
+ {
+ 	register user		*u;
+ 	register entry		*e;
++	int			rbfd;
+ 
++	/* Run on actual reboot, rather than cron restart */
++	if (access(REBOOT_FILE, F_OK) == 0) {
++		/* File exists, return */
++		log_it("CRON", getpid(),"INFO",
++			"Skipping @reboot jobs -- not system startup");
++		return;
++	}
++	/* Create the file */
++	if ((rbfd = creat(REBOOT_FILE, S_IRUSR & S_IWUSR)) < 0) {
++		/* Bad news, bail out */
++		log_it("CRON",getpid(),"DEATH","Can't create reboot check file");
++		exit(0);
++	} else {
++		close(rbfd);
++		log_it("CRON", getpid(),"INFO", "Running @reboot jobs");
++	}
++	Debug(DMISC, ("[%d], running reboot jobs\n", getpid()));
+ 	for (u = db->head;  u != NULL;  u = u->next) {
+ 		for (e = u->crontab;  e != NULL;  e = e->next) {
+ 			if (e->flags & WHEN_REBOOT) {
+Index: cron/pathnames.h
+===================================================================
+--- cron.orig/pathnames.h
++++ cron/pathnames.h
+@@ -79,3 +79,7 @@
+ #ifndef _PATH_DEFPATH
+ # define _PATH_DEFPATH "/usr/bin:/bin"
+ #endif
++
++#ifndef REBOOT_FILE
++# define REBOOT_FILE "/run/crond.reboot"
++#endif

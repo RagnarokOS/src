@@ -1,0 +1,7 @@
+etc/cron.hourly
+etc/cron.daily
+etc/cron.weekly
+etc/cron.monthly
+etc/cron.yearly
+etc/cron.d
+var/spool/cron/crontabs
