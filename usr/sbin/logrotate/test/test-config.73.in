@@ -1,0 +1,10 @@
+&DIR&/test_copy.log {
+    copy
+    copytruncate
+    rotate 1
+}
+
+&DIR&/test_rotate.log {
+    copytruncate
+    rotate 0
+}

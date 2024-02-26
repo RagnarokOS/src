@@ -1,0 +1,29 @@
+From: =?utf-8?q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+Date: Fri, 1 Sep 2017 15:31:34 +0200
+Forwarded: not-needed
+Subject: skip cronjob when running with systemd and in removed state
+
+---
+ examples/logrotate.cron | 10 ++++++++++
+ 1 file changed, 10 insertions(+)
+
+diff --git a/examples/logrotate.cron b/examples/logrotate.cron
+index cec101e..1ac1570 100644
+--- a/examples/logrotate.cron
++++ b/examples/logrotate.cron
+@@ -1,5 +1,15 @@
+ #!/bin/sh
+ 
++# skip in favour of systemd timer
++if [ -d /run/systemd/system ]; then
++    exit 0
++fi
++
++# this cronjob persists removals (but not purges)
++if [ ! -x /usr/sbin/logrotate ]; then
++    exit 0
++fi
++
+ /usr/sbin/logrotate /etc/logrotate.conf
+ EXITVALUE=$?
+ if [ $EXITVALUE != 0 ]; then

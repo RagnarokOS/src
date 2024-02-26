@@ -1,0 +1,24 @@
+#!/usr/bin/make -f
+
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+
+export CC=clang
+export DEB_CFLAGS_MAINT_APPEND = -flto=thin -fsanitize=cfi -fvisibility=hidden -fno-sanitize-trap=all
+export DEB_LDFLAGS_MAINT_APPEND = -flto=thin -Wl,-O2
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	dh_auto_configure -- \
+		--enable-werror \
+		--with-state-file-path=/var/lib/logrotate/status \
+		--with-default-mail-command=/usr/bin/mail
+
+# Add Ubuntu customization to line 6
+# because that's where Ubuntu had been adding these lines
+execute_after_dh_install:
+ifeq ($(shell dpkg-vendor --query vendor),Ubuntu)
+	sed -i -e "6r debian/ubuntu-logrotate.conf" \
+		debian/logrotate/etc/logrotate.conf
+endif

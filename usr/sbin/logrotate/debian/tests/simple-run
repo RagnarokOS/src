@@ -1,0 +1,5 @@
+#!/bin/sh
+
+set -eu
+
+/usr/sbin/logrotate --force --verbose /etc/logrotate.conf 2>&1

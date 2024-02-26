@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "$*" > mail-out
+cat >> mail-out

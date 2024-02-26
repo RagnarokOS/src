@@ -1,0 +1,6 @@
+examples/btmp			etc/logrotate.d/
+examples/logrotate.conf		etc/
+examples/logrotate.service	lib/systemd/system
+examples/logrotate.timer	lib/systemd/system
+examples/wtmp			etc/logrotate.d/
+logrotate			usr/sbin/

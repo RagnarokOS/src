@@ -1,0 +1,10 @@
+create
+
+# will be overridden by renamecopy
+copytruncate
+
+&DIR&/test.log {
+    renamecopy
+    weekly
+    rotate 1
+}

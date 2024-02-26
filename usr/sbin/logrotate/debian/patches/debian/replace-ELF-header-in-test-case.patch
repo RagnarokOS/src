@@ -1,0 +1,20 @@
+From: =?utf-8?q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+Date: Fri, 7 Jan 2022 18:14:20 +0100
+Forwarded: not-needed
+Subject: replace ELF header in test case
+
+Reduces the noise from Lintian and avoid interferences with dbgsym package.
+---
+ test/test-config.102.in | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/test/test-config.102.in b/test/test-config.102.in
+index cbca4c4..8641be4 100644
+--- a/test/test-config.102.in
++++ b/test/test-config.102.in
+@@ -1,4 +1,4 @@
+-ELF
++<<<<
+ 
+ &DIR&/test.log {
+  daily

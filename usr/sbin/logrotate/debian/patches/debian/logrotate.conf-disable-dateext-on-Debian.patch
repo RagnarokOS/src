@@ -1,0 +1,25 @@
+From: =?utf-8?q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
+Date: Sun, 28 Feb 2021 17:24:40 +0100
+Subject: logrotate.conf: disable dateext on Debian
+
+The option dateext has not been enabled since its introduction in
+version 3.7.2.
+
+Might be subject to change in the future, see #551888.
+---
+ examples/logrotate.conf | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/examples/logrotate.conf b/examples/logrotate.conf
+index fbd0f50..c99018c 100644
+--- a/examples/logrotate.conf
++++ b/examples/logrotate.conf
+@@ -12,7 +12,7 @@ rotate 4
+ create
+ 
+ # use date as a suffix of the rotated file
+-dateext
++#dateext
+ 
+ # uncomment this if you want your log files compressed
+ #compress

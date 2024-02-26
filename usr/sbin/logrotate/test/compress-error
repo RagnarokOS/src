@@ -1,0 +1,4 @@
+#!/bin/sh
+
+echo "compression error" 1>&2
+gzip $*

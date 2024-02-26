@@ -1,0 +1,2 @@
+# the files from examples/ are installed in other ways
+logrotate source: package-does-not-install-examples [examples/]

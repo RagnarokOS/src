@@ -1,0 +1,5 @@
+etc/logrotate.d
+usr/sbin
+usr/share/bug/logrotate
+usr/share/man/man8
+var/lib/logrotate

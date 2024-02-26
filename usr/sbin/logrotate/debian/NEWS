@@ -1,0 +1,8 @@
+logrotate (3.8.0-1) experimental; urgency=low
+
+  Please note that this update changes the behaviour of logrotate:
+
+  Logrotate now skips directories which are world writable or writable 
+  by group which is not "root" unless the (new) "su" directive is used.
+
+ -- Paul Martin <pm@debian.org>  Sun, 28 Aug 2011 19:16:36 +0100

@@ -1,0 +1,30 @@
+Source: logrotate
+Section: admin
+Priority: important
+Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
+XSBC-Original-Maintainer: Christian Göttsche <cgzones@googlemail.com>
+Build-Depends: acl [linux-any] <!nocheck>,
+               debhelper-compat (= 13),
+               libacl1-dev [linux-any],
+               libpopt-dev,
+               libselinux1-dev [linux-any]
+Vcs-Browser: https://salsa.debian.org/debian/logrotate
+Vcs-Git: https://salsa.debian.org/debian/logrotate.git
+Homepage: https://github.com/logrotate/logrotate
+Standards-Version: 4.6.1
+Rules-Requires-Root: no
+
+Package: logrotate
+Architecture: any
+Multi-Arch: foreign
+Depends: cron | anacron | cron-daemon | systemd-sysv,
+         ${misc:Depends},
+         ${shlibs:Depends}
+Suggests: bsd-mailx | mailx
+Description: Log rotation utility
+ The logrotate utility is designed to simplify the administration of
+ log files on a system which generates a lot of log files.  Logrotate
+ allows for the automatic rotation compression, removal and mailing of
+ log files.  Logrotate can be set to handle a log file daily, weekly,
+ monthly or when the log file gets to a certain size.  Normally, logrotate
+ runs as a daily cron job.

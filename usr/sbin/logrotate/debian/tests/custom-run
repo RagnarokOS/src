@@ -1,0 +1,55 @@
+#!/bin/sh
+
+set -eu
+
+# create "secure" dir to handle permissive umask settings
+mkdir custom-test/
+chmod 755 custom-test/
+cd custom-test/
+
+cat > config <<EOF
+$(pwd)/test.log {
+    create
+    daily
+    rotate 3
+    compress
+    delaycompress
+}
+EOF
+chmod go-w config
+
+cat > state <<EOF
+logrotate state -- version 2
+"$(pwd)/test.log" 2000-1-1
+EOF
+
+cat > test.log <<EOF
+content 1
+EOF
+
+echo "== run #1"
+/usr/sbin/logrotate --verbose -s state config 2>&1
+
+echo "== checking test.log"
+test -f test.log
+echo "== checking test.log.1"
+test -f test.log.1
+
+cat > state <<EOF
+logrotate state -- version 2
+"$(pwd)/test.log" 2000-1-1
+EOF
+
+cat > test.log <<EOF
+content 2
+EOF
+
+echo "== run #2"
+/usr/sbin/logrotate --verbose -s state config 2>&1
+
+echo "== checking test.log"
+test -f test.log
+echo "== checking test.log.1"
+test -f test.log.1
+echo "== checking test.log.2.gz"
+test -f test.log.2.gz
