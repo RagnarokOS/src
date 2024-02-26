@@ -20,7 +20,7 @@ endif
 
 # Customize build flags
 export CC=clang
-export DEB_CFLAGS_MAINT_APPEND += -Wall -Wno-unused -Wno-comment -flto=thin -fsanitize=cfi -fvisibility=hidden -fno-sanitize-trap=all
+export DEB_CFLAGS_MAINT_APPEND += -Wall -Wno-unused -Wno-comment -flto=thin
 export DEB_LDFLAGS_MAINT_APPEND = -flto=thin -Wl,-O2
 export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
