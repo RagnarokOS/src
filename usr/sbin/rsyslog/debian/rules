@@ -16,7 +16,6 @@ export PYTHON=/usr/bin/python3
 
 ifeq ($(DEB_HOST_ARCH_OS), linux)
 confflags += 	--enable-imptcp \
-		--enable-imjournal \
 		--enable-omjournal \
 		--enable-kmsg
 endif
