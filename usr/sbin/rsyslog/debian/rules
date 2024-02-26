@@ -59,14 +59,13 @@ override_dh_auto_configure:
 		--enable-mmfields \
 		--enable-mmrm1stspace \
 		--enable-mmkubernetes \
-		--enable-imczmq \
-		--enable-omczmq \
 		--enable-omhiredis \
 		--enable-fmhash \
 		--enable-testbench \
 		--enable-extended-tests \
 		--enable-imdiag \
 		--enable-libzstd \
+		--disable-libsystemd \
 		--disable-libgcrypt \
 		--disable-generate-man-pages \
 		--disable-fmhttp \
