@@ -24,31 +24,10 @@ override_dh_auto_configure:
 	dh_auto_configure -- \
 		YACC=/usr/bin/yacc \
 		$(confflags) \
-		--enable-mysql \
-		--enable-pgsql \
-		--enable-ommongodb \
-		--enable-elasticsearch \
-		--enable-imkafka \
-		--enable-omkafka \
 		--enable-mail \
-		--enable-imfile \
-		--enable-imfile-tests \
-		--enable-impstats \
 		--enable-klog \
-		--enable-gssapi-krb5 \
 		--enable-gnutls \
 		--enable-openssl \
-		--enable-relp \
-		--enable-snmp \
-		--enable-pmaixforwardedfrom \
-		--enable-pmciscoios \
-		--enable-pmcisconames \
-		--enable-pmlastmsg \
-		--enable-pmnormalize \
-		--enable-pmsnare \
-		--enable-omstdout \
-		--enable-omprog \
-		--enable-omuxsock \
 		--enable-mmanon \
 		--enable-mmnormalize \
 		--enable-mmjsonparse \
@@ -58,19 +37,16 @@ override_dh_auto_configure:
 		--enable-mmfields \
 		--enable-mmrm1stspace \
 		--enable-mmkubernetes \
-		--enable-omhiredis \
 		--enable-fmhash \
 		--enable-testbench \
 		--enable-extended-tests \
-		--enable-imdiag \
 		--enable-libzstd \
 		--disable-libsystemd \
 		--disable-libgcrypt \
 		--disable-generate-man-pages \
 		--disable-fmhttp \
 		--disable-liblogging-stdlog \
-		--without-valgrind-testbench \
-		--with-systemdsystemunitdir=/lib/systemd/system
+		--without-valgrind-testbench
 
 override_dh_auto_install:
 	dh_auto_install
