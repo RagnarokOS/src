@@ -1,9 +1,9 @@
 # Makefile for /etc
-# $Ragnarok: Makefile,v 1.19 2024/02/28 17:50:01 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.20 2024/02/28 17:57:12 lecorbeau Exp $
 
 include ${TOPDIR}/usr/share/mk/ragnarok-config.mk
 
-644FILES	= sysctl.conf
+644FILES	= 01-hardening.conf 02-hardening_net.conf
 INIT		= hardened_malloc hwclock.sh rm-machineid
 
 # Nothing to be done for 'all' target, but do something to prevent
@@ -17,6 +17,7 @@ all:
 miniroot:
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/preferences.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/sources.list.d
+	install -d ${DESTDIR}/sysctl.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/trusted.gpg.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/signify
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/skel
@@ -28,12 +29,14 @@ miniroot:
 	install -m 644 -o root -g 0 skel/.profile ${DESTDIR}/etc/skel
 	install -m 644 -o root -g 0 signify/ragnarok${VERSION}.pub ${DESTDIR}/etc/signify
 	install -m 644 -o root -g 0 signify/ragnarok${NEXT}.pub ${DESTDIR}/etc/signify
-	install -m 644 -o root -g 0 ${644FILES} ${DESTDIR}/etc
+	cd sysctl.d; \
+		install -m 644 -o root -g 0 ${644FILES} ${DESTDIR}/etc/sysctl.d
 
 install:
 	# Create dirs that don't already exist
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/preferences.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/sources.list.d
+	install -d ${DESTDIR}/sysctl.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/apt/trusted.gpg.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/default/grub.d
 	install -d -m 755 -o root -g 0 ${DESTDIR}/etc/init.d
@@ -55,4 +58,5 @@ install:
 	install -m 644 -o root -g 0 signify/ragnarok${VERSION}.pub ${DESTDIR}/etc/signify
 	install -m 644 -o root -g 0 signify/ragnarok${NEXT}.pub ${DESTDIR}/etc/signify
 	install -m 700 -o root -g 0 nftables.conf ${DESTDIR}/etc
-	install -m 644 -o root -g 0 ${644FILES} ${DESTDIR}/etc
+	cd sysctl.d; \
+		install -m 644 -o root -g 0 ${644FILES} ${DESTDIR}/etc/sysctl.d
