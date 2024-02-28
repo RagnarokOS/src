@@ -1,3 +1,0 @@
-* Needs fixing: doesn't show the right time. This is Linux
-  (and perhaps Debian) specific, as the same code compiled
-  on OpenBSD shows the correct time.
