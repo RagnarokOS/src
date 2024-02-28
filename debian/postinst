@@ -8,4 +8,4 @@ set -e
 # our own file to /etc/nftables.conf and give it a 700 permission. Hacky, but
 # that's how it's done.
 /usr/bin/cat /etc/nftables.conf.bak > /etc/nftables.conf
-chmod 700 /etc/nftables.conf
+/usr/bin/chmod 700 /etc/nftables.conf
