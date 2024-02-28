@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -e
+
+# Handle nftables.conf. We can't provide nftables.conf via the ragnarok-files
+# package since it's already provided by nftables. That said, the config file
+# provided by the nftables package is not good enough, period. Let's 'cat' 
+# our own file to /etc/nftables.conf and give it a 700 permission. Hacky, but
+# that's how it's done.
+/usr/bin/cat /etc/nftables.conf.bak > /etc/nftables.conf
+chmod 700 /etc/nftables.conf
