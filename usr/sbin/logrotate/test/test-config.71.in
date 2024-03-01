@@ -1,8 +1,0 @@
-create
-
-&DIR&/test.log {
-    daily
-    rotate 3
-    missingok
-    minage 5
-}

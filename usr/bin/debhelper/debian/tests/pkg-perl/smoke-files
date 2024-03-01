@@ -1,4 +1,0 @@
-t/
-debian/compat
-debian/control
-debian/changelog

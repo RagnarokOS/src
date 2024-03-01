@@ -1,3 +1,0 @@
-Tests: version simple-run custom-run
-Depends: @
-Restrictions: needs-root

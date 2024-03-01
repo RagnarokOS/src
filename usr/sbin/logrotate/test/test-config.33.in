@@ -1,6 +1,0 @@
-create 0600
-
-&DIR&/test.log {
-	daily
-	rotate 999
-}

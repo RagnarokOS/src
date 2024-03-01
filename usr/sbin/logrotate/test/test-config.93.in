@@ -1,7 +1,0 @@
-&DIR&/test.log {
-    rotate 2
-    create
-    prerotate
-        sleep 2
-    endscript
-}

@@ -1,9 +1,0 @@
-#!/bin/sh
-set -e
-
-if [ "$1" = "purge" ] && \
-       dpkg-statoverride --list /usr/bin/crontab > /dev/null; then 
-    dpkg-statoverride --remove /usr/bin/crontab
-fi
-
-#DEBHELPER#

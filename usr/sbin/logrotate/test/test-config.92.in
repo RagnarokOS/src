@@ -1,4 +1,0 @@
-&DIR&/test.log {
-    rotate 1
-    create
-}

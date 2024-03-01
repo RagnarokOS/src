@@ -1,7 +1,0 @@
-#!/bin/make -f
-
-export CC=clang
-export DEB_CFLAGS_MAINT_APPEND = -fsanitize=cfi -fvisibility=hidden -fno-sanitize-trap=all
-
-%:
-	dh $@

@@ -1,4 +1,0 @@
-&DIR&/test.log {
-    daily
-    rotate 2
-}

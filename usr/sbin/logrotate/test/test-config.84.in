@@ -1,3 +1,0 @@
-&DIR&/log/*/* {
-    rotate 1
-}

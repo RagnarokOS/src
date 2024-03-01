@@ -1,3 +1,0 @@
-if [ "$1" = "install" ] && [ -n "$2" ] && [ -e "/etc/init.d/#SCRIPT#" ] ; then
-	chmod +x "/etc/init.d/#SCRIPT#" >/dev/null || true
-fi

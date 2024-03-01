@@ -1,5 +1,0 @@
-&DIR&/test.log {
-    rotate 1
-    allowhardlink
-    copytruncate
-}

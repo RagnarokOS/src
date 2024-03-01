@@ -1,6 +1,0 @@
-create
-rotate 1
-daily
-
-#testing { } on the same line
-&DIR&/test.log { }

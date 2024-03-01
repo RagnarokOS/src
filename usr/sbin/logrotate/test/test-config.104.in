@@ -1,8 +1,0 @@
-&DIR&/test1.log {
-    newkeyword
-    rotate 1
-}
-
-&DIR&/test2.log {
-    rotate 1
-}

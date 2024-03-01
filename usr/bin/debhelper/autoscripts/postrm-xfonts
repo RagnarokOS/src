@@ -1,3 +1,0 @@
-if [ -x "`command -v update-fonts-dir`" ]; then
-	#CMDS#
-fi

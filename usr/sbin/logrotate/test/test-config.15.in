@@ -1,8 +1,0 @@
-create
-
-&DIR&/test.log {
-    daily
-    shred
-    shredcycles 20
-    rotate 1
-}

@@ -1,3 +1,0 @@
-if [ "$1" = "remove" ]; then
-	update-alternatives #RM_OPTIONS#
-fi

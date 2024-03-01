@@ -1,3 +1,0 @@
-if command -v update-fonts-dir >/dev/null; then
-	#CMDS#
-fi

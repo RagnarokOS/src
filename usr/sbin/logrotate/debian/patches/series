@@ -1,3 +1,0 @@
-debian/skip-cronjob-when-running-with-systemd.patch
-debian/logrotate.conf-disable-dateext-on-Debian.patch
-debian/replace-ELF-header-in-test-case.patch

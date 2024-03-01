@@ -1,5 +1,0 @@
-[Unit]
-Description=A unit
-
-[Service]
-ExecStart=/bin/true

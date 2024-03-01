@@ -1,6 +1,0 @@
-create
-
-&DIR&/test.log {
-    rotate -1
-    maxage 1
-}

@@ -1,4 +1,0 @@
-# watch control file for dma, the DragonFly mail agent
-version=3
-opts=filenamemangle=s/.+\/v?(.*)\.tar\.gz/dma-$1.tar.gz/ \
-  https://github.com/corecode/dma/tags .*/v?(\d[\d\.]+)\.tar\.gz
