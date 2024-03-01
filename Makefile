@@ -1,9 +1,9 @@
 # Construct the Ragnarok base system
-# $Ragnarok: Makefile,v 1.6 2024/02/19 17:42:13 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.7 2024/03/01 16:54:33 lecorbeau Exp $
 
 MAKE = make -C
 
-SUBDIRS	= lib bin etc usr boot
+SUBDIRS	= lib etc usr boot
 
 all: 
 	for _dir in ${SUBDIRS}; do \
