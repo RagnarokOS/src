@@ -1,8 +1,0 @@
-0001-Fix-pidof-not-following-symlinks-regression.patch
-set-po4a-keep.patch
-11_run_nologin.patch
-0002-Fix-FTBFS-on-kfreebsd-any.patch
-0005-workaround-gcc-lintian.patch
-fstab-decode.man.patch
-fix-shutdown-time-docs.diff
-0008-Fixed-memory-initialization-error-in-pidof.patch
