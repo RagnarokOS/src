@@ -1,13 +1,10 @@
 # Makefile for /usr/share/mk
-# $Id: Makefile,v 1.2 2023/09/05 16:48:57 lecorbeau Exp $
+# $Id: Makefile,v 1.3 2024/03/04 17:46:44 lecorbeau Exp $
 
 FILES = libs.mk progs.mk ragnarok-config.mk
 
-all:
-	@# Nothing to do here, but do something to avoid make running
-	@# the 'install:' target by default.
-	@echo "Nothing to make in target 'all', skipping..."
+all: install
 
 install:
-	install -d -m 755 -g 0 -o root ${DESTDIR}/usr/share/mk
-	install -m 644 -g 0 -o root ${FILES} ${DESTDIR}/usr/share/mk
+	install -d ${DESTDIR}/usr/share/mk
+	install ${FILES} ${DESTDIR}/usr/share/mk

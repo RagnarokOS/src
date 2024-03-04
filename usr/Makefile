@@ -1,24 +1,11 @@
 # Makefile for /usr
-# $Ragnarok: Makefile,v 1.4 2024/02/19 17:43:19 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.5 2024/03/04 17:42:59 lecorbeau Exp $
 
 MAKE = make -C
 
-SUBDIRS = lib share bin sbin
+SUBDIRS = lib share
 
-all: 
-	for _dir in ${SUBDIRS}; do \
-		${MAKE} $$_dir; \
-		done
-
-dist:
-	for _dir in ${SUBDIRS}; do \
-		${MAKE} $$_dir deb; \
-		done
-
-miniroot:
-	for _dir in ${SUBDIRS}; do \
-		${MAKE} $$_dir miniroot; \
-		done
+all: install
 
 install:
 	for _dir in ${SUBDIRS}; do \
