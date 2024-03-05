@@ -1,7 +1,7 @@
 # Makefile for /etc
-# $Ragnarok: Makefile,v 1.23 2024/03/04 18:54:32 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.24 2024/03/05 01:21:40 lecorbeau Exp $
 
-include usr/share/mk/ragnarok-config.mk
+include ../usr/share/mk/ragnarok-config.mk
 
 644FILES	= 01-hardening.conf 02-hardening_net.conf
 INIT		= hardened_malloc rm-machineid
