@@ -5,7 +5,7 @@ set -e
 # Handle nftables.conf. We can't provide nftables.conf via the ragnarok-base
 # package since it's already provided by nftables. Hacky, but
 # that's how it's done.
-/usr/bin/cat /usr/share/doc/nftables/ragnarok.nft > /etc/nftables.conf
+/usr/bin/cat /usr/share/doc/nftables/examples/ragnarok.nft > /etc/nftables.conf
 
 # Set proper file permissions. dpkg sets all files to 755 and that's not
 # rite mate. This is hell, but it works.
