@@ -1,5 +1,5 @@
 # Makefile for /etc
-# $Ragnarok: Makefile,v 1.25 2024/03/05 01:25:34 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.26 2024/03/05 01:34:41 lecorbeau Exp $
 
 include ../usr/share/mk/ragnarok-config.mk
 
@@ -22,6 +22,7 @@ install:
 	install -d ${DESTDIR}/etc/apt/trusted.gpg.d
 	install -d ${DESTDIR}/etc/default/grub.d
 	install -d ${DESTDIR}/etc/init.d
+	install -d ${DESTDIR}/etc/rsyslog.d
 	install -d ${DESTDIR}/etc/signify
 	install -d ${DESTDIR}/etc/skel
 	# Install the files
