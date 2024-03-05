@@ -15,13 +15,13 @@ set -e
 /usr/bin/chmod 644 /etc/apt/trusted.gpg.d/*
 /usr/bin/chmod 600 /etc/default/grub.d/*
 /usr/bin/chmod 644 /etc/default/grub
-/usr/bin/chmod 644 /etc/default/hardened_malloc
 /usr/bin/chmod 644 /etc/dpkg/buildflags.conf
 /usr/bin/chmod 755 /etc/init.d/*
 /usr/bin/chmod 644 /etc/logrotate.d/*
 /usr/bin/chmod 644 /etc/rsyslog.d/*
 /usr/bin/chmod 644 /etc/signify/*
-/usr/bin/chmod 644 /etc/skel/*
+/usr/bin/chmod 644 /etc/skel/.aliases
+/usr/bin/chmod 644 /etc/skel/.profile
 /usr/bin/chmod 644 /etc/sysctl.d/*
 /usr/bin/chmod 700 /etc/nftables.conf
 /usr/bin/chmod 644 /usr/share/doc/nftables/examples/ragnarok.nft
