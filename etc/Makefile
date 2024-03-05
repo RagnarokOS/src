@@ -1,5 +1,5 @@
 # Makefile for /etc
-# $Ragnarok: Makefile,v 1.24 2024/03/05 01:21:40 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.25 2024/03/05 01:25:34 lecorbeau Exp $
 
 include ../usr/share/mk/ragnarok-config.mk
 
@@ -36,7 +36,7 @@ install:
 	install init.d/hardened_malloc ${DESTDIR}/etc/init.d
 	install init.d/rm-machineid ${DESTDIR}/etc/init.d
 	install logrotate.d/nftables ${DESTDIR}/etc/logrotate.d
-	install rsyslog.d/nftables ${DESTDIR}/etc/rsyslog.d
+	install rsyslog.d/nftables-log.conf ${DESTDIR}/etc/rsyslog.d
 	install skel/.aliases ${DESTDIR}/etc/skel
 	install skel/.profile ${DESTDIR}/etc/skel
 	install signify/ragnarok${VERSION}.pub ${DESTDIR}/etc/signify
