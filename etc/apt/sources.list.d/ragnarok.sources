@@ -1,5 +1,5 @@
 Types: deb
-URIs: copy:/var/db/repos/base01
+URIs: https://ragnarokos.github.io/base/deb/
 Suites: current
 Components: main
-Trusted: yes
+Signed-by: /etc/apt/trusted.gpg.d/ragnarok01.asc
