@@ -1,5 +1,5 @@
 Types: deb
 URIs: copy:/var/db/repos/base01
-Suites: bookworm
+Suites: current
 Components: main
 Trusted: yes
