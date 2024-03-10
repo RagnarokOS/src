@@ -2,7 +2,7 @@
 
 # kernupd: install/update the experimental Ragnarok build of the Linux kernel in one go.
 #
-# $Ragnarok: kernupd,v 1.1 2024/03/10 17:06:21 lecorbeau Exp $
+# $Ragnarok: kernupd,v 1.2 2024/03/10 20:06:44 lecorbeau Exp $
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #											#
@@ -30,7 +30,7 @@ export PATH=/usr/bin:/bin:/usr/sbin:/sbin
 
 TMP=$(mktemp -d -p /tmp kernupd.XXXXXXXXXX)
 CHANGES="https://raw.githubusercontent.com/RagnarokOS/kernel-build/master/changelog"
-MIRROR="https://github.com/RagnarokOS/kernel-build/releases/tag/"
+MIRROR="https://github.com/RagnarokOS/kernel-build/releases/download/"
 PUBKEY="/etc/signify/ragnarok01.pub"
 
 usage() {
@@ -96,13 +96,16 @@ check_version() {
 
 # Download kernel, headers, libc-dev and SHA256.sig
 dl() {
-	local _f
+	local _f _rev _ver
 
-	set -A _f -- "linux-image-${VERSION}_${VERSION}_amd64.deb linux-headers-${VERSION}_${VERSION}_amd64.deb linux-libc-dev_${VERSION}_amd64.deb"
+	_rev=$(awk '/Revision:/ { print $2 }' "${TMP}/changelog")
+	_ver=$(awk '/Version:/ { print $2 }' "${TMP}/changelog")
+
+	set -A _f -- linux-image-"${_ver}"_"${_ver}"-"${_rev}"_amd64.deb linux-headers-"${_ver}"_"${_ver}"-"${_rev}"_amd64.deb linux-libc-dev_"${_ver}"-"${_rev}"_amd64.deb SHA256.sig
 
 	for _file in "${_f[@]}"; do
 		printf '%s\n' "Fetching ${_file}..."
-		unpriv -f "${TMP}/${_file}" "wget -q --show-progress -O ${_file} ${MIRROR}${VERSION}/${_file}"
+		unpriv -f "${TMP}/${_file}" "wget -q --show-progress -O ${_file} ${MIRROR}${_ver}/${_file}"
 	done
 }
 
@@ -117,9 +120,12 @@ check_sig() {
 
 # Send the packages to /var/db/kernel
 mv_pkgs() {
-	local _f
+	local _f _rev _ver
 
-	set -A _f -- "linux-image-${VERSION}_${VERSION}_amd64.deb linux-headers-${VERSION}_${VERSION}_amd64.deb linux-libc-dev_${VERSION}_amd64.deb"
+	_rev=$(awk '/Revision:/ { print $2 }' "${TMP}/changelog")
+	_ver=$(awk '/Version:/ { print $2 }' "${TMP}/changelog")
+
+	set -A _f -- linux-image-"${_ver}"_"${_ver}"-"${_rev}"_amd64.deb linux-headers-"${_ver}"_"${_ver}"-"${_rev}"_amd64.deb linux-libc-dev_"${_ver}"-"${_rev}"_amd64.deb changelog
 
 	for _file in "${_f[@]}"; do
 		mv "$_file" /var/db/kernel
@@ -127,12 +133,13 @@ mv_pkgs() {
 }
 
 install_pkgs() {
-	local _f
+	local _f _rev _ver
 
-	set -A _f -- "linux-image-${VERSION}_${VERSION}_amd64.deb linux-headers-${VERSION}_${VERSION}_amd64.deb linux-libc-dev_${VERSION}_amd64.deb"
+	_rev=$(awk '/Revision:/ { print $2 }' "/var/db/kernel/changelog")
+	_ver=$(awk '/Version:/ { print $2 }' "/var/db/kernel/changelog")
 
 	cd /var/db/kernel || exit
-	apt-get install "${_f[@]}"
+	apt-get install ./linux-image-"${_ver}"_"${_ver}"-"${_rev}"_amd64.deb ./linux-headers-"${_ver}"_"${_ver}"-"${_rev}"_amd64.deb ./linux-libc-dev_"${_ver}"-"${_rev}"_amd64.deb
 }
 
 ## Main functions
@@ -162,7 +169,6 @@ do_update() {
 	mv_pkgs
 	install_pkgs
 }
-
 
 # Cleanup after finish
 cleanup() {
