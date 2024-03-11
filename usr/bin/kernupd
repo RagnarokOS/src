@@ -2,7 +2,7 @@
 
 # kernupd: install/update the experimental Ragnarok build of the Linux kernel in one go.
 #
-# $Ragnarok: kernupd,v 1.3 2024/03/11 16:48:03 lecorbeau Exp $
+# $Ragnarok: kernupd,v 1.4 2024/03/11 23:20:33 lecorbeau Exp $
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #											#
@@ -159,9 +159,8 @@ do_query() {
 # If a new version is available, download, but don't install, the kernel
 do_download() {
 	cd "${TMP}" || exit
-	get_changes
-	check_version
 	dl
+	mv_pkgs
 }
 
 # Install or update the kernel
