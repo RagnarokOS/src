@@ -2,7 +2,7 @@
 
 # kernupd: install/update the experimental Ragnarok build of the Linux kernel in one go.
 #
-# $Ragnarok: kernupd,v 1.6 2024/03/12 16:42:28 lecorbeau Exp $
+# $Ragnarok: kernupd,v 1.7 2024/03/12 17:20:02 lecorbeau Exp $
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #											#
@@ -140,13 +140,22 @@ mv_pkgs() {
 }
 
 install_pkgs() {
-	local _f _rev _ver
+	local _f _rev _ver _kpath
 
 	_rev=$(awk '/Revision:/ { print $2 }' "/var/db/kernel/changelog")
 	_ver=$(awk '/Version:/ { print $2 }' "/var/db/kernel/changelog")
 
-	cd /var/db/kernel || exit
-	apt-get install ./linux-image-"${_ver}"_"${_ver}"-"${_rev}"_amd64.deb ./linux-headers-"${_ver}"_"${_ver}"-"${_rev}"_amd64.deb ./linux-libc-dev_"${_ver}"-"${_rev}"_amd64.deb
+	# Kernel location on the filesystem depends on whether we're running
+	# the script without arguments, or if '-d' was used first.
+	if [[ -f ${TMP}/linux-libc-dev_"${_ver}"-"${_rev}"_amd64.deb ]]; then
+		_kpath="${TMP}"
+	else
+		_kpath="/var/db/kernel"
+	fi
+
+	apt-get install "${_kpath}"/linux-image-"${_ver}"_"${_ver}"-"${_rev}"_amd64.deb \
+		"${_kpath}"/linux-headers-"${_ver}"_"${_ver}"-"${_rev}"_amd64.deb \
+		"${_kpath}"/linux-libc-dev_"${_ver}"-"${_rev}"_amd64.deb
 }
 
 ## Main functions
@@ -179,7 +188,6 @@ do_update() {
 	check_version
 	dl
 	check_sig
-	mv_pkgs
 	install_pkgs
 }
 
