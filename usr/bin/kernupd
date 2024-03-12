@@ -2,7 +2,7 @@
 
 # kernupd: install/update the experimental Ragnarok build of the Linux kernel in one go.
 #
-# $Ragnarok: kernupd,v 1.4 2024/03/11 23:20:33 lecorbeau Exp $
+# $Ragnarok: kernupd,v 1.5 2024/03/12 15:11:33 lecorbeau Exp $
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #											#
@@ -36,6 +36,8 @@ PUBKEY="/etc/signify/ragnarok01.pub"
 usage() {
 	printf '%s\n' "
 Options:
+
+-c	download and parse the changelog, then move it to /var/db/kernel.
 
 -d	download, but don't install the kernel.
 
@@ -149,6 +151,13 @@ install_pkgs() {
 
 ## Main functions
 
+# Only download the changelog and print on screen.
+do_get_changelog() {
+	get_changes
+	cat "${TMP}/changelog"
+	mv "${TMP}/changelog" /var/db/kernel/
+}
+
 # Only check if an update is available
 do_query() {
 	cd "${TMP}" || exit
@@ -187,6 +196,8 @@ trap exit HUP INT TERM
 [[ -d /var/db/kernel ]] || mkdir -p /var/db/kernel && chown _apt /var/db/kernel
 
 case "$1" in
+	-c)	do_get_changelog
+		;;
 	-d)	do_download
 		;;
 	-i)	install_pkgs
