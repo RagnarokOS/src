@@ -2,7 +2,7 @@
 
 # kernupd: install/update the experimental Ragnarok build of the Linux kernel in one go.
 #
-# $Ragnarok: kernupd,v 1.5 2024/03/12 15:11:33 lecorbeau Exp $
+# $Ragnarok: kernupd,v 1.6 2024/03/12 16:42:28 lecorbeau Exp $
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #											#
@@ -56,7 +56,7 @@ download and install the kernel if a new version is available.
 # I take no credit for this function. All credit goes to
 # Antoine Jacoutot, who wrote OpenBSD's syspatch(1).
 unpriv() {
-	local _file=$2 _ret=0 _user=_sysupdate
+	local _file=$2 _ret=0 _user=_apt
 
 	if [[ $1 == -f && -n ${_file} ]]; then
 		# shellcheck disable=SC2188
