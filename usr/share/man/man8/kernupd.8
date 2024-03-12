@@ -6,7 +6,7 @@
 .Nd install/update Ragnarok's experimental build of the Linux kernel
 .Sh SYNOPSIS
 .Nm kernupd
-.Op Fl d | i | h | q
+.Op Fl c | d | i | h | q
 .Sh DESCRIPTION
 .Nm
 is a small script that will either install or update Ragnarok's experimental
@@ -26,6 +26,10 @@ unprivileged system user with no login shell access.
 .Sh OPTIONS
 The options are as follow:
 .Bl -tag -width "-d"
+.It Fl c
+Download and parse the changelog. This will also copy the changelog to
+.Em /var/db/kernel/
+for convenience.
 .It Fl d
 Download, but don't install, the kernel, headers and libc packages. The packages
 will be saved to /var/db/kernel. This operation will work whether the kernel is
