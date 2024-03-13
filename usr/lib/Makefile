@@ -1,5 +1,5 @@
 # Makefile for /usr/lib
-# $Ragnarok: Makefile,v 1.8 2024/03/04 17:44:17 lecorbeau Exp i $
+# $Ragnarok: Makefile,v 1.9 2024/03/13 16:53:37 lecorbeau Exp $
 
 all: install
 
