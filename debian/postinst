@@ -24,5 +24,6 @@ set -e
 /usr/bin/chmod 644 /etc/skel/.profile
 /usr/bin/chmod 644 /etc/sysctl.d/*
 /usr/bin/chmod 700 /etc/nftables.conf
+/usr/bin/chmod 755 /usr/bin/kernupd
 /usr/bin/chmod 644 /usr/share/doc/nftables/examples/ragnarok.nft
 /usr/bin/chmod 644 /usr/share/mk/*
