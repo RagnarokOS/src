@@ -1,0 +1,33 @@
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+
+Package: ragnarok-x11
+Version: 01
+Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
+Depends: xserver-xorg-core,
+ xinit,
+ x11-xserver-utils,
+ xdg-user-dirs,
+ xclip,
+ xcompmgr,
+ xterm,
+ xwallpaper,
+ alsa-utils,
+ libfontconfig1-dev,
+ libfreetype6-dev,
+ libx11-dev, 
+ libxft-dev, 
+ libxinerama-dev,
+ libxcb1-dev,
+ libxcb-util-dev,
+ libxcb-cursor-dev,
+ raven,
+ cwm,
+ rt,
+ dmenu,
+ wmutils-core,
+Architecture: amd64
+Description: meta-package for Ragnarok's xserver set.
+ This is a meta-package which depends on all programs that
+ are needed for Ragnarok's xserver set.
