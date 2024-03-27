@@ -2,7 +2,7 @@ Section: misc
 Priority: optional
 Standards-Version: 3.9.2
 
-Package: ragnarok-x11
+Package: ragnarok-xserv
 Version: 01
 Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
 Depends: xserver-xorg-core,
