@@ -1,14 +1,16 @@
-# Construct the Ragnarok base system
-# $Ragnarok: Makefile,v 1.9 2024/03/04 17:41:47 lecorbeau Exp $
+# Global Makefile. This builds the 'ragnarok-base' and all metapackages.
+# $Ragnarok: Makefile,v 1.1 2024/03/28 15:26:16 lecorbeau Exp $
 
-MAKE = make -C
+MAKE		= make -C
+METAPKGS	= ragnarok-xfonts ragnarok-xserv
 
-SUBDIRS	= etc usr boot
+all: base metapkgs
 
-all: 
-	@echo "Nothing to do for 'all'."
+base:
+	cd ragnarok-base; \
+		debuild -i -us -uc -b
 
-install:
-	for _dir in ${SUBDIRS}; do \
-		${MAKE} $$_dir install; \
+metapkgs:
+	for _dir in ${METAPKGS}; do \
+		${MAKE} $$_dir pkgs; \
 		done
