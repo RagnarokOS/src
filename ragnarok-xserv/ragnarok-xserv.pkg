@@ -28,6 +28,8 @@ Depends: xserver-xorg-core,
  dmenu,
  wmutils-core,
 Architecture: amd64
+Files: usr/share/doc/ragnarok-xserv/backgrounds/* /usr/share/doc/ragnarok-xserv/backgrounds/,
+ usr/share/doc/ragnarok-xserv/examples/* /usr/share/doc/ragnarok-xserv/examples/
 Description: meta-package for Ragnarok's xserver set.
  This is a meta-package which depends on all programs that
  are needed for Ragnarok's xserver set.
