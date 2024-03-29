@@ -1,0 +1,26 @@
+Section: misc
+Priority: optional
+Standards-Version: 3.9.2
+
+Package: ragnarok-xprogs
+Version: 01
+Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
+Depends: raven,
+ cwm,
+ rt, 
+ dmenu,
+ libfontconfig1-dev,
+ libfreetype6-dev,
+ libx11-dev, 
+ libxft-dev, 
+ libxinerama-dev,
+ libxcb1-dev,
+ libxcb-util-dev,
+ libxcb-cursor-dev,
+Architecture: amd64
+Changelog: changelog.xprogs
+Files: usr/share/doc/ragnarok-xserv/examples/.Xresources /usr/share/doc/ragnarok-xserv/examples/
+ usr/share/doc/ragnarok-xserv/examples/.cwmrc /usr/share/doc/ragnarok-xserv/examples/
+Description: meta-package for Ragnarok's xprogs set.
+ This is a meta-package which depends on all programs that
+ are needed for Ragnarok's xprogs set.

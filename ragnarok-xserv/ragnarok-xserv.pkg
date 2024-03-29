@@ -14,22 +14,10 @@ Depends: xserver-xorg-core,
  xterm,
  xwallpaper,
  alsa-utils,
- libfontconfig1-dev,
- libfreetype6-dev,
- libx11-dev, 
- libxft-dev, 
- libxinerama-dev,
- libxcb1-dev,
- libxcb-util-dev,
- libxcb-cursor-dev,
- raven,
- cwm,
- rt,
- dmenu,
- wmutils-core,
 Architecture: amd64
-Files: usr/share/doc/ragnarok-xserv/backgrounds/* /usr/share/doc/ragnarok-xserv/backgrounds/,
- usr/share/doc/ragnarok-xserv/examples/* /usr/share/doc/ragnarok-xserv/examples/
+Changelog: changelog.xserv
+Files: usr/share/doc/ragnarok-xserv/backgrounds/wallpaper.png /usr/share/doc/ragnarok-xserv/backgrounds/
+ usr/share/doc/ragnarok-xserv/examples/.xinitrc /usr/share/doc/ragnarok-xserv/examples/
 Description: meta-package for Ragnarok's xserver set.
  This is a meta-package which depends on all programs that
  are needed for Ragnarok's xserver set.
