@@ -16,7 +16,7 @@ Depends: xserver-xorg-core,
  alsa-utils,
 Architecture: amd64
 Changelog: changelog.xserv
-Files: usr/share/doc/ragnarok-xserv/backgrounds/wallpaper.png /usr/share/doc/ragnarok-xserv/backgrounds/
+Files: usr/share/doc/ragnarok-xserv/backgrounds/wallpaper0001.png /usr/share/doc/ragnarok-xserv/backgrounds/
  usr/share/doc/ragnarok-xserv/examples/.xinitrc /usr/share/doc/ragnarok-xserv/examples/
 Description: meta-package for Ragnarok's xserver set.
  This is a meta-package which depends on all programs that
