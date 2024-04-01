@@ -27,3 +27,10 @@ set -e
 /usr/bin/chmod 755 /usr/bin/kernupd
 /usr/bin/chmod 644 /usr/share/doc/nftables/examples/ragnarok.nft
 /usr/bin/chmod 644 /usr/share/mk/*
+
+# Ensure that the proper .profile is used. This is a crude hack, but it
+# allows setting .profile to ours without the need to rebuild/maintain
+# the bash package (which is a silly thing to do just to remove a single
+# file).
+/usr/bin/cp /etc/skel/.profile /etc/skel/.bash_profile
+/usr/bin/cp /etc/skel/ksh.profile /etc/skel/.profile
