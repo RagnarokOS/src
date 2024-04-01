@@ -1,6 +1,7 @@
 # ~/.profile: executed by the command interpreter for login shells.
+# This is the .profile file used for ksh.
 
-PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:$PATH
 
 # set PATH so it includes user's private bin if it exists
 if [ -d "$HOME/bin" ] ; then
