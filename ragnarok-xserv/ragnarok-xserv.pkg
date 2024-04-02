@@ -8,6 +8,7 @@ Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
 Depends: xserver-xorg-core,
  xinit,
  x11-xserver-utils,
+ xdg-utils,
  xdg-user-dirs,
  xclip,
  xcompmgr,
