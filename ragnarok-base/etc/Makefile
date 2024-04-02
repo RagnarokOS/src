@@ -1,5 +1,5 @@
 # Makefile for /etc
-# $Ragnarok: Makefile,v 1.27 2024/04/01 16:31:06 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.28 2024/04/02 14:36:33 lecorbeau Exp $
 
 include ../usr/share/mk/ragnarok-config.mk
 
@@ -17,6 +17,7 @@ install:
 	install -d ${DESTDIR}/etc/dpkg
 	install -d ${DESTDIR}/etc/apt/preferences.d
 	install -d ${DESTDIR}/etc/apt/sources.list.d
+	install -d ${DESTDIR}/etc/cron.daily
 	install -d ${DESTDIR}/etc/logrotate.d
 	install -d ${DESTDIR}/etc/sysctl.d
 	install -d ${DESTDIR}/etc/apt/trusted.gpg.d
@@ -31,6 +32,7 @@ install:
 	install apt/sources.list.d/ragnarok.sources ${DESTDIR}/etc/apt/sources.list.d
 	install apt/trusted.gpg.d/apt.llvm.org.asc ${DESTDIR}/etc/apt/trusted.gpg.d
 	install apt/trusted.gpg.d/ragnarok01.asc ${DESTDIR}/etc/apt/trusted.gpg.d
+	install cron.daily/update-manpages ${DESTDIR}/etc/cron.daily/
 	install default/grub.d/01_hardening.cfg ${DESTDIR}/etc/default/grub.d/
 	install default/grub ${DESTDIR}/etc/default
 	install dpkg/buildflags.conf ${DESTDIR}/etc/dpkg
