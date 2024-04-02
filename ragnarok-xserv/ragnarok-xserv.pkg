@@ -12,7 +12,7 @@ Depends: xserver-xorg-core,
  xclip,
  xcompmgr,
  xterm,
- xwallpaper,
+ hsetroot,
  alsa-utils,
 Architecture: amd64
 Changelog: changelog.xserv
