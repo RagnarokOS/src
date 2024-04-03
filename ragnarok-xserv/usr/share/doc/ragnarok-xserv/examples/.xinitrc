@@ -34,7 +34,7 @@ fi
 
 WM="raven"
 
-hsetroot -add "#080808" -add "#484848" -gradient 170 -center /usr/share/X11/backgrounds/wallpaper0002.png &
+hsetroot -add "#080808" -add "#484848" -gradient 170 -center /usr/share/X11/backgrounds/wallpaper0001.png &
 #xcompmgr &
 #dunst &
 #sxhkd &
