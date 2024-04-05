@@ -1,8 +1,8 @@
-# $Ragnarok: Makefile,v 1.4 2024/03/29 17:45:14 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.5 2024/04/05 15:52:46 lecorbeau Exp $
 
 PKGS	= ragnarok-xfonts ragnarok-xprogs ragnarok-xserv
 
 deb:
 	for _pkg in ${PKGS}; do \
-		equivs-build $${_pkg}.pkg; \
+		equivs-build $${_pkg}.pkg 2>&1 | tee $$_pkg.build; \
 		done
