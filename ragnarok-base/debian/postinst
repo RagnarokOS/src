@@ -34,4 +34,4 @@ set -e
 # the bash package (which is a silly thing to do just to remove a single
 # file).
 /usr/bin/cp /etc/skel/.profile /etc/skel/.bash_profile
-/usr/bin/cp /etc/skel/ksh.profile /etc/skel/.profile
+/usr/bin/cp /usr/share/doc/ragnarok/ksh.profile /etc/skel/.profile
