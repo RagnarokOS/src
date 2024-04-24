@@ -35,3 +35,9 @@ set -e
 # file).
 /usr/bin/cp /etc/skel/.profile /etc/skel/.bash_profile
 /usr/bin/cp /usr/share/doc/ragnarok/ksh.profile /etc/skel/.profile
+
+# Making sure root's shell is /bin/ksh. This is hacky (big surprise), but
+# it's the simplest way. Yes, 'chsh' would also do the trick, but meh.
+if [ "$(grep "root:/bin/bash" "/etc/passwd")" ]; then
+	sed -i 's/bash/ksh/g' /etc/passwd
+fi
