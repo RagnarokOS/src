@@ -1,5 +1,5 @@
 # Makefile for /etc
-# $Ragnarok: Makefile,v 1.29 2024/04/24 13:21:40 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.30 2024/04/25 15:39:41 lecorbeau Exp $
 
 include ../usr/share/mk/ragnarok-config.mk
 
@@ -36,7 +36,6 @@ install:
 	install default/grub.d/01_hardening.cfg ${DESTDIR}/etc/default/grub.d/
 	install default/grub ${DESTDIR}/etc/default
 	install dpkg/buildflags.conf ${DESTDIR}/etc/dpkg
-	install init.d/hardened_malloc ${DESTDIR}/etc/init.d
 	install init.d/rm-machineid ${DESTDIR}/etc/init.d
 	install logrotate.d/nftables ${DESTDIR}/etc/logrotate.d
 	install rsyslog.d/nftables-log.conf ${DESTDIR}/etc/rsyslog.d
