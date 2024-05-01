@@ -1,13 +1,13 @@
 # Global Makefile. This builds the 'ragnarok-base' and all metapackages.
-# $Ragnarok: Makefile,v 1.3 2024/03/28 18:19:48 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.4 2024/05/01 17:17:32 lecorbeau Exp $
 
 MAKE		= make -C
-SUBDIRS		= ragnarok-xserv
+SUBDIRS		= xserv
 
 all: base metapkgs
 
 base:
-	cd ragnarok-base; \
+	cd base; \
 		debuild -i -us -uc -b
 
 metapkgs:
