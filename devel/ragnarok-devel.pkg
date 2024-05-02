@@ -6,7 +6,7 @@ Package: ragnarok-devel
 Version: 01
 Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
 Depends: build-essential,
- libllvm-17,
+ libllvm17,
  llvm-17,
  llvm-17-dev,
  llvm-17-runtime,
