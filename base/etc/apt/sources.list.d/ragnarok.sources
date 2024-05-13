@@ -1,13 +1,11 @@
 Types: deb
 URIs: https://ragnarokos.github.io/base/deb/
-Codename: 01
-Suite: stable
+Suites: 01
 Components: main
 Signed-by: /etc/apt/trusted.gpg.d/ragnarok01.asc
 
 Types: deb
 URIs: https://ragnarokos.github.io/xserv/deb/
-Codename: 01
-Suite: stable
+Suites: 01
 Components: main
 Signed-by: /etc/apt/trusted.gpg.d/ragnarok01.asc
