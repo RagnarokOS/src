@@ -1,3 +1,10 @@
+ragnarok-base (01-2.1) stable; urgency=medium
+
+  * Added afterboot(8) manual page.
+  * Added OpenSMTPD as an alternative MTA dependency.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Tue, 21 May 2024 11:05:27 -0400
+
 ragnarok-base (01-2) stable; urgency=medium
 
   * 01 is now stable.
