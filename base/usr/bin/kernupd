@@ -2,7 +2,7 @@
 
 # kernupd: install/update the experimental Ragnarok build of the Linux kernel in one go.
 #
-# $Ragnarok: kernupd,v 1.7 2024/03/12 17:20:02 lecorbeau Exp $
+# $Ragnarok: kernupd,v 1.8 2024/05/23 15:48:12 lecorbeau Exp $
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #											#
@@ -112,7 +112,7 @@ dl() {
 
 	for _file in "${_f[@]}"; do
 		printf '%s\n' "Fetching ${_file}..."
-		unpriv -f "${TMP}/${_file}" "wget -q --show-progress -O ${_file} ${MIRROR}${_ver}/${_file}"
+		unpriv -f "${TMP}/${_file}" "wget -q --show-progress -O ${_file} ${MIRROR}${_ver%%-*}/${_file}"
 	done
 }
 
@@ -177,6 +177,7 @@ do_query() {
 # If a new version is available, download, but don't install, the kernel
 do_download() {
 	cd "${TMP}" || exit
+	get_changes
 	dl
 	mv_pkgs
 }
