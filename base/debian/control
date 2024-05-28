@@ -35,6 +35,7 @@ Depends: policy-rcd-declarative-deny-all,
  libopenbsd,
  adduser,
  openrcs,
+ wget,
 Description: files for Ragnarok
  Package providing extra files for Ragnarok, as well as
  a postinst script that sets up the base system. This also
