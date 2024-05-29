@@ -17,6 +17,7 @@ set -e
 /usr/bin/chmod 600 /etc/default/grub.d/*
 /usr/bin/chmod 644 /etc/default/grub
 /usr/bin/chmod 644 /etc/dpkg/buildflags.conf
+/usr/bin/chmod 644 /etc/dma/dma.conf
 /usr/bin/chmod 755 /etc/init.d/*
 /usr/bin/chmod 644 /etc/logrotate.d/*
 /usr/bin/chmod 644 /etc/rsyslog.d/*

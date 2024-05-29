@@ -1,5 +1,5 @@
 # Makefile for /etc
-# $Ragnarok: Makefile,v 1.30 2024/04/25 15:39:41 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.31 2024/05/29 22:52:04 lecorbeau Exp $
 
 include ../usr/share/mk/ragnarok-config.mk
 
@@ -22,6 +22,7 @@ install:
 	install -d ${DESTDIR}/etc/sysctl.d
 	install -d ${DESTDIR}/etc/apt/trusted.gpg.d
 	install -d ${DESTDIR}/etc/default/grub.d
+	install -d ${DESTDIR}/etc/dma
 	install -d ${DESTDIR}/etc/init.d
 	install -d ${DESTDIR}/etc/rsyslog.d
 	install -d ${DESTDIR}/etc/signify
@@ -36,6 +37,7 @@ install:
 	install default/grub.d/01_hardening.cfg ${DESTDIR}/etc/default/grub.d/
 	install default/grub ${DESTDIR}/etc/default
 	install dpkg/buildflags.conf ${DESTDIR}/etc/dpkg
+	install dma/dma.conf ${DESTDIR}/etc/dma
 	install init.d/rm-machineid ${DESTDIR}/etc/init.d
 	install logrotate.d/nftables ${DESTDIR}/etc/logrotate.d
 	install rsyslog.d/nftables-log.conf ${DESTDIR}/etc/rsyslog.d
