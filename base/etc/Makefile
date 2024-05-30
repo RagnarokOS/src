@@ -1,5 +1,5 @@
 # Makefile for /etc
-# $Ragnarok: Makefile,v 1.31 2024/05/29 22:52:04 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.32 2024/05/30 16:56:37 lecorbeau Exp $
 
 include ../usr/share/mk/ragnarok-config.mk
 
@@ -35,7 +35,6 @@ install:
 	install apt/trusted.gpg.d/ragnarok01.asc ${DESTDIR}/etc/apt/trusted.gpg.d
 	install cron.daily/update-manpages ${DESTDIR}/etc/cron.daily/
 	install default/grub.d/01_hardening.cfg ${DESTDIR}/etc/default/grub.d/
-	install default/grub ${DESTDIR}/etc/default
 	install dpkg/buildflags.conf ${DESTDIR}/etc/dpkg
 	install dma/dma.conf ${DESTDIR}/etc/dma
 	install init.d/rm-machineid ${DESTDIR}/etc/init.d
