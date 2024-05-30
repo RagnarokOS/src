@@ -1,3 +1,10 @@
+ragnarok-base (01-2.4) stable; urgency=medium
+
+  * Provide /etc/dma/dma.conf.
+  * Added lsb-release to depends and removed /etc/default/grub.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Thu, 30 May 2024 12:52:08 -0400
+
 ragnarok-base (01-2.3) stable; urgency=medium
 
   * Fix: add missing dependencies.
