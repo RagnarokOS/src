@@ -1,3 +1,9 @@
+ragnarok-base (01-2.5) stable; urgency=medium
+
+  * Bug fix: removed /etc/default/grub from postinst script.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Thu, 30 May 2024 20:08:05 -0400
+
 ragnarok-base (01-2.4) stable; urgency=medium
 
   * Provide /etc/dma/dma.conf.
