@@ -1,0 +1,16 @@
+Section: admin
+Priority: optional
+Standards-Version: 3.9.2
+
+Package: ragnarok-virt
+Version: 01
+Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
+Depends: qemu,
+ libvirt-daemon-system,
+ libvirt-daemon-system-sysv,
+Architecture: amd64
+Changelog: changelog
+Postinst: postinst
+Description: meta-package for Ragnarok's virt set.
+ This is a meta-package which depends on all programs that
+ are needed for Ragnarok's virt set.
