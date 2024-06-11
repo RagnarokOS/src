@@ -5,7 +5,7 @@ Standards-Version: 3.9.2
 Package: ragnarok-virt
 Version: 01
 Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
-Depends: qemu,
+Depends: qemu-system,
  libvirt-clients,
  libvirt-daemon-system,
  libvirt-daemon-system-sysv,
