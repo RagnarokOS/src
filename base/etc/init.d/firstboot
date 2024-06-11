@@ -1,0 +1,23 @@
+#!/bin/sh
+
+# Script to be run when the system boots up the first time after install.
+# $Ragnarok$
+#
+### BEGIN INIT INFO
+# Provides:		first boot script
+# Required-Start:	$all
+# Required-Stop:	
+# Default-Start:	2 3 4 5
+# Default-stop:		
+# Short-Description:	execute commands after system's first boot
+# Description:
+### END INIT INFO
+
+# Mail install.log
+/usr/bin/cat /var/messages/install.log | mail -r installer@ragnarok -s "Installation log" root
+
+# do other stuff ...
+
+# In the end, this script needs to disable itself
+/usr/sbin/update-rc.d firstboot defaults-disabled
+
