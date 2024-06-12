@@ -9,8 +9,7 @@ Rules-Requires-Root: no
 
 Package: ragnarok-base
 Architecture: amd64
-Depends: policy-rcd-declarative-deny-all,
- oksh,
+Depends: oksh,
  ed,
  mandoc,
  doas,
