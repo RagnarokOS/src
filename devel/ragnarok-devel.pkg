@@ -29,6 +29,7 @@ Depends: build-essential,
  libunwind-17-dev,
  libmlir-17-dev,
  flang-17,
+ man-recode,
 Architecture: amd64
 Changelog: changelog
 Postinst: postinst
