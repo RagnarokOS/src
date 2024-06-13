@@ -45,6 +45,6 @@ do_conf() {
 	fi
 }
 
-case "$1" in
-	configure) do_conf ;;
-esac
+if [ -z "$2" ]; then
+	do_conf
+fi
