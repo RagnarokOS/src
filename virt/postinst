@@ -1,0 +1,8 @@
+#!/bin/sh
+
+set -e
+
+# Let user know about permissions/groups.
+printf '%s\n' "The virt set has been installed. If you want to run
+virtual machines as a non-root user, don't forget to add your user
+to the libvirt and kvm groups."
