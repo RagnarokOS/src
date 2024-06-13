@@ -1,3 +1,10 @@
+ragnarok-base (01-2.7) stable; urgency=medium
+
+  * Fix: the commands in postinst should only run upon
+    package installation, not during upgrades.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Thu, 13 Jun 2024 14:25:15 -0400
+
 ragnarok-base (01-2.6) stable; urgency=medium
 
   * Removed policy-rcd-declarative-deny-all from depends.
