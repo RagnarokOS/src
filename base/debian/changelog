@@ -1,3 +1,9 @@
+ragnarok-base (01-2.9) stable; urgency=medium
+
+  * Added apparmor-utils and eject packages.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Wed, 19 Jun 2024 19:44:40 -0400
+
 ragnarok-base (01-2.8) stable; urgency=medium
 
   * Fix the previous fix: the case statement was wrong.
