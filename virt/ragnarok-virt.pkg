@@ -15,6 +15,7 @@ Depends: qemu-system,
 Architecture: amd64
 Changelog: changelog
 Postinst: postinst
+Files: usr/share/doc/ragnarok/virt/vmlaunch /usr/share/doc/ragnarok/virt/
 Description: meta-package for Ragnarok's virt set.
  This is a meta-package which depends on all programs that
  are needed for Ragnarok's virt set.
