@@ -2,7 +2,7 @@
 
 # kernupd: install/update the experimental Ragnarok build of the Linux kernel in one go.
 #
-# $Ragnarok: kernupd,v 1.9 2024/06/29 18:23:32 lecorbeau Exp $
+# $Ragnarok: kernupd,v 1.10 2024/06/29 18:30:00 lecorbeau Exp $
 #
 # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # # #
 #											#
@@ -156,6 +156,10 @@ install_pkgs() {
 	apt-get install "${_kpath}"/linux-image-"${_ver}"_"${_ver}"-"${_rev}"_amd64.deb \
 		"${_kpath}"/linux-headers-"${_ver}"_"${_ver}"-"${_rev}"_amd64.deb \
 		"${_kpath}"/linux-libc-dev_"${_ver}"-"${_rev}"_amd64.deb
+
+	if [[ -f /var/db/kernel/changelog ]]; then
+		rm /var/db/kernel/*
+	fi
 }
 
 ## Main functions
