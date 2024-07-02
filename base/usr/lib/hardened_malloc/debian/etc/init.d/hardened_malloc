@@ -6,7 +6,7 @@
 # Required-Stop:	
 # Default-Start:	2 3 4 5
 # Default-Stop:		0 1 6
-# Short-Description:	enable hardenec_malloc() at boot time
+# Short-Description:	enable hardened_malloc() at boot time
 # Description:		fixes the long boot/poweroff times in the live iso.
 ### END INIT INFO
 
