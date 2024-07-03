@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# hardened_malloc init script
+# $Ragnarok: hardened_malloc,v 1.1 2024/07/03 15:12:25 lecorbeau Exp $
+
 ### BEGIN INIT INFO
 # Provides:		hardened_malloc
 # Required-Start:	$all

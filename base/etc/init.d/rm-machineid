@@ -1,4 +1,7 @@
 #!/bin/sh
+
+# $Ragnarok: rm-machineid,v 1.1 2024/07/03 15:12:09 lecorbeau Exp $
+
 ### BEGIN INIT INFO
 # Provides:		rm-machineid
 # Required-Start:
