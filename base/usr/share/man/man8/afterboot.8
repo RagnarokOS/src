@@ -123,6 +123,26 @@ For more information on dma see the
 and
 .Xr sendmail 8
 manual pages.
+.Ss Cron
+The
+.Pa /etc/cron.*
+directories contain various cron jobs for system maintenance. On systems that will not be always powered
+on, you can either install the
+.Xr anacron 8
+package or handle them manually. For example, you could change the
+.Pa /etc/crontab
+file to run the cron jobs at a time when you know the system will be powered on. However, it is better
+to use the
+.Cm crontab -e
+command to enable the individual jobs that are needed, such as
+.Pa /etc/cron.daily/update-manpages .
+.Pp
+For more details, see the
+.Xr cron 8 ,
+.Xr crontab 1 ,
+and
+.Xr crontab 5
+manuals.
 .Sh SEE ALSO
 .Xr apt 8 ,
 .Xr apt-get 8 ,
