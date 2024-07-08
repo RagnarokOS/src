@@ -21,6 +21,25 @@ to check and upgrade if necessary by using the
 or
 .Xr apt-get 8
 commands.
+.Ss Kernel
+Ragnarok's kernel build is still experimental and as such, cannot be installed
+through
+.Xr apt 8 .
+Instead, the
+.Xr kernupd 8 
+command can be used to install and update the kernel.
+.Pp
+If you've installed the system the recommended way, then the kernel should
+already be installed and up to date. Otherwise, running the
+.Cm kernupd
+command will install the latest version. It's a good idea to run this command
+as often as 
+.Cm apt-get update
+to stay updated.
+.Pp
+It is also recommended to keep the default Debian kernel installed in case of
+emergency, or if secure boot is required, as the Ragnarok kernel does not support
+this feature.
 .Ss Doas
 Ragnarok comes with doas, an alternative to sudo. In order to work, doas
 needs to be properly configured in /etc/doas.conf. A basic configuration
@@ -146,6 +165,7 @@ manuals.
 .Sh SEE ALSO
 .Xr apt 8 ,
 .Xr apt-get 8 ,
+.Xr kernupd 8 ,
 .Xr doas 1 ,
 .Xr nft 8 ,
 .Xr nftables 8 ,
