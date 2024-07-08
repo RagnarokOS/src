@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Script to be run when the system boots up the first time after install.
-# $Ragnarok: firstboot,v 1.2 2024/07/03 16:31:02 lecorbeau Exp $
+# $Ragnarok: firstboot,v 1.3 2024/07/08 20:01:28 lecorbeau Exp $
 #
 ### BEGIN INIT INFO
 # Provides:		first boot script
@@ -38,6 +38,9 @@ if command -v /usr/bin/clang; then
 	/usr/bin/printf '%s\n' "hardened_malloc built. See the HARDENED_MALLOC section
 in the afterboot(8) manual for details on how to enable it."
 fi
+
+# Security check. Ensure some files have the right permissions.
+
 
 # do other stuff ...
 
