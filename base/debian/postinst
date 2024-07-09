@@ -16,6 +16,7 @@ do_conf() {
 	/usr/bin/chmod 644 /etc/apt/sources.list.d/*
 	/usr/bin/chmod 644 /etc/apt/trusted.gpg.d/*
 	/usr/bin/chmod 755 /etc/cron.daily/update-manpages
+	/usr/bin/chmod 755 /etc/cron.weekly/security-check
 	/usr/bin/chmod 600 /etc/default/grub.d/*
 	/usr/bin/chmod 644 /etc/dpkg/buildflags.conf
 	/usr/bin/chmod 644 /etc/dma/dma.conf
