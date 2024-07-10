@@ -1,3 +1,10 @@
+ragnarok-base (01-2.11) stable; urgency=medium
+
+  * The afterboot(8) manual was updated to document cron and kernupd.
+  * New "security-check" cronjob added to cron.weekly.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Wed, 10 Jul 2024 11:41:01 -0400
+
 ragnarok-base (01-2.10) stable; urgency=medium
 
   * Fix error in kernupd.
