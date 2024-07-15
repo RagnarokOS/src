@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Script to be run when the system boots up the first time after install.
-# $Ragnarok: firstboot,v 1.4 2024/07/09 14:50:54 lecorbeau Exp $
+# $Ragnarok: firstboot,v 1.5 2024/07/15 17:27:57 lecorbeau Exp $
 #
 ### BEGIN INIT INFO
 # Provides:		first boot script
@@ -28,8 +28,30 @@ build_hm() {
 	/usr/bin/mv "$DIR"/out-light/libhardened_malloc-light.so /usr/lib/hardened_malloc/	
 }
 
+prt_msg() {
+	printf '%s\n' "
+Welcome to Ragnarok
+
+$(lsb_release -a 2>/dev/null)
+Installed on:	$(date)
+
+If you have not done so already, it is highly recommended to read the
+afterboot(8) manual page.
+
+If youy encouter any bugs, please report them in the issue tracker of
+the appropriate repository at https://github.com/RagnarokOS/.
+" > /var/messages/welcome.txt
+}
+
+# ensure /var/messages exists
+/usr/bin/mkdir -p /var/messages
+
 # Mail install.log
 /usr/bin/cat /var/messages/install.log | mail -r installer@ragnarok -s "Installation log" root
+
+# Mail welcome message
+prt_msg
+/usr/bin/cat /var/messages/welcome.txt | /usr/bin/mail -r "LeCorbeau@ragnarok" -s "Welcome" root
 
 # Handle hardened_malloc. We can only build it if the devel set was installed.
 if command -v /usr/bin/clang; then
@@ -44,6 +66,5 @@ fi
 
 # do other stuff ...
 
-# In the end, this script needs to disable itself
-/usr/sbin/update-rc.d firstboot defaults-disabled
-
+# In the end, this script needs to disable and remove itself.
+/usr/sbin/update-rc.d -f firstboot remove
