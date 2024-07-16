@@ -1,8 +1,11 @@
 #!/bin/sh
 
+# virt set postinstall script.
+# $Ragnarok: postinst,v 1.1 2024/07/16 14:42:45 lecorbeau Exp $
+
 set -e
 
 # Let user know about permissions/groups.
 printf '%s\n' "The virt set has been installed. If you want to run
 virtual machines as a non-root user, don't forget to add your user
-to the libvirt and kvm groups."
+to the libvirt and kvm groups then reboot the system."
