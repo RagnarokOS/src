@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Script to be run when the system boots up the first time after install.
-# $Ragnarok: firstboot,v 1.5 2024/07/15 17:27:57 lecorbeau Exp $
+# $Ragnarok: firstboot,v 1.6 2024/07/21 15:43:15 lecorbeau Exp $
 #
 ### BEGIN INIT INFO
 # Provides:		first boot script
@@ -17,6 +17,8 @@
 build_hm() {
 
 	DIR="/usr/src/hardened_malloc"
+
+	/usr/bin/tar xvf /usr/src/hardened_malloc.tgz -C /usr/src/
 
 	/usr/bin/make -C "$DIR" -j"$(nproc)"
 	/usr/bin/make -C "$DIR" VARIANT=medium -j"$(nproc)"
