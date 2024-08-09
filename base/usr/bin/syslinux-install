@@ -1,0 +1,13 @@
+#!/bin/ksh
+
+# Script to quickly install/configure syslinux
+# $Ragnarok: syslinux-install,v 1.1 2024/08/09 18:15:33 lecorbeau Exp $
+
+DEV=$1
+RUUID=$(blkid -s UUID -o value "$DEV")
+
+mkdir -p /boot/syslinux
+extlinux --install /boot/syslinux
+dd bs=440 count=1 conv=notrunc if=/usr/lib/syslinux/mbr/mbr.bin of="${DEV}1"
+sed -i "s/@ROOTUUID@/$RUUID/g" /boot/syslinux.cfg
+# Next, figure out the best way to change VMLINUZ and INITRD.img...
