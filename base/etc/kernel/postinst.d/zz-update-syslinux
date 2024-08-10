@@ -1,0 +1,24 @@
+#!/bin/sh
+
+# Update syslinux config after a new kernel is installed.
+# $Ragnarok: zz-update-syslinux,v 1.1 2024/08/10 18:05:39 lecorbeau Exp $
+
+_version=$1
+_tab=$(printf '\t')
+
+# There are three scenarios when it comes to the kernel:
+# 1) Only Ragnarok's build is installed
+# 2) only Debian's build is installed
+# 3) both are installed
+# This will handle all three easily.
+printf '%s\n' "Updating syslinux config..."
+case "$_version" in
+	*ragnarok*)
+		sed -i "/vmlinuz-*.*.*-ragnarok-amd64/c\\${_tab}linux ../vmlinuz-$VERSION" /boot/syslinux/syslinux.cfg
+		sed -i "/initrd.img-*.*.*-ragnarok-amd64/c\\${_tab}initrd ../initrd.img-$VERSION" /boot/syslinux/syslinux.cfg
+		;;
+	*)
+		sed -i "/vmlinuz-*-*-*-amd64/c\\${_tab}linux ../vmlinuz-$VERSION" /boot/syslinux/syslinux.cfg
+		sed -i "/initrd.img-*.*.*-amd64/c\\${_tab}initrd ../initrd.img-$VERSION" /boot/syslinux/syslinux.cfg
+		;;
+esac
