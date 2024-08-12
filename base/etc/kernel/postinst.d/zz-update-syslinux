@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Update syslinux config after a new kernel is installed.
-# $Ragnarok: zz-update-syslinux,v 1.1 2024/08/10 18:05:39 lecorbeau Exp $
+# $Ragnarok: zz-update-syslinux,v 1.2 2024/08/12 19:59:29 lecorbeau Exp $
 
 _version=$1
 _tab=$(printf '\t')
@@ -14,11 +14,11 @@ _tab=$(printf '\t')
 printf '%s\n' "Updating syslinux config..."
 case "$_version" in
 	*ragnarok*)
-		sed -i "/vmlinuz-*.*.*-ragnarok-amd64/c\\${_tab}linux ../vmlinuz-$VERSION" /boot/syslinux/syslinux.cfg
-		sed -i "/initrd.img-*.*.*-ragnarok-amd64/c\\${_tab}initrd ../initrd.img-$VERSION" /boot/syslinux/syslinux.cfg
+		sed -i "/vmlinuz-*.*.*-ragnarok-amd64/c\\${_tab}linux ../vmlinuz-${_version}" /boot/syslinux/syslinux.cfg
+		sed -i "/initrd.img-*.*.*-ragnarok-amd64/c\\${_tab}initrd ../initrd.img-${_version}" /boot/syslinux/syslinux.cfg
 		;;
 	*)
-		sed -i "/vmlinuz-*-*-*-amd64/c\\${_tab}linux ../vmlinuz-$VERSION" /boot/syslinux/syslinux.cfg
-		sed -i "/initrd.img-*.*.*-amd64/c\\${_tab}initrd ../initrd.img-$VERSION" /boot/syslinux/syslinux.cfg
+		sed -i "/vmlinuz-*-*-*-amd64/c\\${_tab}linux ../vmlinuz-${_version}" /boot/syslinux/syslinux.cfg
+		sed -i "/initrd.img-*.*.*-amd64/c\\${_tab}initrd ../initrd.img-${_version}" /boot/syslinux/syslinux.cfg
 		;;
 esac
