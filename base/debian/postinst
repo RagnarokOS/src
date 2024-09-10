@@ -32,6 +32,8 @@ do_conf() {
 	/usr/bin/chmod 755 /usr/bin/kernupd
 	/usr/bin/chmod 644 /usr/share/doc/nftables/examples/ragnarok.nft
 	/usr/bin/chmod 644 /usr/share/mk/*
+	/usr/bin/chmod 644 /usr/share/ragnarok/syslinux/syslinux.cfg
+	/usr/bin/chmod 755 /usr/share/ragnarok/syslinux/zz-update-syslinux
 
 	# Ensure that the proper .profile is used. This is a crude hack, but it
 	# allows setting .profile to ours without the need to rebuild/maintain
