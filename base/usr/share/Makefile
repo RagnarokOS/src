@@ -1,5 +1,5 @@
 # Makefile for /usr/share
-# $Ragnarok: Makefile,v 1.13 2024/09/04 17:04:48 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.14 2024/09/11 15:34:08 lecorbeau Exp $
 
 MAKE = make -C
 
@@ -24,4 +24,6 @@ install:
 	install ragnarok/syslinux/syslinux.cfg \
 		${DESTDIR}/usr/share/ragnarok/syslinux
 	install ragnarok/syslinux/zz-update-syslinux \
+		${DESTDIR}/usr/share/ragnarok/syslinux
+	install ragnarok/syslinux/syslinux-install \
 		${DESTDIR}/usr/share/ragnarok/syslinux
