@@ -1,7 +1,7 @@
 #!/bin/ksh
 
 # Script to quickly install/configure syslinux
-# $Ragnarok: syslinux-install,v 1.4 2024/08/12 14:44:50 lecorbeau Exp $
+# $Ragnarok: syslinux-install,v 1.5 2024/09/11 15:30:01 lecorbeau Exp $
 
 DEV=$1
 RUUID=$(blkid -s UUID -o value "$DEV")
@@ -15,11 +15,11 @@ INITRD_DEBIAN=$(find /boot/ -type f -name "initrd.img-*.*.*-amd64" ! -path "*rag
 mkdir -p /boot/syslinux
 extlinux --install /boot/syslinux
 dd bs=440 count=1 conv=notrunc if=/usr/lib/syslinux/mbr/mbr.bin of="${DEV}"
-sed -i	-e "s/@ROOTUUID@/$RUUID/g" \
-	-e "s/@VERSION@/$VERSION/g" \
-	-e "s/@CODENAME@/$CODENAME/g" \
-	-e "s/@VMLINUZ@/..\/${VMLINUZ}/g" \
-	-e "s/@INITRD@/..\/${INITRD}/g" \
-	-e "s/@VMLINUZ_DEBIAN@/..\/${VMLINUZ_DEBIAN}/g" \
-	-e "s/@INITRD_DEBIAN@/..\/${INITRD_DEBIAN}/g" \
-	/boot/syslinux.cfg
+sed -i	-e "s|@ROOTUUID@|$RUUID|g" \
+	-e "s|@VERSION@|$VERSION|g" \
+	-e "s|@CODENAME@|$CODENAME|g" \
+	-e "s|@VMLINUZ@|..\/${VMLINUZ}|g" \
+	-e "s|@INITRD@|..\/${INITRD}|g" \
+	-e "s|@VMLINUZ_DEBIAN@|..\/${VMLINUZ_DEBIAN}|g" \
+	-e "s|@INITRD_DEBIAN@|..\/${INITRD_DEBIAN}|g" \
+	/boot/syslinux/syslinux.cfg
