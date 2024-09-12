@@ -1,16 +1,16 @@
 #!/bin/ksh
 
 # Script to quickly install/configure syslinux
-# $Ragnarok: syslinux-install,v 1.5 2024/09/11 15:30:01 lecorbeau Exp $
+# $Ragnarok: syslinux-install,v 1.6 2024/09/12 15:58:35 lecorbeau Exp $
 
 DEV=$1
 RUUID=$(blkid -s UUID -o value "$DEV")
 VERSION=$(lsb_release -r 2>/dev/null | awk '{ print $2 }')
 CODENAME=$(lsb_release -c 2>/dev/null | awk '{ print $2 }')
-VMLINUZ=$(find /boot/ -type f -name "vmlinuz-*.*.*-ragnarok-amd64")
-VMLINUZ_DEBIAN=$(find /boot/ -type f -name "vmlinuz-*.*.*-amd64" ! -path "*ragnarok*")
-INITRD=$(find /boot/ -type f -name "initrd.img-*.*.*-ragnarok-amd64")
-INITRD_DEBIAN=$(find /boot/ -type f -name "initrd.img-*.*.*-amd64" ! -path "*ragnarok*")
+VMLINUZ=$(find /boot/ -type f -name "vmlinuz-*.*.*-ragnarok-amd64" -printf '%P\n')
+VMLINUZ_DEBIAN=$(find /boot/ -type f -name "vmlinuz-*.*.*-amd64" ! -path "*ragnarok*" -printf '%P\n')
+INITRD=$(find /boot/ -type f -name "initrd.img-*.*.*-ragnarok-amd64" -printf '%P\n')
+INITRD_DEBIAN=$(find /boot/ -type f -name "initrd.img-*.*.*-amd64" ! -path "*ragnarok*" -printf '%P\n')
 
 mkdir -p /boot/syslinux
 extlinux --install /boot/syslinux
