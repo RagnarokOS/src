@@ -1,3 +1,9 @@
+ragnarok-base (01-2.13) stable; urgency=medium
+
+  * Added the syslinux-install script.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Mon, 16 Sep 2024 13:44:51 -0400
+
 ragnarok-base (01-2.12) stable; urgency=medium
 
   * Added syslinux conf files to /usr/share/ragnarok.
