@@ -1,3 +1,9 @@
+ragnarok-xserv (01-2) stable; urgency=medium
+
+  * Moved hsetroot, xclip and xcompmgr depends to xprogs.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Sun, 22 Sep 2024 11:19:08 -0400
+
 ragnarok-xserv (01-1) stable; urgency=medium
 
   * Fixes.

@@ -1,3 +1,9 @@
+ragnarok-progs (01-1) stable; urgency=medium
+
+  * Added hsetroot, xclip and xcompmgr depends.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Sun, 22 Sep 2024 11:20:18 -0400
+
 ragnarok-xprogs (01) unstable; urgency=medium
 
   * Initial build of ragnarok-xprogs.
