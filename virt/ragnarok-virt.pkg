@@ -10,7 +10,6 @@ Depends: qemu-system,
  libvirt-clients,
  libvirt-daemon-system,
  libvirt-daemon-system-sysv,
- virtinst,
  ovmf,
 Architecture: amd64
 Changelog: changelog
