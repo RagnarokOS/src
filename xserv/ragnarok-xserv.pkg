@@ -10,16 +10,11 @@ Depends: xserver-xorg-core,
  x11-xserver-utils,
  xdg-utils,
  xdg-user-dirs,
- xclip,
- xcompmgr,
  xterm,
- hsetroot,
  alsa-utils,
 Architecture: amd64
 Changelog: changelog.xserv
-Files: usr/share/X11/backgrounds/wallpaper0001.png /usr/share/X11/backgrounds/
- usr/share/X11/backgrounds/wallpaper0002.png /usr/share/X11/backgrounds/
- usr/share/doc/ragnarok-xserv/examples/.xinitrc /usr/share/doc/ragnarok-xserv/examples/
+Files: usr/share/doc/ragnarok-xserv/examples/.xinitrc /usr/share/doc/ragnarok-xserv/examples/
 Description: meta-package for Ragnarok's xserver set.
  This is a meta-package which depends on all programs that
  are needed for Ragnarok's xserver set.
