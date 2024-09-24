@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Script to perform some basic security checks on a weekly basic.
-# $Ragnarok: security-check,v 1.1 2024/07/09 17:27:21 lecorbeau Exp $
+# $Ragnarok: security-check,v 1.2 2024/09/24 18:43:53 lecorbeau Exp $
 
 # Note: at some point simplify this script by creating functions rather
 # than repeating the same shit over and over again.
@@ -49,12 +49,25 @@ for _file in $(find /etc/sysctl.d -type f ! -name README.sysctl) /etc/sysctl.con
 done
 
 # Bootloader files should have 600 perms.
-for _file in /boot/grub/custom.cfg /etc/default/grub.d/01_hardening.cfg; do
-	if [ "$(stat -c "%a %g %G" "$_file")" != "600 0 root" ]; then
-		/usr/bin/chmod 600 "$_file"
-		/usr/bin/chown root:root "$_file"
-		printf '%s\n' "Fixed ${_file}'s permissions."
+# Only check if they exist.
+if [ -d "/boot/grub/" ]; then
+	for _file in /boot/grub/custom.cfg /etc/default/grub.d/01_hardening.cfg; do
+		if [ "$(stat -c "%a %g %G" "$_file")" != "600 0 root" ]; then
+			/usr/bin/chmod 600 "$_file"
+			/usr/bin/chown root:root "$_file"
+			printf '%s\n' "Fixed ${_file}'s permissions."
+		else
+			printf '%s\n' "${_file}'s permissions are OK."
+		fi
+	done
+fi
+
+if [ -d "/boot/syslinux/" ]; then
+	if [ "$(stat -c "%a %g %G" /boot/syslinux/syslinux.cfg)" != "600 0 root" ]; then
+		/usr/bin/chmod 600 /boot/syslinux/syslinux.cfg
+		/usr/bin/chown root:root /boot/syslinux/syslinux.cfg
+		printf '%s\n' "Fixed /boot/syslinux/syslinux.cfg's permissions."
 	else
-		printf '%s\n' "${_file}'s permissions are OK."
+		printf '%s\n' "/boot/syslinux/syslinux.cfg's permissions are OK."
 	fi
-done
+fi
