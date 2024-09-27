@@ -1,3 +1,11 @@
+ragnarok-base (01-2.15) stable; urgency=medium
+
+  * Security-check cronjob:
+      * Add syslinux.cfg.
+      * Only verify boot files if they exist.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Fri, 27 Sep 2024 13:05:27 -0400
+
 ragnarok-base (01-2.14) stable; urgency=medium
 
   * Added fdisk to depends.
