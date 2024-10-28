@@ -1,3 +1,9 @@
+ragnarok-base (01-3) stable; urgency=medium
+
+  * Added kernel repository to ragnarok.sources.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Mon, 28 Oct 2024 11:27:51 -0400
+
 ragnarok-base (01-2.15) stable; urgency=medium
 
   * Security-check cronjob:
