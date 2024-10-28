@@ -1,5 +1,5 @@
 # Global Makefile. This builds the 'ragnarok-base' and all metapackages.
-# $Ragnarok: Makefile,v 1.4 2024/05/01 17:17:32 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.5 2024/10/28 15:39:55 lecorbeau Exp $
 
 MAKE		= make -C
 SUBDIRS		= xserv
@@ -14,3 +14,5 @@ metapkgs:
 	for _dir in ${SUBDIRS}; do \
 		${MAKE} $$_dir deb; \
 		done
+
+.PHONY: all base metapkgs
