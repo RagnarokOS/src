@@ -35,6 +35,7 @@ do_conf() {
 	/usr/bin/chmod 644 /usr/share/ragnarok/syslinux/syslinux.cfg
 	/usr/bin/chmod 755 /usr/share/ragnarok/syslinux/zz-update-syslinux
 	/usr/bin/chmod 755 /usr/share/ragnarok/syslinux/syslinux-install
+	/usr/bin/chmod 644 /usr/share/keyrings/brave-browser-archive-keyring.gpg
 
 	# Ensure that the proper .profile is used. This is a crude hack, but it
 	# allows setting .profile to ours without the need to rebuild/maintain

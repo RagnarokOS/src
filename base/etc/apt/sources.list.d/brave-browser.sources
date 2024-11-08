@@ -1,0 +1,5 @@
+Types: deb
+URIs: https://brave-browser-apt-release.s3.brave.com/
+Suites: stable
+Components: main
+Signed-by: /usr/share/keyrings/brave-browser-archive-keyring.gpg

@@ -1,5 +1,5 @@
 # Makefile for /etc
-# $Ragnarok: Makefile,v 1.34 2024/07/10 15:49:22 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.35 2024/11/08 18:06:56 lecorbeau Exp $
 
 include ../usr/share/mk/ragnarok-config.mk
 
@@ -32,6 +32,7 @@ install:
 	install apt/preferences.d/systemd ${DESTDIR}/etc/apt/preferences.d
 	install apt/sources.list.d/llvm.sources ${DESTDIR}/etc/apt/sources.list.d
 	install apt/sources.list.d/ragnarok.sources ${DESTDIR}/etc/apt/sources.list.d
+	install apt/sources.list.d/brave-browser.sources ${DESTDIR}/etc/apt/sources.list.d
 	install apt/trusted.gpg.d/apt.llvm.org.asc ${DESTDIR}/etc/apt/trusted.gpg.d
 	install apt/trusted.gpg.d/ragnarok01.asc ${DESTDIR}/etc/apt/trusted.gpg.d
 	install cron.daily/update-manpages ${DESTDIR}/etc/cron.daily/
