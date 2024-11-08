@@ -35,7 +35,6 @@ do_conf() {
 	/usr/bin/chmod 644 /usr/share/ragnarok/syslinux/syslinux.cfg
 	/usr/bin/chmod 755 /usr/share/ragnarok/syslinux/zz-update-syslinux
 	/usr/bin/chmod 755 /usr/share/ragnarok/syslinux/syslinux-install
-	/usr/bin/chmod 644 /usr/share/keyrings/brave-browser-archive-keyring.gpg
 
 	# Ensure that the proper .profile is used. This is a crude hack, but it
 	# allows setting .profile to ours without the need to rebuild/maintain
@@ -50,6 +49,14 @@ do_conf() {
 		sed -i 's/bash/ksh/g' /etc/passwd
 	fi
 }
+
+# Create the brave keyring file if it doesn't exist. This allows the
+# brave-keyring package to overwrite it at install time.
+if [ ! -f /usr/share/keyrings/brave-browser-archive-keyring.gpg ]; then
+	cp /usr/share/ragnarok/keyrings/brave-browser-archive-keyring.gpg \
+		/usr/share/keyrings/
+	chmod 644 /usr/share/keyrings/brave-browser-archive-keyring.gpg
+fi
 
 if [ -z "$2" ]; then
 	do_conf
