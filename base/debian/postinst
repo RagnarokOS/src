@@ -29,7 +29,6 @@ do_conf() {
 	/usr/bin/chmod 600 /etc/sysctl.d/*
 	/usr/bin/chmod 700 /etc/nftables.conf
 	/usr/bin/chmod 600 /etc/sysctl.conf
-	/usr/bin/chmod 755 /usr/bin/kernupd
 	/usr/bin/chmod 644 /usr/share/doc/nftables/examples/ragnarok.nft
 	/usr/bin/chmod 644 /usr/share/mk/*
 	/usr/bin/chmod 644 /usr/share/ragnarok/syslinux/syslinux.cfg
