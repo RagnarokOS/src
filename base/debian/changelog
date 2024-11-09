@@ -1,3 +1,9 @@
+ragnarok-base (01-5) stable; urgency=medium
+
+  * Deprecate the kernupd utility.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Sat, 09 Nov 2024 15:07:32 -0500
+
 ragnarok-base (01-4) stable; urgency=medium
 
   * Added the brave browser repository. Users may install it via apt.
