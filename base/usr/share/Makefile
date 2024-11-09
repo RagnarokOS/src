@@ -1,5 +1,5 @@
 # Makefile for /usr/share
-# $Ragnarok: Makefile,v 1.14 2024/09/11 15:34:08 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.15 2024/11/09 18:33:34 lecorbeau Exp $
 
 MAKE = make -C
 
@@ -9,13 +9,10 @@ all: install
 
 install:
 	install -d ${DESTDIR}/usr/share/doc/nftables/examples
-	install -d ${DESTDIR}/usr/share/doc/kernupd/hook
 	install -d ${DESTDIR}/usr/share/doc/ragnarok
 	install -d ${DESTDIR}/usr/share/ragnarok/syslinux
 	install doc/nftables/examples/ragnarok.nft \
 		${DESTDIR}/usr/share/doc/nftables/examples
-	install doc/kernupd/hook/99kernel_update \
-		${DESTDIR}/usr/share/doc/kernupd/hook
 	install doc/ragnarok/ksh.profile \
 		${DESTDIR}/usr/share/doc/ragnarok
 	for _dir in ${SUBDIRS}; do \

@@ -1,5 +1,5 @@
 # Makefile for /usr
-# $Ragnarok: Makefile,v 1.10 2024/11/08 19:01:01 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.12 2024/11/09 18:48:53 lecorbeau Exp $
 
 MAKE = make -C
 
