@@ -24,6 +24,7 @@ Architecture: amd64
 Changelog: changelog.xprogs
 Files: usr/share/doc/ragnarok-xserv/examples/.Xresources /usr/share/doc/ragnarok-xserv/examples/
  usr/share/doc/ragnarok-xserv/examples/.cwmrc /usr/share/doc/ragnarok-xserv/examples/
+ usr/share/doc/ragnarok-xserv/examples/polybar/config.ini /usr/share/doc/ragnarok-xserv/examples/polybar/config.ini
  usr/share/X11/backgrounds/wallpaper0001.png /usr/share/X11/backgrounds/
  usr/share/X11/backgrounds/wallpaper0002.png /usr/share/X11/backgrounds/
 Description: meta-package for Ragnarok's xprogs set.
