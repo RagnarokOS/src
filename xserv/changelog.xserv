@@ -1,3 +1,9 @@
+ragnarok-xserv (01-3) stable; urgency=medium
+
+  * Added x11-utils to depends.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Sun, 26 Nov 2024 11:43:40 -0500
+
 ragnarok-xserv (01-2) stable; urgency=medium
 
   * Moved hsetroot, xclip and xcompmgr depends to xprogs.
