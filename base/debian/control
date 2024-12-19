@@ -3,7 +3,7 @@ Section: base
 Priority: standard
 Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
 Build-Depends: debhelper-compat (= 13)
-Standards-Version: 4.6.1
+Standards-Version: 4.7.0
 Homepage: https://github.com/RagnarokOS/src
 Rules-Requires-Root: no
 
