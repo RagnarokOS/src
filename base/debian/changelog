@@ -1,3 +1,9 @@
+ragnarok-base (02) unstable; urgency=medium
+
+  * Bump version to -current (02).
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Sat, 20 Dec 2024 11:20:28 -0500
+
 ragnarok-base (01-5) stable; urgency=medium
 
   * Deprecate the kernupd utility.
