@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # Script to be run when the system boots up the first time after install.
-# $Ragnarok: firstboot,v 1.6 2024/07/21 15:43:15 lecorbeau Exp $
+# $Ragnarok: firstboot,v 1.8 2024/12/20 16:13:24 lecorbeau Exp $
 #
 ### BEGIN INIT INFO
 # Provides:		first boot script
@@ -18,16 +18,18 @@ build_hm() {
 
 	DIR="/usr/src/hardened_malloc"
 
-	/usr/bin/tar xvf /usr/src/hardened_malloc.tgz -C /usr/src/
+	if [ -f /usr/src/hardened_malloc.tgz ]; then
+		/usr/bin/tar xvf /usr/src/hardened_malloc.tgz -C /usr/src/
 
-	/usr/bin/make -C "$DIR" -j"$(nproc)"
-	/usr/bin/make -C "$DIR" VARIANT=medium -j"$(nproc)"
-	/usr/bin/make -C "$DIR" VARIANT=light -j"$(nproc)"
+		/usr/bin/make -C "$DIR" -j"$(nproc)"
+		/usr/bin/make -C "$DIR" VARIANT=medium -j"$(nproc)"
+		/usr/bin/make -C "$DIR" VARIANT=light -j"$(nproc)"
 
-	/usr/bin/mkdir -p /usr/lib/hardened_malloc
-	/usr/bin/mv "$DIR"/out-strong/libhardened_malloc-strong.so /usr/lib/hardened_malloc/
-	/usr/bin/mv "$DIR"/out-medium/libhardened_malloc-medium.so /usr/lib/hardened_malloc/
-	/usr/bin/mv "$DIR"/out-light/libhardened_malloc-light.so /usr/lib/hardened_malloc/	
+		/usr/bin/mkdir -p /usr/lib/hardened_malloc
+		/usr/bin/mv "$DIR"/out-strong/libhardened_malloc-strong.so /usr/lib/hardened_malloc/
+		/usr/bin/mv "$DIR"/out-medium/libhardened_malloc-medium.so /usr/lib/hardened_malloc/
+		/usr/bin/mv "$DIR"/out-light/libhardened_malloc-light.so /usr/lib/hardened_malloc/	
+	fi
 }
 
 prt_msg() {
@@ -49,7 +51,7 @@ the appropriate repository at https://github.com/RagnarokOS/.
 /usr/bin/mkdir -p /var/messages
 
 # Mail install.log
-/usr/bin/cat /var/messages/install.log | mail -r installer@ragnarok -s "Installation log" root
+#/usr/bin/cat /var/messages/install.log | mail -r installer@ragnarok -s "Installation log" root
 
 # Mail welcome message
 prt_msg
