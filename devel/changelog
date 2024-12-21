@@ -1,3 +1,9 @@
+ragnarok-devel (02) unstable; urgency=medium
+
+  * Bump the LLVM/Clang toolchain to version 19.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Sat, 21 Dec 2024 11:34:05 -0500
+
 ragnarok-devel (01.1) stable; urgency=medium
 
   * Added the man-recode package as dependency.

@@ -1,13 +1,13 @@
 #!/bin/sh
 
 # postinstall script for the devel set.
-# $Ragnarok: postinst,v 1.1 2024/07/16 15:02:48 lecorbeau Exp $
+# $Ragnarok: postinst,v 1.2 2024/12/21 16:25:51 lecorbeau Exp $
 
 # Setup LLVM/Clang as the default compiler
 
 set -e
 
-VERSION="17"
+VERSION="19"
 
 # Use update-alternatives to set as default toolchain.
 # This *has* to be done in order to ensure that it works as expected.
