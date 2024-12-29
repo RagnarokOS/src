@@ -12,6 +12,7 @@ Architecture: amd64
 Depends: oksh,
  ed,
  mandoc,
+ make,
  doas,
  signify-openbsd,
  bsd-mailx,
