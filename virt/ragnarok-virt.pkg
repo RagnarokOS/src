@@ -1,9 +1,9 @@
 Section: admin
 Priority: optional
-Standards-Version: 3.9.2
+Standards-Version: 4.7.0
 
 Package: ragnarok-virt
-Version: 01
+Version: 02
 Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
 Depends: qemu-system,
  qemu-utils,
