@@ -1,3 +1,9 @@
+ragnarok-xserv (02) unstable; urgency=medium
+
+  * Version bump for -current.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Sun, 29 Dec 2024 11:11:47 -0500
+
 ragnarok-xserv (01-3) stable; urgency=medium
 
   * Added x11-utils to depends.

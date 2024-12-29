@@ -1,14 +1,14 @@
 Section: misc
 Priority: optional
-Standards-Version: 3.9.2
+Standards-Version: 4.7.0
 
 Package: ragnarok-xfonts
-Version: 01
+Version: 02
 Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
 Depends: fonts-dejavu,
  fonts-liberation,
  fonts-spleen,
 Architecture: amd64
-Description: meta-package for Ragnarok's xfonts "set".
+Description: meta-package for Ragnarok's xfonts set.
  This is a meta-package which depends on all fonts that
  are needed for Ragnarok's xfonts set.

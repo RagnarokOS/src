@@ -42,7 +42,7 @@ hsetroot -add "#080808" -add "#484848" -gradient 170 -center /usr/share/X11/back
 case "$WM" in
 	cwm)		exec /usr/bin/cwm
 			;;
-	raven|*)	exec /usr/bin/raven
+	raven)		exec /usr/bin/raven
 			;;
 esac
 

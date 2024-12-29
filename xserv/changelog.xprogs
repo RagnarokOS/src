@@ -1,3 +1,9 @@
+ragnarok-xprogs (02) unstable; urgency=medium
+
+  * Bump version for -current.
+
+ -- Ian LeCorbeau <I-LeCorbeau@protonmail.com>  Sun, 29 Dec 2024 11:10:43 -0500
+
 ragnarok-xprogs (01-2) stable; urgency=medium
 
   * Updated .cwmrc example and added example polybar config.
