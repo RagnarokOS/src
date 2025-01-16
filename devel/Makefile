@@ -1,5 +1,13 @@
 # Makefile for the devel set
-# $Ragnarok: Makefile,v 1.2 2024/07/16 17:24:16 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.3 2025/01/16 00:42:00 lecorbeau Exp $
+
+PKG	= ragnarok-devel
+VERSION	= 02
+DESTDIR	= ${PKG}_${VERSION}_amd64
+
+all:
+	mkdir -p ${DESTDIR}
+	cp -r DEBIAN ${DESTDIR}/
 
 deb:
-	equivs-build ragnarok-devel.pkg 2>&1 | tee ragnarok-devel.build
+	dpkg-deb -b ${DESTDIR} . 2>&1 | tee ${PKG}_${VERSION}.build

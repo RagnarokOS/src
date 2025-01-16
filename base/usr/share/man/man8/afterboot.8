@@ -23,14 +23,14 @@ or
 commands.
 .Ss Doas
 Ragnarok comes with doas, an alternative to sudo. In order to work, doas
-needs to be properly configured in /etc/doas.conf. A basic configuration
-is made at install time if a regular was created.
+needs to be properly configured in /etc/doas.conf. For example, to allow
+members of the wheel group to run commands with doas, simply run the
 .Pp
-If you skipped the creation of a regular user at installation time, create
-one and make sure it's part of the wheel group. Then edit /etc/doas.conf
-and insert 'permit :wheel' (without the single quotes) which gives users 
-part of the wheel group the right to execute doas. For more configuration
-options, refer to the official
+.Cm echo 'permit :wheel' > /etc/doas.conf
+.Pp
+command. To allow only a single user, replace ':wheel' with your user name.
+.Pp
+For more configuration options, refer to the official
 .Xr doas 1
 documentation.
 .Ss Firewall
@@ -83,6 +83,14 @@ and
 .Xr ifdown 1
 manual pages.
 .Pp
+.Ss System Time
+In some cases, the
+.Pa hwclock.sh
+script does the job setting the system clock at boot. However, if system
+time goes out of sync, a proper NTP daemon should be installed. Ragnarok
+does not come with one by default, at least not in the 01 version, but
+NTPsec, Chrony or OpenNTPD are highly recommended and available in the
+repositories.
 .Ss System Mail
 Ragnarok ships with
 .Xr bsd-mailx 1
