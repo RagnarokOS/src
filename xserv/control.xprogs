@@ -1,0 +1,25 @@
+Package: ragnarok-xprogs
+Version: 02
+Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
+Section: misc
+Priority: optional
+Standards-Version: 4.7.0
+Depends: raven,
+ cwm,
+ rt, 
+ dmenu,
+ libfontconfig1-dev,
+ libfreetype6-dev,
+ libx11-dev, 
+ libxft-dev, 
+ libxinerama-dev,
+ libxcb1-dev,
+ libxcb-util-dev,
+ libxcb-cursor-dev,
+ xclip,
+ xcompmgr,
+ hsetroot,
+Architecture: amd64
+Description: meta-package for Ragnarok's xprogs set.
+ This is a meta-package which depends on all programs that
+ are needed for Ragnarok's xprogs set.

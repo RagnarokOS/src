@@ -1,10 +1,9 @@
-Section: misc
-Priority: optional
-Standards-Version: 4.7.0
-
 Package: ragnarok-xfonts
 Version: 02
 Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
+Section: misc
+Priority: optional
+Standards-Version: 4.7.0
 Depends: fonts-dejavu,
  fonts-liberation,
  fonts-spleen,

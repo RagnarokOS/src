@@ -1,9 +1,9 @@
+Package: ragnarok-xserv
+Version: 02
+Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
 Section: misc
 Priority: optional
 Standards-Version: 4.7.0
-
-Package: ragnarok-xserv
-Version: 02
 Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
 Depends: xserver-xorg-core,
  xinit,
@@ -14,8 +14,6 @@ Depends: xserver-xorg-core,
  xterm,
  alsa-utils,
 Architecture: amd64
-Changelog: changelog.xserv
-Files: usr/share/doc/ragnarok-xserv/examples/.xinitrc /usr/share/doc/ragnarok-xserv/examples/
 Description: meta-package for Ragnarok's xserver set.
  This is a meta-package which depends on all programs that
  are needed for Ragnarok's xserver set.
