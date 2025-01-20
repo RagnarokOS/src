@@ -1,5 +1,5 @@
 Types: deb deb-src
-URIs: http://apt.llvm.org/bookworm/
-Suites: llvm-toolchain-bookworm-19
+URIs: http://apt.llvm.org/unstable/
+Suites: llvm-toolchain-19
 Components: main
 Signed-by: /usr/share/keyrings/apt.llvm.org.asc
