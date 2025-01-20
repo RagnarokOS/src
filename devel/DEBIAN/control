@@ -1,36 +1,10 @@
 Package: ragnarok-devel
 Version: 02
-Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
 Section: devel
 Priority: optional
-Standards-Version: 4.7.0
-Depends: build-essential,
- libllvm19,
- llvm-19,
- llvm-19-dev,
- llvm-19-runtime,
- clang-19,
- clang-tools-19,
- libclang-common-19-dev,
- libclang-19-dev,
- libclang1-19,
- clang-format-19,
- python3-clang-19,
- clang-tidy-19,
- libclang-rt-19-dev,
- libpolly-19-dev,
- libfuzzer-19-dev,
- lldb-19,
- lld-19,
- libc++-19-dev,
- libc++abi-19-dev,
- libomp-19-dev,
- libunwind-19-dev,
- libmlir-19-dev,
- flang-19,
- git,
- man-recode,
+Maintainer: Ian LeCorbeau <I-LeCorbeau@protonmail.com>
 Architecture: amd64
+Depends: build-essential, libllvm19, llvm-19, llvm-19-dev, llvm-19-runtime, clang-19, clang-tools-19, libclang-common-19-dev, libclang-19-dev, libclang1-19, clang-format-19, python3-clang-19, clang-tidy-19, libclang-rt-19-dev, libpolly-19-dev, libfuzzer-19-dev, lldb-19, lld-19, libc++-19-dev, libc++abi-19-dev, libomp-19-dev, libunwind-19-dev, libmlir-19-dev, flang-19, man-recode
 Description: meta-package for Ragnarok's devel set.
  This is a meta-package which depends on all programs that
  are needed for Ragnarok's devel set.
