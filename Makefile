@@ -1,18 +1,24 @@
-# Global Makefile. This builds the 'ragnarok-base' and all metapackages.
-# $Ragnarok: Makefile,v 1.5 2024/10/28 15:39:55 lecorbeau Exp $
+# Global Makefile.
+# $Ragnarok: Makefile,v 1.6 2025/03/19 18:54:15 lecorbeau Exp $
 
 MAKE		= make -C
-SUBDIRS		= xserv
+SUBDIRS		= etc usr var
 
-all: base metapkgs
+## Section: create the Ragnarok-base package. See ragnarok-base.ebuild.
 
-base:
-	cd base; \
-		debuild -i -us -uc -b
+# Create basic directory structure
+all:
+	install -d ${DESTDIR}/etc
+	install -d ${DESTDIR}/usr
+	install -d ${DESTDIR}/var
 
-metapkgs:
+# Target for Ragnarok-base
+install: all
 	for _dir in ${SUBDIRS}; do \
-		${MAKE} $$_dir deb; \
+		${MAKE} $$_dir install; \
 		done
 
-.PHONY: all base metapkgs
+## Section: install files that need to be present before Ragnarok-base
+## (such as Make.conf, package.env ...)
+
+.PHONY: all base
