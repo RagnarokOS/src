@@ -1,0 +1,15 @@
+#!/bin/sh
+
+# Regenerate machine-id every time the system powers off or reboots.
+
+# Remove the files.
+if [ -f /etc/machine-id ]; then
+	/usr/bin/rm -f /etc/machine-id
+fi
+/usr/bin/rm /var/lib/dbus/machine-id
+
+# Regenerate. The dbus init script regenerates machine-id on boot if it
+# doesn't already exists. However, it leaves out /var/lib/dbus/machine-id
+# which in my opinion should exist. So regenerate the whole thing here.
+/usr/bin/dbus-uuidgen --ensure=/var/lib/dbus/machine-id
+/usr/bin/ln -sf /var/lib/dbus/machine-id /etc/machine-id
