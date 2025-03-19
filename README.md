@@ -1,15 +1,14 @@
 # src
 
-Source repository for the Ragnarok-base .deb package.
+Source repository for Ragnarok.
 
-See ISOs and releases here [https://github.com/RagnarokOS/iso](https://github.com/RagnarokOS/iso).  
+**This repository is being restructured due to Ragnarok being re-based
+on Gentoo. This is a work in progress as of 2025-03-19**.
 
 Relevant links
 --------------
 
 * About Ragnarok: [https://ragnarokos.github.io/about.html](https://ragnarokos.github.io/about.html).  
-
-* Development notes: [https://ragnarokos.github.io/logs/logs.html](https://ragnarokos.github.io/logs/logs.html).
 
 Reporting Issues
 ----------------
