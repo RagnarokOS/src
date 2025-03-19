@@ -1,4 +1,0 @@
-#!/bin/sh
-
-# Update mandoc's database.
-/usr/sbin/makewhatis /usr/share/man/

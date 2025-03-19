@@ -1,7 +1,0 @@
-#!/bin/ksh
-
-# Deprecated. Let the user know about it.
-
-printf '%s\n' "Warning: kernupd is deprecated. Use apt instead.
-Ensure ragnarok-base is up-to-date then install the 'linux-image-ragnarok-amd64'
-package."

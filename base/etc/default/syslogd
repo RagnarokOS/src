@@ -1,3 +1,0 @@
-# Options for the syslog daemon
-
-DAEMON_OPTS="-F -m 0 -s -s"
