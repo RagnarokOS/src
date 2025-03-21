@@ -1,5 +1,5 @@
 # Makefile to quickly install everything.
-# $Ragnarok: Makefile,v 1.1 2025/03/19 22:44:52 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.2 2025/03/21 16:13:28 lecorbeau Exp $
 
 ETCDIRS		= dracut.conf.d local.d logrotate.d portage rsyslog.d smtpd
 PORTAGEDIRS	= env package.use profile
@@ -10,6 +10,8 @@ USEFILES	= clang llvm gcc dhcpcd cronie mandoc media noX tmux
 PFILES		= package.use.mask use.force use.mask
 LOGROTATE	= logrotate.d/nftables logrotate.d/portage
 
+## Section: create the ragnarok-base package.
+
 # Explicitely create all dirs first.
 dirs:
 	for _dir in ${ETCDIRS}; do \
@@ -19,8 +21,6 @@ dirs:
 		for _dir in ${PORTAGEDIRS}; do \
 			install -d ${DESTDIR}/$$_dir; \
 			done
-	install -d ${DESTDIR}/etc/${USEDIR}
-	install -d ${DESTDIR}/etc/portage/profile/package.use.force
 
 install: dirs
 	install -m 644 nftables.rules ${DESTDIR}/etc
@@ -29,6 +29,12 @@ install: dirs
 	install -m 644 ${LOGROTATE} ${DESTDIR}/etc/logrotate.d
 	install -m 644 rsyslog.d/nftables.log ${DESTDIR}/rsyslog.d
 	install -m 644 smtpd/smtpd.conf ${DESTDIR}/smtpd
+
+## Section for miniroot.
+
+miniroot:
+	install -d ${DESTDIR}/etc/${USEDIR}
+	install -d ${DESTDIR}/etc/portage/profile/package.use.force
 	install -m 644 make.conf ${DESTDIR}/etc/portage
 	install -m 644 package.env ${DESTDIR}/etc/portage
 	install -m 644 package.license ${DESTDIR}/etc/portage

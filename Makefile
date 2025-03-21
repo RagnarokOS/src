@@ -1,5 +1,5 @@
 # Global Makefile.
-# $Ragnarok: Makefile,v 1.8 2025/03/20 23:32:40 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.9 2025/03/21 16:09:11 lecorbeau Exp $
 
 MAKE		= make -C
 SUBDIRS		= etc usr var
@@ -16,6 +16,12 @@ all:
 install: all
 	for _dir in ${SUBDIRS}; do \
 		${MAKE} $$_dir install; \
+		done
+
+## Section: make miniroot
+miniroot:
+	for _dir in ${SUBDIRS}; do \
+		${MAKE} $$_dir miniroot; \
 		done
 
 .PHONY: all base
