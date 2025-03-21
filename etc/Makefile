@@ -1,5 +1,5 @@
 # Makefile to quickly install everything.
-# $Ragnarok: Makefile,v 1.2 2025/03/21 16:13:28 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.2 2025/03/21 16:13:28 lecorbeau Exp i $
 
 ETCDIRS		= dracut.conf.d local.d logrotate.d portage rsyslog.d smtpd
 PORTAGEDIRS	= env package.use profile
@@ -8,6 +8,7 @@ ENVFILES	= portage/env/compiler-clang portage/env/compiler-gcc \
 		  portage/env/nolto
 USEFILES	= clang llvm gcc dhcpcd cronie mandoc media noX tmux
 PFILES		= package.use.mask use.force use.mask
+SETSFILES	= ragnarok boot
 LOGROTATE	= logrotate.d/nftables logrotate.d/portage
 
 ## Section: create the ragnarok-base package.
@@ -33,12 +34,17 @@ install: dirs
 ## Section for miniroot.
 
 miniroot:
+	install -d ${DESTDIR}/etc/portage/sets
 	install -d ${DESTDIR}/etc/${USEDIR}
 	install -d ${DESTDIR}/etc/portage/profile/package.use.force
 	install -m 644 make.conf ${DESTDIR}/etc/portage
 	install -m 644 package.env ${DESTDIR}/etc/portage
 	install -m 644 package.license ${DESTDIR}/etc/portage
 	install -m 644 ${ENVFILES} ${DESTDIR}/etc/portage/env
+	cd portage/sets; \
+		for _file in ${SETSFILES}; do \
+			install -m 644 $$_file ${DESTDIR}/etc/portage/sets; \
+			done
 	cd ${USEDIR}; \
 		install -m 644 ${USEFILES} ${DESTDIR}/etc/portage/${USEDIR}
 	install -m 644 etc/portage/profile/package.use.force/clang \
