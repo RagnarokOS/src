@@ -1,5 +1,5 @@
 # Makefile to quickly install everything.
-# $Ragnarok: Makefile,v 1.2 2025/03/21 16:13:28 lecorbeau Exp i $
+# $Ragnarok: Makefile,v 1.3 2025/03/21 18:10:38 lecorbeau Exp $
 
 ETCDIRS		= dracut.conf.d local.d logrotate.d portage rsyslog.d smtpd
 PORTAGEDIRS	= env package.use profile
@@ -42,9 +42,7 @@ miniroot:
 	install -m 644 package.license ${DESTDIR}/etc/portage
 	install -m 644 ${ENVFILES} ${DESTDIR}/etc/portage/env
 	cd portage/sets; \
-		for _file in ${SETSFILES}; do \
-			install -m 644 $$_file ${DESTDIR}/etc/portage/sets; \
-			done
+		install -m 644 ${SETSFILES} ${DESTDIR}/etc/portage/sets
 	cd ${USEDIR}; \
 		install -m 644 ${USEFILES} ${DESTDIR}/etc/portage/${USEDIR}
 	install -m 644 etc/portage/profile/package.use.force/clang \
