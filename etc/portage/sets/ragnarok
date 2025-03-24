@@ -12,3 +12,5 @@ sys-apps/apparmor
 sys-apps/apparmor-utils
 sys-process/cronie
 app-misc/tmux
+dev-vcs/openrcs
+app-editors/opened
