@@ -1,5 +1,5 @@
 # Makefile to quickly install everything.
-# $Ragnarok: Makefile,v 1.3 2025/03/21 18:10:38 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.4 2025/03/25 17:50:51 lecorbeau Exp $
 
 ETCDIRS		= dracut.conf.d local.d logrotate.d portage rsyslog.d smtpd
 PORTAGEDIRS	= env package.use profile
@@ -8,7 +8,7 @@ ENVFILES	= portage/env/compiler-clang portage/env/compiler-gcc \
 		  portage/env/nolto
 USEFILES	= clang llvm gcc dhcpcd cronie mandoc media noX tmux
 PFILES		= package.use.mask use.force use.mask
-SETSFILES	= ragnarok boot
+SETSFILES	= ragnarok boot x11
 LOGROTATE	= logrotate.d/nftables logrotate.d/portage
 
 ## Section: create the ragnarok-base package.
