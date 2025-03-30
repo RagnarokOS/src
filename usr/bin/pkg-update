@@ -1,0 +1,4 @@
+#!/bin/ksh
+
+# Update non-base system pkgs quickly, without messing up @world.
+emerge -avuDN --with-bdeps=y --oneshot @local
