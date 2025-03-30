@@ -1,0 +1,35 @@
+#!/bin/ksh
+
+# If the -n option is used, add pkg(s) to /etc/portage/package.env
+# with the native option.
+set_native() {
+	local _pkgs
+
+	set -A _pkgs -- "$@"
+
+	for _pkg in "${_pkgs[@]}"; do
+		printf '%s\n' "${_pkg} native" >> /etc/portage/package.env
+	done
+}
+
+# Install packages.
+inst_pkg() {
+	local _pkgs
+
+	set -A _pkgs -- "$@"
+
+	for _pkg in "${_pkgs[@]}"; do
+		printf '%s\n' "$_pkg" >> /etc/portage/sets/local
+	done
+
+	emerge -av --oneshot "${_pkgs[@]}"
+}
+
+case "$1" in
+	-n)
+		set_native && inst_pkg
+		;;
+	*)
+		inst_pkg
+		;;
+esac
