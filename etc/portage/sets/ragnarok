@@ -1,7 +1,6 @@
 app-admin/doas
 app-admin/logrotate
 app-admin/rsyslog
-app-text/mandoc
 mail-client/mailx
 mail-mta/opensmtpd
 media-sound/alsa-utils
@@ -12,5 +11,3 @@ sys-apps/apparmor
 sys-apps/apparmor-utils
 sys-process/cronie
 app-misc/tmux
-dev-vcs/openrcs
-app-editors/opened
