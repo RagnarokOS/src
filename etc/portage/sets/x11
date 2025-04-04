@@ -1,4 +1,5 @@
 x11-base/xorg-server
+x11-apps/xinit
 x11-apps/setxkbmap
 x11-apps/xprop
 x11-apps/xrandr
