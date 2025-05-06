@@ -1,5 +1,7 @@
 #!/usr/sbin/nft -f
 
+# $Ragnarok: nftables.rules,v 1.1 2025/04/15 17:43:55 lecorbeau Exp $
+
 # After installing nftables, and whenever this file is updated, don't
 # forget to run 'nft -f /etc/nftables.rules && rc-service nftables save'.
 

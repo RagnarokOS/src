@@ -1,8 +1,7 @@
-app-text/mandoc
+app-eselect/eselect-repository
 app-crypt/signify
 app-editors/vim
 app-editors/opened
-app-eselect/eselect-repository
 app-shells/oksh
 dev-util/oyacc
 dev-vcs/git
