@@ -1,2 +1,0 @@
-# openafs-kernel module can't be used on a hardened system
-net-fs/openafs modules
