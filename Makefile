@@ -1,8 +1,11 @@
 # Global Makefile.
-# $Ragnarok: Makefile,v 1.9 2025/03/21 16:09:11 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.10 2025/06/30 16:02:27 lecorbeau Exp $
 
 MAKE		= make -C
 SUBDIRS		= etc usr var
+
+VERSION		= 02
+KEYDIR		= ragnarok-keys-${VERSION}
 
 ## Section: create the Ragnarok-base package. See ragnarok-base.ebuild.
 
@@ -17,6 +20,12 @@ install: all
 	for _dir in ${SUBDIRS}; do \
 		${MAKE} $$_dir install; \
 		done
+
+keys:
+	mkdir -p ${KEYDIR}
+	install -m 644 etc/signify/ragnarok01.pub etc/signify/ragnarok02.pub ${KEYDIR}
+	install -m 644 usr/share/openpgp-keys/lecorbeau.asc ${KEYDIR}
+	tar czvf ${KEYDIR}.tgz ${KEYDIR}
 
 ## Section: make miniroot
 miniroot:

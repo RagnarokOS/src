@@ -1,5 +1,2 @@
 RCS/
-*.build
-*.buildinfo
-*.changes
-*.deb
+*.tgz
