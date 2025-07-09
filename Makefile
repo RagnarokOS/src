@@ -1,5 +1,5 @@
 # Global Makefile.
-# $Ragnarok: Makefile,v 1.11 2025/07/09 16:25:03 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.12 2025/07/09 17:31:09 lecorbeau Exp $
 
 MAKE		= make -C
 SUBDIRS		= etc
@@ -43,5 +43,7 @@ release:
 	for _dir in ${SUBDIRS}; do \
 		DESTDIR=${CURDIR}/${PKG} ${MAKE} $$_dir install; \
 		done
+	install -m 644 Makefile README.md ${PKG}
+	install -m 644 etc/Makefile ${PKG}/etc
 
 .PHONY: all base release
