@@ -1,11 +1,12 @@
 # Global Makefile.
-# $Ragnarok: Makefile,v 1.10 2025/06/30 16:02:27 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.11 2025/07/09 16:25:03 lecorbeau Exp $
 
 MAKE		= make -C
-SUBDIRS		= etc usr var
+SUBDIRS		= etc
 
 VERSION		= 02
 KEYDIR		= ragnarok-keys-${VERSION}
+PKG		= ragnarok-base-${VERSION}
 
 ## Section: create the Ragnarok-base package. See ragnarok-base.ebuild.
 
@@ -33,4 +34,14 @@ miniroot:
 		${MAKE} $$_dir miniroot; \
 		done
 
-.PHONY: all base
+# Create release tarball for ragnarok-base ebuild.
+release:
+	mkdir ${PKG}
+	for _dir in ${SUBDIRS}; do \
+		install -d ${PKG}/$$_dir; \
+		done
+	for _dir in ${SUBDIRS}; do \
+		DESTDIR=${CURDIR}/${PKG} ${MAKE} $$_dir install; \
+		done
+
+.PHONY: all base release
