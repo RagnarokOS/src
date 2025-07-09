@@ -1,5 +1,5 @@
 # Makefile to quickly install everything.
-# $Ragnarok: Makefile,v 1.9 2025/07/09 16:15:17 lecorbeau Exp $
+# $Ragnarok: Makefile,v 1.10 2025/07/09 16:17:27 lecorbeau Exp $
 
 ETCDIRS		= dracut.conf.d local.d logrotate.d rsyslog.d smtpd
 USEFILES	= clang llvm gcc dhcpcd cronie mandoc media noX tmux
@@ -20,5 +20,5 @@ install: dirs
 	install -m 644 dracut.conf.d/gentoo.conf ${DESTDIR}/etc/dracut.conf.d
 	install -m 755 local.d/rm-machineid.stop ${DESTDIR}/etc/local.d
 	install -m 644 ${LOGROTATE} ${DESTDIR}/etc/logrotate.d
-	install -m 644 rsyslog.d/nftables.conf ${DESTDIR}/etc/rsyslog.d
+	install -m 644 rsyslog.d/nftables-log.conf ${DESTDIR}/etc/rsyslog.d
 	install -m 644 smtpd/smtpd.conf ${DESTDIR}/etc/smtpd
