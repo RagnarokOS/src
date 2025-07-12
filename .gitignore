@@ -1,2 +1,4 @@
 RCS/
 *.tgz
+usr/
+var/
